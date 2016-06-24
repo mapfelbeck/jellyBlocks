@@ -46,5 +46,15 @@ class TestVectorTools extends TestCase
         
         assertEquals(null, intersect);
     }
+
+    //these lines intersect, but outside the deinfed range
+    public function testDistance()
+    {
+        var ptA:Vector2 = new Vector2(0, 0);
+        var ptB:Vector2 = new Vector2(3, 4);
+        var distance = VectorTools.Distance(ptA, ptB);
+        
+        assertEquals(5.0, distance);
+    }
     
 }

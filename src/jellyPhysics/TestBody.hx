@@ -1,0 +1,49 @@
+package jellyPhysics;
+
+import haxe.unit.TestCase;
+import lime.math.Vector2;
+
+/**
+ * ...
+ * @author Michael Apfelbeck
+ */
+class TestBody extends TestCase
+{
+
+    public function testCreate()
+    {
+        var closedShape:ClosedShape = new ClosedShape();
+        
+        closedShape.Begin();
+        closedShape.AddVertex(new Vector2(0, 0));
+        closedShape.AddVertex(new Vector2(5, 0));
+        closedShape.AddVertex(new Vector2(5, 5));
+        closedShape.AddVertex(new Vector2(0, 5));
+        closedShape.Finish(true);
+        
+        var testBody:Body = new Body(closedShape, 5, new Vector2(5, 5), 0, new Vector2(0, 0), false);
+        
+        assertEquals(4, testBody.GlobalShape.length);
+    }
+    
+    public function testContains()
+    {
+        var closedShape:ClosedShape = new ClosedShape();
+        
+        closedShape.Begin();
+        closedShape.AddVertex(new Vector2(0, 0));
+        closedShape.AddVertex(new Vector2(5, 0));
+        closedShape.AddVertex(new Vector2(5, 5));
+        closedShape.AddVertex(new Vector2(0, 5));
+        closedShape.Finish(true);
+
+        var testBody:Body = new Body(closedShape, 5, new Vector2(5, 5), 0, new Vector2(1, 1), false);
+        
+        var inside:Vector2 = new Vector2(7, 7);
+        var outside:Vector2 = new Vector2(2, 2);
+        
+        assertTrue(testBody.Contains(inside));
+        assertFalse(testBody.Contains(outside));
+    }
+    
+}

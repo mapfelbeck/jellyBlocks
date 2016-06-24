@@ -1,8 +1,9 @@
 package;
 
-import jelloPhysics.*;
 import jellyPhysics.Body;
 import jellyPhysics.PointMass;
+import jellyPhysics.TestBody;
+import jellyPhysics.TestAABB;
 import jellyPhysics.TestClosedShape;
 import jellyPhysics.TestVectorTools;
 import lime.math.Vector2;
@@ -33,11 +34,11 @@ class Main extends Sprite
         trace("mass: " + mass.Mass);
         trace("position :" + mass.Position.x + ", " + mass.Position.y);
         
-        var body:Body = new Body();
-        
         var runner:TestRunner = new TestRunner();
         runner.add(new TestVectorTools());
+        runner.add(new TestAABB());
         runner.add(new TestClosedShape());
+        runner.add(new TestBody());
         runner.run();
 	}
 

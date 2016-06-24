@@ -36,6 +36,11 @@ class VectorTools
         return (vectorA.x * vectorB.x) + (vectorA.y * vectorB.y);
     }
     
+    public static function Distance(vectorA: Vector2, vectorB:Vector2):Float
+    {
+        return new Vector2(vectorA.x - vectorB.x, vectorA.y - vectorB.y).length;
+    }
+    
     public static function GetPerpendicular(vector:Vector2):Vector2
     {
         return new Vector2( -vector.y, vector.x);

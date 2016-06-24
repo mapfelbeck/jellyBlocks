@@ -11,12 +11,30 @@ class AABB
     public var UL:Vector2;
     public var LR:Vector2;
     
-    public var X(default, UL.x):Float:
-    public var Y(default, UL.y):Float;
-    public var Height(default, LR.y - UL.y):Float;
-    public var Width(default, LR.x - UL.x):Float;
+    public var X(get, null):Float;
+    public function get_X(){
+        return UL.x;
+    }
     
-    public var Size(default, new Vector2(LR.x - UL.x, LR.y - UL.y)):Vector2;
+    public var Y(get, null):Float;
+    public function get_Y(){
+        return UL.y;
+    }
+    
+    public var Height(get, null):Float;
+    public function get_Height(){
+        return LR.y - UL.y;
+    }
+    
+    public var Width(get, null):Float;
+    public function get_Width(){
+        return LR.x - UL.x;
+    }
+    
+    public var Size(get, null):Vector2;
+    public function get_Size(){
+        return new Vector2(LR.x - UL.x, LR.y - UL.y);
+    }
     
     public var Valid : Bool;
     
@@ -31,7 +49,7 @@ class AABB
         UL = upperLeft;
         LR = lowerRight;
 
-        if (UL.x == RL.x == 0 || UL.y==LR.y==0){
+        if ((UL.x == 0 && LR.x == 0) || (UL.y==0&&LR.y==0)){
             Valid = false;
         }else
         {
@@ -41,7 +59,7 @@ class AABB
     
     public function Clear():Void
     {
-        UL.x = UL.y = RL.x = LR.y = 0;
+        UL.x = UL.y = LR.x = LR.y = 0;
         Valid = false;
     }
     
@@ -73,7 +91,7 @@ class AABB
         }
     }
     
-    public function ContainsPoint(pt):Bool
+    public function ContainsPoint(pt:Vector2):Bool
     {
         if (!Valid)
         {
@@ -94,9 +112,9 @@ class AABB
         return (UL.x <= X && LR.x >= X);
     }
 
-    public function ContainsY(float Y):Bool
+    public function ContainsY(y:Float):Bool
     {
-        return (UL.y <= Y && LR.y >= Y);
+        return (UL.y <= y && LR.y >= y);
     }
 
     public function Intersects(box:AABB):Bool
