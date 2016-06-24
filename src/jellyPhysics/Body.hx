@@ -4,6 +4,7 @@ import haxe.Constraints.Function;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.PointOnEdge;
 import lime.math.Vector2;
+import lime.math.Vector4;
 import openfl.utils.Object;
 //fixme
 /**
@@ -231,28 +232,28 @@ class Body
     }*/
     
     // find the distance from a global point in space, to the closest point on a given edge of the body.
-    /*public function GetClosestPointOnEdge(point:Vector2, edgeNum:Int):PointOnEdge
+    public function GetClosestPointOnEdge(point:Vector2, edgeNum:Int):PointOnEdge
     {
         var hitPt:Vector2 = new Vector2(0, 0);
         var normal:Vector2 = new Vector2(0, 0);
         
-        var edgeD:Float = 0.0;;
+        var edgeD:Float = 0.0;
         var dist:Float = 0.0;
         
-        var ptA:Vector2 = PointMasses[edgeNum];
+        var ptA:Vector2 = PointMasses[edgeNum].Position;
         var ptB:Vector2 = null;
         
-        if (edgeNum < ()){
+        if (edgeNum < (PointMasses.length - 1)){
             ptB = PointMasses[edgeNum + 1].Position;
         }else{
             ptB = PointMasses[0].Position;
         }
         
-        var toP:Vector2 = new Vector2(pt.x - ptA.x, pt.y - ptA.y);
+        var toP:Vector2 = new Vector2(point.x - ptA.x, point.y - ptA.y);
         var E:Vector2 = new Vector2(ptB.x - ptA.x, ptB.y - ptA.y);
         
         // get the length of the edge, and use that to normalize the vector.
-        var edgeLength:Float = (float)Math.sqrt((E.x * E.x) + (E.y * E.y));
+        var edgeLength:Float = Math.sqrt((E.x * E.x) + (E.y * E.y));
         if (edgeLength > 0.00001)
         {
             E.x /= edgeLength;
@@ -269,7 +270,6 @@ class Body
         {
             // x is outside the line segment, distance is from pt to ptA.
             //dist = (pt - ptA).Length();
-            pt
             dist = VectorTools.Distance(point, ptA);
             hitPt = ptA;
             edgeD = 0;
@@ -279,29 +279,28 @@ class Body
         {
             // x is outside of the line segment, distance is from pt to ptB.
             //dist = (pt - ptB).Length();
-            Vector2.Distance(ref point, ref ptB, out dist);
+            dist = VectorTools.Distance(point, ptB);
             hitPt = ptB;
-            edgeD = 1f;
+            edgeD = 1;
             normal = n;
         }
         else
         {
             // point lies somewhere on the line segment.
-            Vector3 toP3 = new Vector3();
-            toP3.X = toP.X;
-            toP3.Y = toP.Y;
+            var toP4:Vector4 = VectorTools.Vec4FromVec2(toP);
 
-            Vector3 E3 = new Vector3();
-            E3.X = E.X;
-            E3.Y = E.Y;
+            var E4:Vector4 = VectorTools.Vec4FromVec2(E);
 
             //dist = Math.Abs(Vector3.Cross(toP3, E3).Z);
-            Vector3.Cross(ref toP3, ref E3, out E3);
-            dist = Math.Abs(E3.Z);
-            hitPt.X = ptA.X + (E.X * x);
-            hitPt.Y = ptA.Y + (E.Y * x);
+            E4 = toP4.crossProduct(E4);
+
+            dist = Math.abs(E4.z);
+            hitPt.x = ptA.x + (E.x * x);
+            hitPt.y = ptA.y + (E.y * x);
             edgeD = x / edgeLength;
             normal = n;
         }
-    }*/
+        
+        return new PointOnEdge(edgeNum, hitPt, normal, edgeD);
+    }
 }

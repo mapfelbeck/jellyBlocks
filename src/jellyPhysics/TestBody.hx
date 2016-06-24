@@ -46,4 +46,25 @@ class TestBody extends TestCase
         assertFalse(testBody.Contains(outside));
     }
     
+    public function testClosestPointOnEdge()
+    {
+        var closedShape:ClosedShape = new ClosedShape();
+        
+        closedShape.Begin();
+        closedShape.AddVertex(new Vector2(0, 0));
+        closedShape.AddVertex(new Vector2(4, 0));
+        closedShape.AddVertex(new Vector2(4, 4));
+        closedShape.AddVertex(new Vector2(0, 4));
+        closedShape.Finish(true);
+
+        var testBody:Body = new Body(closedShape, 5, new Vector2(3, 3), 0, new Vector2(1, 1), false);
+        
+        var pointOnEdge:PointOnEdge = testBody.GetClosestPointOnEdge(new Vector2(6, 3), 1);
+        trace("pointOnEdge.EdgeNum: " + pointOnEdge.EdgeNum);
+        trace("pointOnEdge.Point: [" + pointOnEdge.Point.x + ", " + pointOnEdge.Point.y + "]");
+        trace("pointOnEdge.Normal: [" + pointOnEdge.Normal.x + ", " + pointOnEdge.Normal.y + "]");
+        trace("pointOnEdge.EdgeDistance: " + pointOnEdge.EdgeDistance);
+
+        assertTrue(true);
+    }
 }
