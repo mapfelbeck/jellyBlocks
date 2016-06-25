@@ -60,11 +60,45 @@ class TestBody extends TestCase
         var testBody:Body = new Body(closedShape, 5, new Vector2(3, 3), 0, new Vector2(1, 1), false);
         
         var pointOnEdge:PointOnEdge = testBody.GetClosestPointOnEdge(new Vector2(6, 3), 1);
-        trace("pointOnEdge.EdgeNum: " + pointOnEdge.EdgeNum);
-        trace("pointOnEdge.Point: [" + pointOnEdge.Point.x + ", " + pointOnEdge.Point.y + "]");
-        trace("pointOnEdge.Normal: [" + pointOnEdge.Normal.x + ", " + pointOnEdge.Normal.y + "]");
-        trace("pointOnEdge.EdgeDistance: " + pointOnEdge.EdgeDistance);
+        //trace("pointOnEdge.EdgeNum: " + pointOnEdge.EdgeNum);
+        //trace("pointOnEdge.Distance: " + pointOnEdge.Distance);
+        //trace("pointOnEdge.Point: [" + pointOnEdge.Point.x + ", " + pointOnEdge.Point.y + "]");
+        //trace("pointOnEdge.Normal: [" + pointOnEdge.Normal.x + ", " + pointOnEdge.Normal.y + "]");
+        //trace("pointOnEdge.EdgeDistance: " + pointOnEdge.EdgeDistance);
 
         assertTrue(true);
+        assertEquals(1, pointOnEdge.EdgeNum);
+        assertEquals(1.0, pointOnEdge.Distance);
+        assertEquals(5.0, pointOnEdge.Point.x);
+        assertEquals(3.0, pointOnEdge.Point.y);
+        assertEquals(0.5, pointOnEdge.EdgeDistance);
+    }
+    
+    public function testClosestPoint()
+    {
+        var closedShape:ClosedShape = new ClosedShape();
+        
+        closedShape.Begin();
+        closedShape.AddVertex(new Vector2(0, 0));
+        closedShape.AddVertex(new Vector2(4, 0));
+        closedShape.AddVertex(new Vector2(4, 4));
+        closedShape.AddVertex(new Vector2(0, 4));
+        closedShape.Finish(true);
+
+        var testBody:Body = new Body(closedShape, 5, new Vector2(3, 3), 0, new Vector2(1, 1), false);
+        
+        var point:PointOnEdge = testBody.GetClosestPoint(new Vector2(3, 0));
+        //trace("point.EdgeNum: " + point.EdgeNum);
+        //trace("point.Distance: " + point.Distance);
+        //trace("point.Point: [" + point.Point.x + ", " + point.Point.y + "]");
+        //trace("point.Normal: [" + point.Normal.x + ", " + point.Normal.y + "]");
+        //trace("point.EdgeDistance: " + point.EdgeDistance);
+
+        assertTrue(true);
+        assertEquals(0, point.EdgeNum);
+        assertEquals(1.0, point.Distance);
+        assertEquals(3.0, point.Point.x);
+        assertEquals(1.0, point.Point.y);
+        assertEquals(0.5, point.EdgeDistance);
     }
 }

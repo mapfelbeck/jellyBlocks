@@ -196,40 +196,42 @@ class Body
     
     // given a global point, find the point on this body that is closest to the 
     // global point, and if it is an edge, information about the edge it resides on.
-    /*public function GetClosestPoint(point:Vector2):Vector2
+    public function GetClosestPoint(point:Vector2):PointOnEdge
     {
-        var hitPt:Vector2 = new Vector2(0, 0);
-        var pointA:Int = -1;
-        var pointB:Int = -1;
-        var edgeD:Float = 0;
+        //var hitPt:Vector2 = new Vector2(0, 0);
+        //var pointA:Int = -1;
+        //var pointB:Int = -1;
+        //var edgeD:Float = 0;
         var normal:Vector2 = new Vector2(0, 0);
 
         var closestD:Float = 1000.0;
 
+        var closestPoint:PointOnEdge = null;
+        
         for (i in 0...PointMasses.length)
         {
-            var tempHit:Vector2;
-            var tempNorm:Vector2;
-            var tempEdgeD:Float;
+            //var tempHit:Vector2;
+            //var tempNorm:Vector2;
+            //var tempEdgeD:Float;
 
-            var dist:Float = getClosestPointOnEdge(pt, i, out tempHit, out tempNorm, out tempEdgeD);
-            if (dist < closestD)
+            var pointOnEdge:PointOnEdge = GetClosestPointOnEdge(point, i);
+            if (pointOnEdge.Distance < closestD)
             {
-                closestD = dist;
-                pointA = i;
-                if (i < (pointMasses.Count - 1))
+                closestD = pointOnEdge.Distance;
+                closestPoint = pointOnEdge;
+                //pointA = i;
+                /*if (i < (pointMasses.Count - 1))
                     pointB = i + 1;
                 else
-                    pointB = 0;
-                edgeD = tempEdgeD;
-                normal = tempNorm;
-                hitPt = tempHit;
+                    pointB = 0;*/
+                //edgeD = pointOnEdge.EdgeDistance;
+                //normal = pointOnEdge.Normal;
+                //hitPt = pointOnEdge.Point;
             }
         }
         
-        // return.
-        return closestD;
-    }*/
+        return closestPoint;
+    }
     
     // find the distance from a global point in space, to the closest point on a given edge of the body.
     public function GetClosestPointOnEdge(point:Vector2, edgeNum:Int):PointOnEdge
@@ -301,6 +303,6 @@ class Body
             normal = n;
         }
         
-        return new PointOnEdge(edgeNum, hitPt, normal, edgeD);
+        return new PointOnEdge(edgeNum, dist, hitPt, normal, edgeD);
     }
 }
