@@ -66,7 +66,6 @@ class TestBody extends TestCase
         //trace("pointOnEdge.Normal: [" + pointOnEdge.Normal.x + ", " + pointOnEdge.Normal.y + "]");
         //trace("pointOnEdge.EdgeDistance: " + pointOnEdge.EdgeDistance);
 
-        assertTrue(true);
         assertEquals(1, pointOnEdge.EdgeNum);
         assertEquals(1.0, pointOnEdge.Distance);
         assertEquals(5.0, pointOnEdge.Point.x);
@@ -94,11 +93,30 @@ class TestBody extends TestCase
         //trace("point.Normal: [" + point.Normal.x + ", " + point.Normal.y + "]");
         //trace("point.EdgeDistance: " + point.EdgeDistance);
 
-        assertTrue(true);
         assertEquals(0, point.EdgeNum);
         assertEquals(1.0, point.Distance);
         assertEquals(3.0, point.Point.x);
         assertEquals(1.0, point.Point.y);
         assertEquals(0.5, point.EdgeDistance);
+    }
+    
+    public function testCollide()
+    {
+        var closedShape:ClosedShape = new ClosedShape();
+        
+        closedShape.Begin();
+        closedShape.AddVertex(new Vector2(0, 0));
+        closedShape.AddVertex(new Vector2(4, 0));
+        closedShape.AddVertex(new Vector2(4, 4));
+        closedShape.AddVertex(new Vector2(0, 4));
+        closedShape.Finish(true);
+
+        var bodyA:Body = new Body(closedShape, 5, new Vector2(0, 0), 0, new Vector2(1, 1), false);
+        var bodyB:Body = new Body(closedShape, 5, new Vector2(1, 1), 0, new Vector2(1, 1), false);
+        
+        var collisions : Array<BodyCollisionInfo> = Body.BodyCollide(bodyA, bodyB, 0.1);
+
+        assertTrue(null != collisions);
+        assertEquals(1, collisions.length);
     }
 }

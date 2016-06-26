@@ -41,6 +41,13 @@ class VectorTools
         return new Vector2(vectorA.x - vectorB.x, vectorA.y - vectorB.y).length;
     }
     
+    public static function DistanceSquared(vectorA: Vector2, vectorB:Vector2):Float
+    {
+        var dist = Distance(vectorA, vectorB);
+        return dist * dist;
+    }
+    
+    //Get a vector perpendicular to the passed in vector
     public static function GetPerpendicular(vector:Vector2):Vector2
     {
         return new Vector2( -vector.y, vector.x);
@@ -58,12 +65,12 @@ class VectorTools
         return new Vector4(vector.x, vector.y, (null == z)?0: z, 0);
     }
     
-        /// see if 2 line segments intersect. (line AB collides with line CD)
-        // pointA: first point on line AB
-        // pointB: second point on line AB
-        // pointC: first point on line CD
-        // pointD: second point on line CD
-        // return: Intersection object. Null if no intersection.
+    /// see if 2 line segments intersect. (line AB collides with line CD)
+    // pointA: first point on line AB
+    // pointB: second point on line AB
+    // pointC: first point on line CD
+    // pointD: second point on line CD
+    // return: Intersection object. Null if no intersection.
     public static function LineIntersect(pointA:Vector2, pointB:Vector2, pointC:Vector2, pointD:Vector2):Intersection
     {
         var denom:Float = ((pointD.y - pointC.y) * (pointB.x - pointA.x)) - ((pointD.x - pointC.x) * (pointB.y - pointA.y));
@@ -97,33 +104,53 @@ class VectorTools
     
     public static function CalculateSpringForce(posA:Vector2, velA:Vector2, posB:Vector2, velB:Vector2, springD:Float, springK:Float, damping:Float):Vector2
     {
-            //Vector2 BtoA = (posA - posB);
-            var BtoA:Vector2 = new Vector2();
-            BtoA.x = posA.x - posB.x;
-            BtoA.x = posA.y - posB.y;
+        //Vector2 BtoA = (posA - posB);
+        var BtoA:Vector2 = new Vector2();
+        BtoA.x = posA.x - posB.x;
+        BtoA.x = posA.y - posB.y;
 
-            var dist:Float = BtoA.length;
-            if (dist > 0.0001)
-            {
-                BtoA.x /= dist;
-                BtoA.y /= dist;
-            }else{
-                BtoA.x = 0;
-                BtoA.y = 0;
-            }
-            
-            dist = springD - dist;
+        var dist:Float = BtoA.length;
+        if (dist > 0.0001)
+        {
+            BtoA.x /= dist;
+            BtoA.y /= dist;
+        }else{
+            BtoA.x = 0;
+            BtoA.y = 0;
+        }
+        
+        dist = springD - dist;
 
-            //Vector2 relVel = velA - velB;
-            var relVel:Vector2 = new Vector2();
-            relVel.x = velA.x - velB.x;
-            relVel.y = velA.y - velB.y;
-            
-            var totalRelVel:Float;
-            totalRelVel = Dot(relVel, BtoA);
+        //Vector2 relVel = velA - velB;
+        var relVel:Vector2 = new Vector2();
+        relVel.x = velA.x - velB.x;
+        relVel.y = velA.y - velB.y;
+        
+        var totalRelVel:Float;
+        totalRelVel = Dot(relVel, BtoA);
 
-            BtoA.x *= ((dist - springK) - (totalRelVel * damping));
-            BtoA.y *= ((dist - springK) - (totalRelVel * damping));
-            return BtoA;
+        BtoA.x *= ((dist - springK) - (totalRelVel * damping));
+        BtoA.y *= ((dist - springK) - (totalRelVel * damping));
+        return BtoA;
+    }
+    
+    public static function Subtract(vectorA:Vector2, vectorB:Vector2):Vector2
+    {
+        return new Vector2(vectorA.x - vectorB.x, vectorA.y - vectorB.y);
+    }
+    
+    public static function Add(vectorA:Vector2, vectorB:Vector2):Vector2
+    {
+        return new Vector2(vectorA.x + vectorB.x, vectorA.y + vectorB.y);
+    }
+    
+    public static function Multiply(vector:Vector2, scalar:Float):Vector2
+    {
+        return new Vector2(vector.x * scalar, vector.y * scalar);
+    }
+    
+    public static function LengthSquared(vector:Vector2):Float
+    {
+        return (vector.x * vector.x) + (vector.y + vector.y);
     }
 }
