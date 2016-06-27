@@ -2,10 +2,11 @@ package;
 
 import jellyPhysics.Body;
 import jellyPhysics.PointMass;
-import jellyPhysics.TestBody;
-import jellyPhysics.TestAABB;
-import jellyPhysics.TestClosedShape;
-import jellyPhysics.TestVectorTools;
+import jellyPhysics.test.TestBody;
+import jellyPhysics.test.TestWorld;
+import jellyPhysics.test.TestAABB;
+import jellyPhysics.test.TestClosedShape;
+import jellyPhysics.test.TestVectorTools;
 import lime.math.Vector2;
 import haxe.unit.TestRunner;
 import openfl.Assets;
@@ -39,6 +40,7 @@ class Main extends Sprite
         runner.add(new TestAABB());
         runner.add(new TestClosedShape());
         runner.add(new TestBody());
+        runner.add(new TestWorld());
         runner.run();
 	}
 

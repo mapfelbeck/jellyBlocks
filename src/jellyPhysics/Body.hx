@@ -6,7 +6,7 @@ import jellyPhysics.PointOnEdge;
 import lime.math.Vector2;
 import lime.math.Vector4;
 import openfl.utils.Object;
-import src.jellyPhysics.PointMassRef;
+import jellyPhysics.PointMassRef;
 
 /**
  * ...

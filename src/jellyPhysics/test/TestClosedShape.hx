@@ -1,4 +1,4 @@
-package jellyPhysics;
+package jellyPhysics.test;
 import haxe.unit.TestCase;
 import haxe.unit.TestRunner;
 import lime.math.Vector2;

@@ -1,4 +1,4 @@
-package src.jellyPhysics;
+package jellyPhysics;
 import haxe.Constraints.Function;
 
 /**
@@ -7,7 +7,7 @@ import haxe.Constraints.Function;
  */
 class MaterialPair
 {
-    public var Collide:Bool
+    public var Collide:Bool;
 
     // Amount of "bounce" when collision occurs. value range [0,1]. 0 == no bounce, 1 == 100% bounce
     public var Elasticity:Float;
