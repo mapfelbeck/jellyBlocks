@@ -421,6 +421,99 @@ class Body
         }
     }
     
+    // Derive the global position and angle of this body, based on the average of all the points.
+    // This updates the DerivedPosision, DerivedAngle, and DerivedVelocity properties.
+    // This is called by the World object each Update(), so usually a user does not need to call this.
+    // Instead access the DerivedPosition, DerivedAngle, DerivedVelocity, and DerivedOmega properties.    
+    /*public function DerivePositionAndAngle(float elaspsed):Void
+    {
+        // no need it this is a static body, or kinematically controlled.
+        if (IsStatic || Kinematic || IsAsleep){
+            return;
+        }
+
+        // find the geometric center.
+        var center:Vector2 = new Vector2(0, 0);
+
+        var vel:Vector2 = new Vector2(0, 0);
+
+        for (i in 0...pointMasses.Count)
+        {
+            center.x += PointMasses[i].Position.x;
+            center.y += PointMasses[i].Position.y;
+
+            vel.x += PointMasses[i].Velocity.x;
+            vel.y += PointMasses[i].Velocity.y;
+        }
+
+        center.x /= PointMasses.Count;
+        center.y /= PointMasses.Count;
+
+        vel.X /= PointMasses.Count;
+        vel.Y /= PointMasses.Count;
+
+        DerivedPos = center;
+        DerivedVel = vel;
+
+        // find the average angle of all of the masses.
+        var angle:Float = 0;
+        var originalSign:Int = 1;
+        var originalAngle:Float = 0;
+        for (i in 0...PointMasses.Count)
+        {
+            var baseNorm:Vector2 = new Vector2(BaseShape.LocalVertices[i].x, BaseShape.LocalVertices[i].y);
+            baseNorm.normalize(1.0);
+
+            Vector2 curNorm = new Vector2();
+            curNorm.X = pointMasses[i].Position.X - derivedPos.X;
+            curNorm.Y = pointMasses[i].Position.Y - derivedPos.Y;
+            Vector2.Normalize(ref curNorm, out curNorm);
+
+            float dot;
+            Vector2.Dot(ref baseNorm, ref curNorm, out dot);
+            if (dot > 1.0f) { dot = 1.0f; }
+            if (dot < -1.0f) { dot = -1.0f; }
+
+            float thisAngle = (float)Math.Acos(dot);
+            if (!VectorTools.isCCW(ref baseNorm, ref curNorm)) { thisAngle = -thisAngle; }
+
+            if (i == 0)
+            {
+                originalSign = (thisAngle >= 0.0f) ? 1 : -1;
+                originalAngle = thisAngle;
+            }
+            else
+            {
+                float diff = (thisAngle - originalAngle);
+                int thisSign = (thisAngle >= 0.0f) ? 1 : -1;
+
+                if ((Math.Abs(diff) > Math.PI) && (thisSign != originalSign))
+                {
+                    thisAngle = (thisSign == -1) ? ((float)Math.PI + ((float)Math.PI + thisAngle)) : (((float)Math.PI - thisAngle) - (float)Math.PI);
+                }
+            }
+
+            angle += thisAngle;
+        }
+
+        angle /= pointMasses.Count;
+        derivedAngle = angle;
+
+        // now calculate the derived Omega, based on change in angle over time.
+        float angleChange = (derivedAngle - lastAngle);
+        if (Math.Abs(angleChange) >= Math.PI)
+        {
+            if (angleChange < 0f)
+                angleChange = angleChange + (float)(Math.PI * 2);
+            else
+                angleChange = angleChange - (float)(Math.PI * 2);
+        }
+
+        derivedOmega = angleChange / elaspsed;
+
+        lastAngle = derivedAngle;
+    }*/
+        
     public static function BodyCollide(bodyA:Body, bodyB:Body, penThreshhold:Float):Array<BodyCollisionInfo>
     {
         if (null == bodyA || null == bodyB){

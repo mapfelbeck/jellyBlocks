@@ -31,6 +31,9 @@ class Main extends Sprite
         trace("mass: " + mass.Mass);
         trace("position :" + mass.Position.x + ", " + mass.Position.y);
         
+        //var testVector2:Vector2 = new Vector2(3, 4);
+        //testVector2.normalize(1.0);
+        
         var runner:TestRunner = new TestRunner();
         runner.add(new TestMaterialMatrix());
         runner.add(new TestVectorTools());
