@@ -31,18 +31,37 @@ class World
     private var penetrationCount:Int;
     
     private var defaultMaterialPair:MaterialPair;
-    private var materialPairs:Map<MaterialPair, MaterialPair>;
+    private var materialPairs:Array<Array<MaterialPair>>;
     
     private var bodyDamping:Float;
     
     private var collisionList:Array<BodyCollisionInfo>;
     
+    private var penetrationThreshold:Float;
+    
     public function new(worldMaterialCount:Int, 
-                        worldMaterialPairs:Map<MaterialPair, MaterialPair>,
+                        worldMaterialPairs:Array<Array<MaterialPair>>,
                         worldDefaultMaterialPair:MaterialPair,
                         worldPenetrationThreshhold:Float,
                         worldBounds: AABB)
     {
-        collider = new ArrayCollider(.05);
+        collider = new ArrayCollider(worldPenetrationThreshhold);
+        
+        collisionList = new Array<BodyCollisionInfo>();
+        bodyCounter = 0;
+        
+        // initialize materials
+        materialCount = worldMaterialCount;
+        materialPairs = worldMaterialPairs;
+        defaultMaterialPair = worldDefaultMaterialPair;
+        
+        SetWorldLimits(worldBounds);
+        
+        penetrationThreshold = worldPenetrationThreshhold;
+    }
+    
+    public function SetWorldLimits(limits:AABB) : Void
+    {
+        worldLimits = limits;
     }
 }

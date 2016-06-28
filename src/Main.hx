@@ -2,11 +2,7 @@ package;
 
 import jellyPhysics.Body;
 import jellyPhysics.PointMass;
-import jellyPhysics.test.TestBody;
-import jellyPhysics.test.TestWorld;
-import jellyPhysics.test.TestAABB;
-import jellyPhysics.test.TestClosedShape;
-import jellyPhysics.test.TestVectorTools;
+import jellyPhysics.test.*;
 import lime.math.Vector2;
 import haxe.unit.TestRunner;
 import openfl.Assets;
@@ -36,10 +32,12 @@ class Main extends Sprite
         trace("position :" + mass.Position.x + ", " + mass.Position.y);
         
         var runner:TestRunner = new TestRunner();
+        runner.add(new TestMaterialMatrix());
         runner.add(new TestVectorTools());
         runner.add(new TestAABB());
         runner.add(new TestClosedShape());
         runner.add(new TestBody());
+        runner.add(new TestArrayCollider());
         runner.add(new TestWorld());
         runner.run();
 	}
