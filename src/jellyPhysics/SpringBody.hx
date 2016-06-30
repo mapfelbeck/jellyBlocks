@@ -23,7 +23,7 @@ class SpringBody extends Body
     private var EdgeSpringDamp:Float;
     private var ShapeSpringK:Float;
     private var ShapeSpringDamp:Float;
-        
+
     //bodyShape: ClosedShape shape for this body
     //massPerPoint: mass per PointMass.
     //position: global position
