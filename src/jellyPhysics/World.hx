@@ -150,6 +150,21 @@ class World
             }
             
             AccumulateAndIntegrate(iterElapsed);
+            
+            var collisions:Array<BodyCollisionInfo> = collider.BuildCollisions();
+            HandleCollisions(collisions);
+            
+            for (i in 0...collider.Count){
+                collider.GetBody(i).DampenVelocity(iterElapsed);
+            }
+        }
+        
+        for (i in 0...collider.Count){
+            collider.GetBody(i).Update(elapsed);
+        }
+        
+        for (i in 0...collider.Count){
+            collider.GetBody(i).ResetExternalForces();
         }
     }
 
@@ -330,6 +345,5 @@ class World
                 }
             }
         }
-        //collisions.Clear();
     }
 }

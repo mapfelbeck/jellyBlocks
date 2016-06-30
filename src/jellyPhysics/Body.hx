@@ -67,6 +67,8 @@ class Body
             UpdateAABB(0, true);
     }
     
+    public function Update(elapsed:Float):Void{}
+    
     // set the shape of this body to a new ClosedShape object.  This function 
     // will remove any existing PointMass objects, and replace them with new 
     // ones IF the new shape has a different vertex count than the previous one.
@@ -528,7 +530,7 @@ class Body
         
     }
     
-    public function ResetExternalForces(elapsed:Float):Void{
+    public function ResetExternalForces():Void{
         
     }
     
@@ -545,7 +547,7 @@ class Body
         }
     }
     
-    private function DampenVelocity(elapsed:Float)
+    public function DampenVelocity(elapsed:Float)
     {
         if (IsStatic || IsAsleep){
             return;

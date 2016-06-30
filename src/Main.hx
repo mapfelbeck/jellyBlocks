@@ -44,6 +44,7 @@ class Main extends Sprite
         runner.add(new TestAABB());
         runner.add(new TestClosedShape());
         runner.add(new TestBody());
+        runner.add(new TestSpringBody());
         runner.add(new TestArrayCollider());
         runner.add(new TestWorld());
         runner.run();
