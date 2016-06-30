@@ -33,6 +33,10 @@ class Main extends Sprite
         
         //var testVector2:Vector2 = new Vector2(3, 4);
         //testVector2.normalize(1.0);
+        //var bigFloat:Float = 13.7;
+        //var threeInt:Int = 3;
+        //bigFloat /= threeInt;
+        //trace("result: " + bigFloat);
         
         var runner:TestRunner = new TestRunner();
         runner.add(new TestMaterialMatrix());

@@ -25,7 +25,7 @@ class PointMass
         Force = new Vector2(0, 0);
     }
     
-    public function integrateForce(elapsed: Float):Void
+    public function IntegrateForce(elapsed: Float):Void
     {
         var elapMass:Float = elapsed / Mass;
 

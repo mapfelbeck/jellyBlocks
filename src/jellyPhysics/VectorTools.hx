@@ -54,7 +54,7 @@ class VectorTools
     }
     
     //Is rotating from A to B Counter-clockwise?
-    public function IsCCW(vectorA:Vector2, vectorB:Vector2):Bool
+    public static function IsCCW(vectorA:Vector2, vectorB:Vector2):Bool
     {
         var perp:Vector2 = GetPerpendicular(vectorA);
         var dot:Float = Dot(vectorB, vectorA);

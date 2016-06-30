@@ -113,6 +113,11 @@ class Body
         }
     }
     
+    public function GetPointMass(index:Int):PointMass
+    {
+        return PointMasses[index];
+    }
+    
     public function SetMassAll(mass:Float):Void
     {
         for (i in 0...PointMasses.length)
@@ -425,7 +430,7 @@ class Body
     // This updates the DerivedPosision, DerivedAngle, and DerivedVelocity properties.
     // This is called by the World object each Update(), so usually a user does not need to call this.
     // Instead access the DerivedPosition, DerivedAngle, DerivedVelocity, and DerivedOmega properties.    
-    /*public function DerivePositionAndAngle(float elaspsed):Void
+    public function DerivePositionAndAngle(elaspsed:Float):Void
     {
         // no need it this is a static body, or kinematically controlled.
         if (IsStatic || Kinematic || IsAsleep){
@@ -437,7 +442,7 @@ class Body
 
         var vel:Vector2 = new Vector2(0, 0);
 
-        for (i in 0...pointMasses.Count)
+        for (i in 0...PointMasses.length)
         {
             center.x += PointMasses[i].Position.x;
             center.y += PointMasses[i].Position.y;
@@ -446,11 +451,11 @@ class Body
             vel.y += PointMasses[i].Velocity.y;
         }
 
-        center.x /= PointMasses.Count;
-        center.y /= PointMasses.Count;
+        center.x /= PointMasses.length;
+        center.y /= PointMasses.length;
 
-        vel.X /= PointMasses.Count;
-        vel.Y /= PointMasses.Count;
+        vel.x /= PointMasses.length;
+        vel.y /= PointMasses.length;
 
         DerivedPos = center;
         DerivedVel = vel;
@@ -459,60 +464,100 @@ class Body
         var angle:Float = 0;
         var originalSign:Int = 1;
         var originalAngle:Float = 0;
-        for (i in 0...PointMasses.Count)
+        for (i in 0...PointMasses.length)
         {
             var baseNorm:Vector2 = new Vector2(BaseShape.LocalVertices[i].x, BaseShape.LocalVertices[i].y);
             baseNorm.normalize(1.0);
 
-            Vector2 curNorm = new Vector2();
-            curNorm.X = pointMasses[i].Position.X - derivedPos.X;
-            curNorm.Y = pointMasses[i].Position.Y - derivedPos.Y;
-            Vector2.Normalize(ref curNorm, out curNorm);
+            var curNorm:Vector2 = new Vector2(PointMasses[i].Position.x - DerivedPos.x,
+                                            PointMasses[i].Position.y - DerivedPos.y);
+            curNorm.normalize(1.0);
 
-            float dot;
-            Vector2.Dot(ref baseNorm, ref curNorm, out dot);
-            if (dot > 1.0f) { dot = 1.0f; }
-            if (dot < -1.0f) { dot = -1.0f; }
+            var dot:Float = VectorTools.Dot(baseNorm, curNorm);
+                        
+            if (dot > 1.0) { dot = 1.0; }
+            if (dot < -1.0) { dot = -1.0; }
 
-            float thisAngle = (float)Math.Acos(dot);
-            if (!VectorTools.isCCW(ref baseNorm, ref curNorm)) { thisAngle = -thisAngle; }
+            var thisAngle:Float = Math.acos(dot);
+            if (!VectorTools.IsCCW(baseNorm, curNorm)) {
+                thisAngle = -thisAngle;                
+            }
 
             if (i == 0)
             {
-                originalSign = (thisAngle >= 0.0f) ? 1 : -1;
+                originalSign = (thisAngle >= 0.0) ? 1 : -1;
                 originalAngle = thisAngle;
             }
             else
             {
-                float diff = (thisAngle - originalAngle);
-                int thisSign = (thisAngle >= 0.0f) ? 1 : -1;
+                var diff:Float = (thisAngle - originalAngle);
+                var thisSign:Int = (thisAngle >= 0.0) ? 1 : -1;
 
-                if ((Math.Abs(diff) > Math.PI) && (thisSign != originalSign))
+                if ((Math.abs(diff) > Math.PI) && (thisSign != originalSign))
                 {
-                    thisAngle = (thisSign == -1) ? ((float)Math.PI + ((float)Math.PI + thisAngle)) : (((float)Math.PI - thisAngle) - (float)Math.PI);
+                    if (thisSign == -1){
+                        thisAngle = Math.PI + (Math.PI + thisAngle);
+                    }else{
+                        thisAngle = (Math.PI - thisAngle) - Math.PI;
+                    }
                 }
             }
 
             angle += thisAngle;
         }
 
-        angle /= pointMasses.Count;
-        derivedAngle = angle;
+        angle /= PointMasses.length;
+        DerivedAngle = angle;
 
         // now calculate the derived Omega, based on change in angle over time.
-        float angleChange = (derivedAngle - lastAngle);
-        if (Math.Abs(angleChange) >= Math.PI)
+        var angleChange:Float = (DerivedAngle - LastAngle);
+        if (Math.abs(angleChange) >= Math.PI)
         {
-            if (angleChange < 0f)
-                angleChange = angleChange + (float)(Math.PI * 2);
+            if (angleChange < 0)
+                angleChange = angleChange + (Math.PI * 2);
             else
-                angleChange = angleChange - (float)(Math.PI * 2);
+                angleChange = angleChange - (Math.PI * 2);
         }
 
-        derivedOmega = angleChange / elaspsed;
+        DerivedOmega = angleChange / elaspsed;
 
-        lastAngle = derivedAngle;
-    }*/
+        LastAngle = DerivedAngle;
+    }
+    
+    public function AccumulateExternalForces(elapsed:Float):Void{
+        
+    }
+    
+    public function ResetExternalForces(elapsed:Float):Void{
+        
+    }
+    
+    public function AccumulateInternalForces(elapsed:Float):Void{
+        
+    }
+    
+    public function Integrate(elapsed:Float):Void{
+        if (IsStatic || IsAsleep){
+            return;
+        }
+        for (i in 0...PointMasses.length){
+            PointMasses[i].IntegrateForce(elapsed);
+        }
+    }
+    
+    private function DampenVelocity(elapsed:Float)
+    {
+        if (IsStatic || IsAsleep){
+            return;
+        }
+        
+        var perFrameFriction = Math.pow((1.0 - VelocityDamping), elapsed);
+        
+        for (i in 0...PointMasses.length){
+            PointMasses[i].Velocity.x *= perFrameFriction;
+            PointMasses[i].Velocity.y *= perFrameFriction;
+        }
+    }
         
     public static function BodyCollide(bodyA:Body, bodyB:Body, penThreshhold:Float):Array<BodyCollisionInfo>
     {
