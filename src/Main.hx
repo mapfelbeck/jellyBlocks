@@ -20,16 +20,18 @@ class Main extends Sprite
 	public function new() 
 	{
 		super();
-		
-        var bitmapData:BitmapData = Assets.getBitmapData("assets/meh.png");
-        var bitmap:Bitmap = new Bitmap(bitmapData);
+		var testWorld:Sprite = new TestWorld2();
+        stage.addChild(testWorld);
+        
+        //var bitmapData:BitmapData = Assets.getBitmapData("assets/meh.png");
+        //var bitmap:Bitmap = new Bitmap(bitmapData);
         
         //stage.addChild(bitmap);
         
-        var mass = new jellyPhysics.PointMass(17.7);
+        //var mass = new jellyPhysics.PointMass(17.7);
 
-        trace("mass: " + mass.Mass);
-        trace("position :" + mass.Position.x + ", " + mass.Position.y);
+        //trace("mass: " + mass.Mass);
+        //trace("position :" + mass.Position.x + ", " + mass.Position.y);
         
         //var testVector2:Vector2 = new Vector2(3, 4);
         //testVector2.normalize(1.0);
@@ -38,7 +40,7 @@ class Main extends Sprite
         //bigFloat /= threeInt;
         //trace("result: " + bigFloat);
         
-        var runner:TestRunner = new TestRunner();
+        /*var runner:TestRunner = new TestRunner();
         runner.add(new TestMaterialMatrix());
         runner.add(new TestVectorTools());
         runner.add(new TestAABB());
@@ -48,7 +50,7 @@ class Main extends Sprite
         runner.add(new TestPressureBody());
         runner.add(new TestArrayCollider());
         runner.add(new TestWorld());
-        runner.run();
+        runner.run();*/
 	}
 
 }
