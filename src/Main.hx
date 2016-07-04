@@ -10,6 +10,9 @@ import openfl.display.Bitmap;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import openfl.Lib;
+import openfl.events.*;
+import openfl.display.FPS;
+import openfl.geom.ColorTransform;
 
 /**
  * ...
@@ -20,7 +23,10 @@ class Main extends Sprite
 	public function new() 
 	{
 		super();
-		var testWorld:Sprite = new TestWorld2();
+        
+        this.stage.quality = "HIGH";
+		
+        var testWorld:Sprite = new TestWorld2();
         stage.addChild(testWorld);
         
         //var bitmapData:BitmapData = Assets.getBitmapData("assets/meh.png");

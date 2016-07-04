@@ -69,14 +69,17 @@ class World
         worldLimits = limits;
     }
     
-    public function AddBody(body:Body):Void
+    public function AddBody(body:Body):Int
     {
         if (!collider.Contains(body)){
             body.VelocityDamping = BodyDamping;
             body.BodyNumber = bodyCounter;
             bodyCounter++;
             collider.Add(body);
+            return body.BodyNumber;
         }
+        
+        return -1;
     }
     
     public function RemoveBody(body:Body):Void

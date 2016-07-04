@@ -21,7 +21,7 @@ class TestBody extends TestCase
         closedShape.AddVertex(new Vector2(0, 5));
         closedShape.Finish(true);
         
-        var testBody:Body = new Body(closedShape, 5, new Vector2(5, 5), 0, new Vector2(0, 0), false);
+        var testBody:Body = new Body(closedShape, 5, new Vector2(5, 5), 0, new Vector2(1, 1), false);
         
         assertEquals(4, testBody.GlobalShape.length);
     }
