@@ -1,4 +1,5 @@
 package;
+import jellyPhysics.*;
 import lime.math.Vector2;
 import openfl.display.Sprite;
 import jellyPhysics.World;
@@ -12,23 +13,56 @@ class DrawDebugWorld
     public var renderSize:Vector2;
     public var backgroundColor:Int;
     
-    private var renderTarget:Sprite;
-    private var physicsWorld:World;
+    private var render:Sprite;
+    private var world:World;
     
-    public function new(sprite:Sprite, world:World) 
+    private var offset:Vector2 = new Vector2(0, 0);
+    private var scale:Vector2 = new Vector2(20.0, 20.0);
+    
+    public function new(sprite:Sprite, physicsWorld:World) 
     {
-        renderTarget = sprite;
-        physicsWorld = world;
+        render = sprite;
+        world = physicsWorld;
         backgroundColor = 0x000000;
         
-        renderSize = new Vector2(sprite.stage.stageWidth - sprite.x, sprite.stage.stageHeight - sprite.y);
+        renderSize = new Vector2(sprite.stage.stageWidth - (2 * sprite.x), sprite.stage.stageHeight - (2 * sprite.y));
+        offset.x = renderSize.x / 2;
+        offset.y = renderSize.y / 2;
     }
     
     public function Draw():Void
     {
-        renderTarget.graphics.clear();
-        renderTarget.graphics.beginFill(backgroundColor);
-        renderTarget.graphics.drawRect(0, 0, renderSize.x, renderSize.y);
-        renderTarget.graphics.endFill();
+        render.graphics.clear();
+        render.graphics.beginFill(backgroundColor);
+        render.graphics.drawRect(0, 0, renderSize.x, renderSize.y);
+        render.graphics.endFill();
+        
+        render.graphics.lineStyle(2, 0x708090);
+        render.graphics.drawRect(16, 16, 16, 16);
+        render.graphics.drawRect(0, 0, 64, 64);
+        
+        for (i in 0...world.NumberBodies){
+            var body:Body = world.GetBody(i);
+            drawAABB(body.BoundingBox);
+            drawBodyShape(body.GlobalShape);
+        }
+    }
+    
+    function drawBodyShape(shape:Array<Vector2>) 
+    {
+        render.graphics.lineStyle(0, 0x0000FF);
+        var vertSz:Float = 16;
+        for (i in 0...shape.length){
+            var vert:Vector2 = shape[i];
+            render.graphics.drawRect((vert.x* scale.x) + offset.x - vertSz, (vert.y* scale.y) + offset.y - vertSz, vertSz, vertSz);
+        }
+    }
+    
+    function drawAABB(box:AABB) 
+    {
+        render.graphics.lineStyle(0, 0xFFFFFF);
+                
+        render.graphics.drawRect((box.UL.x * scale.x) + offset.x, (box.UL.y * scale.y) + offset.y, 
+                                 box.LR.x * scale.x, box.LR.y * scale.y);
     }
 }

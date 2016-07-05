@@ -50,9 +50,9 @@ class TestWorld2 extends Sprite
         addBodiesToWorld();
         
         worldRender = new DrawDebugWorld(drawSurface, physicsWorld);
-        backgroundWidth = this.stage.stageWidth - (2 * overscan);
-        backgroundHeight = this.stage.stageHeight - (2 * overscan);
-        worldRender.renderSize = new Vector2(backgroundWidth, backgroundHeight);
+        //backgroundWidth = this.stage.stageWidth - (2 * overscan);
+        //backgroundHeight = this.stage.stageHeight - (2 * overscan);
+        //worldRender.renderSize = new Vector2(backgroundWidth, backgroundHeight);
     }
     
     private function createWorld()
@@ -82,7 +82,7 @@ class TestWorld2 extends Sprite
         squareShape.AddVertex(new Vector2(0, 4));
         squareShape.Finish(true);
         
-        var squareBody:Body = new Body(squareShape, 0, new Vector2(0, 0), 0, new Vector2(1, 1), false);
+        var squareBody:Body = new Body(squareShape, 1, new Vector2(0, 0), 0, new Vector2(1, 1), false);
         
         physicsWorld.AddBody(squareBody);
         

@@ -50,21 +50,25 @@ class Body
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2,
             angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool) 
     {
-            BoundingBox = new AABB();
-            DerivedPos = position;
-            DerivedAngle = angleInRadians;
-            LastAngle = DerivedAngle;
-            Scale = bodyScale;
-            Material = 0;
-            IsStatic = Math.POSITIVE_INFINITY == massPerPoint;
-            Kinematic = isKinematic;
+        if (massPerPoint <= 0){
+            throw "Body constructor: mass per point cannot be nero or negative";
+        }
+        
+        BoundingBox = new AABB();
+        DerivedPos = position;
+        DerivedAngle = angleInRadians;
+        LastAngle = DerivedAngle;
+        Scale = bodyScale;
+        Material = 0;
+        IsStatic = Math.POSITIVE_INFINITY == massPerPoint;
+        Kinematic = isKinematic;
+    
+        PointMasses = new Array<PointMass>();
+        SetShape(bodyShape);
+        for (i in 0...PointMasses.length)
+            PointMasses[i].Mass = massPerPoint;
 
-            PointMasses = new Array<PointMass>();
-            SetShape(bodyShape);
-            for (i in 0...PointMasses.length)
-                PointMasses[i].Mass = massPerPoint;
-
-            UpdateAABB(0, true);
+        UpdateAABB(0, true);
     }
     
     public function Update(elapsed:Float):Void{}

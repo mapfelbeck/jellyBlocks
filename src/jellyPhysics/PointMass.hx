@@ -19,7 +19,7 @@ class PointMass
         
     public function new(?mass:Float, ?position:Vector2)
     {
-        Mass = (null == mass) ? 0 : mass;
+        Mass = (null == mass) ? 1 : mass;
         Position = (null == position) ? new Vector2(0, 0) : position;
         Velocity = new Vector2(0, 0);
         Force = new Vector2(0, 0);
