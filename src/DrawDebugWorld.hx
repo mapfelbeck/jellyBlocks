@@ -50,11 +50,11 @@ class DrawDebugWorld
     
     function drawBodyShape(shape:Array<Vector2>) 
     {
-        render.graphics.lineStyle(0, 0x0000FF);
-        var vertSz:Float = 16;
+        render.graphics.lineStyle(2, 0x0000FF);
+        var vertSz:Float = 4;
         for (i in 0...shape.length){
             var vert:Vector2 = shape[i];
-            render.graphics.drawRect((vert.x* scale.x) + offset.x - vertSz, (vert.y* scale.y) + offset.y - vertSz, vertSz, vertSz);
+            render.graphics.drawRect((vert.x * scale.x) + offset.x - (vertSz / 2), (vert.y * scale.y) + offset.y - (vertSz / 2), vertSz, vertSz);
         }
     }
     
@@ -63,6 +63,6 @@ class DrawDebugWorld
         render.graphics.lineStyle(0, 0xFFFFFF);
                 
         render.graphics.drawRect((box.UL.x * scale.x) + offset.x, (box.UL.y * scale.y) + offset.y, 
-                                 box.LR.x * scale.x, box.LR.y * scale.y);
+                                 box.Width * scale.x, box.Height * scale.y);
     }
 }

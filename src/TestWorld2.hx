@@ -86,6 +86,19 @@ class TestWorld2 extends Sprite
         
         physicsWorld.AddBody(squareBody);
         
+        
+        var triangleShape:ClosedShape = new ClosedShape();
+
+        triangleShape.Begin();
+        triangleShape.AddVertex(new Vector2(2, 0));
+        triangleShape.AddVertex(new Vector2(4, 4));
+        triangleShape.AddVertex(new Vector2(0, 4));
+        triangleShape.Finish(true);
+        
+        var triangleBody:Body = new Body(triangleShape, 1, new Vector2(5, 5), 0, new Vector2(1, 1), false);
+        
+        physicsWorld.AddBody(triangleBody);
+        
     }
     
     private function createDrawSurface():Sprite
