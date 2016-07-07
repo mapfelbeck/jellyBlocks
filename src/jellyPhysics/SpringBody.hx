@@ -88,17 +88,25 @@ class SpringBody extends Body
                         if (!Kinematic)
                         {
                             force = VectorTools.CalculateSpringForce(
-                                PointMasses[i].Position, PointMasses[i].Velocity,
-                                GlobalShape[i], PointMasses[i].Velocity, 
-                                0.0, ShapeSpringK, ShapeSpringDamp);
+                                PointMasses[i].Position, 
+                                PointMasses[i].Velocity,
+                                GlobalShape[i], 
+                                PointMasses[i].Velocity, 
+                                0.0, 
+                                ShapeSpringK, 
+                                ShapeSpringDamp);
                         }
                         else
                         {
                             var kinVel:Vector2 = new Vector2(0, 0);
-                            VectorTools.CalculateSpringForce(
-                                PointMasses[i].Position, PointMasses[i].Velocity,
-                                GlobalShape[i], kinVel, 
-                                0.0, ShapeSpringK, ShapeSpringDamp);
+                            force = VectorTools.CalculateSpringForce(
+                                PointMasses[i].Position, 
+                                PointMasses[i].Velocity,
+                                GlobalShape[i], 
+                                kinVel, 
+                                0.0, 
+                                ShapeSpringK, 
+                                ShapeSpringDamp);
                         }
 
                         PointMasses[i].Force.x += force.x;

@@ -32,16 +32,20 @@ class DrawDebugWorld
     
     public var ColorOfAABB:Int = COLOR_WHITE;
     public var ColorOfBackground:Int = COLOR_BLACK;
-    public var ColorOfGlobalVerts:Int = COLOR_BLUE;
-    public var ColorOfGlobalBody:Int = COLOR_WHITE;
+    public var ColorOfGlobalVerts:Int = COLOR_YELLOW;
+    public var ColorOfGlobalBody:Int = COLOR_YELLOW;
+    public var ColorOfPhysicsBody:Int = COLOR_WHITE;
     public var ColorOfInternalSprings:Int = COLOR_RED;
+    public var ColorOfPointMasses:Int = COLOR_BLUE;
     
     public var SizeOfVert:Float = 4;
     
     public var DrawingAABB:Bool = true;
-    public var DrawingGlobalVerts:Bool = true;
+    public var DrawingGlobalVerts:Bool = false;
     public var DrawingGlobalBody:Bool = false;
-    public var DrawingInternalSprings:Bool = false;
+    public var DrawingPhysicsBody:Bool = true;
+    public var DrawingInternalSprings:Bool = true;
+    public var DrawingPointMasses:Bool = true;
     
     public function new(sprite:Sprite, physicsWorld:World) 
     {
@@ -70,13 +74,46 @@ class DrawDebugWorld
             var body:Body = world.GetBody(i);
             DrawingAABB?drawAABB(body.BoundingBox):null;
             DrawingGlobalBody?drawGlobalBody(body.GlobalShape):null;
+            DrawingPhysicsBody?drawPhysicsBody(body.PointMasses):null;
             DrawingGlobalVerts?drawGlobalVerts(body.GlobalShape):null;
+            DrawingPointMasses?drawPointMasses(body.PointMasses):null;
             if (Std.is(body, SpringBody)){
                 var springBody:SpringBody = Std.instance(body, SpringBody);
-                //var springBody:SpringBody = SpringBody(body);
+                DrawingInternalSprings?drawInternalSprings(springBody):null;
+            }
+            if (Std.is(body, PressureBody)){
+                var springBody:PressureBody = Std.instance(body, PressureBody);
                 DrawingInternalSprings?drawInternalSprings(springBody):null;
             }
         }
+    }
+    
+    function drawPhysicsBody(pointMasses:Array<PointMass>) 
+    {
+        graphics.lineStyle(0, ColorOfPhysicsBody);
+        var point:Vector2 = pointMasses[0].Position;
+        graphics.moveTo((point.x * scale.x) + offset.x, (point.y * scale.y) + offset.y);
+        for (i in 0...pointMasses.length){
+            var next:Vector2;
+            if (i == pointMasses.length-1){
+                next = pointMasses[0].Position;
+            }else{
+                next = pointMasses[i+1].Position;
+            }
+            graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);            
+        }
+    }
+    
+    function drawPointMasses(pointMasses:Array<PointMass>) 
+    {
+        graphics.lineStyle(0, ColorOfPointMasses);
+        graphics.beginFill(ColorOfPointMasses, 1.0);
+        
+        for (i in 0...pointMasses.length){
+            var vert:Vector2 = pointMasses[i].Position;
+            graphics.drawRect((vert.x * scale.x) + offset.x - (SizeOfVert / 2), (vert.y * scale.y) + offset.y - (SizeOfVert / 2), SizeOfVert, SizeOfVert);
+        }
+        graphics.endFill();
     }
     
     function drawInternalSprings(springBody:SpringBody) 

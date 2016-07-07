@@ -103,6 +103,23 @@ class TestWorld2 extends Sprite
                                             0.5, 0.5, 0.5, 0.5);
         physicsWorld.AddBody(springBody);
         
+        var diamondShape:ClosedShape = new ClosedShape();
+
+        diamondShape.Begin();
+        diamondShape.AddVertex(new Vector2(0, 2.5));
+        diamondShape.AddVertex(new Vector2(1.5, 1.5));
+        diamondShape.AddVertex(new Vector2(2.5, 0));
+        diamondShape.AddVertex(new Vector2(1.5, -1.5));
+        diamondShape.AddVertex(new Vector2(0, -2.5));
+        diamondShape.AddVertex(new Vector2(-1.5, -1.5));
+        diamondShape.AddVertex(new Vector2(-2.5, 0));
+        diamondShape.AddVertex(new Vector2(-1.5, 1.5));
+        diamondShape.Finish(true);
+        
+        var pressureBody:Body = new PressureBody(diamondShape, 1, new Vector2( 6, -4), 0, new Vector2(1, 1), false,
+                                            0.5, 0.5, 0.5, 0.5, 1);
+        physicsWorld.AddBody(pressureBody);
+        
     }
     
     private function createDrawSurface():Sprite

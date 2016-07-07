@@ -104,10 +104,9 @@ class VectorTools
     
     public static function CalculateSpringForce(posA:Vector2, velA:Vector2, posB:Vector2, velB:Vector2, springD:Float, springK:Float, damping:Float):Vector2
     {
-        //Vector2 BtoA = (posA - posB);
         var BtoA:Vector2 = new Vector2();
         BtoA.x = posA.x - posB.x;
-        BtoA.x = posA.y - posB.y;
+        BtoA.y = posA.y - posB.y;
 
         var dist:Float = BtoA.length;
         if (dist > 0.0001)
@@ -129,9 +128,10 @@ class VectorTools
         var totalRelVel:Float;
         totalRelVel = Dot(relVel, BtoA);
 
-        BtoA.x *= ((dist - springK) - (totalRelVel * damping));
-        BtoA.y *= ((dist - springK) - (totalRelVel * damping));
+        BtoA.x *= ((dist * springK) - (totalRelVel * damping));
+        BtoA.y *= ((dist * springK) - (totalRelVel * damping));
         return BtoA;
+        //return BtoA * ((dist * springK) - (totalRelVel * damping));  
     }
     
     public static function Subtract(vectorA:Vector2, vectorB:Vector2):Vector2
