@@ -15,7 +15,7 @@ import lime.math.Vector2;
  */
 class SpringBody extends Body
 {
-    private var Springs:Array<InternalSpring>;
+    public var Springs:Array<InternalSpring>;
 
     // shape-matching spring constants.
     private var ShapeMatchingOn:Bool = true;
@@ -129,5 +129,6 @@ class SpringBody extends Body
         var distVector:Vector2 = VectorTools.Subtract(PointMasses[pointB].Position, PointMasses[pointA].Position);
         var dist:Float = distVector.length;
         var spring:InternalSpring = new InternalSpring(pointA, pointB, dist, springK, springDamp);
+        Springs.push(spring);
     }
 }

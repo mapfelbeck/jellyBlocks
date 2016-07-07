@@ -99,6 +99,10 @@ class TestWorld2 extends Sprite
         
         physicsWorld.AddBody(triangleBody);
         
+        var springBody:Body = new SpringBody(squareShape, 1, new Vector2( -6, -2), 1, new Vector2(1, 1), false,
+                                            0.5, 0.5, 0.5, 0.5);
+        physicsWorld.AddBody(springBody);
+        
     }
     
     private function createDrawSurface():Sprite

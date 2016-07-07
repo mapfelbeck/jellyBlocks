@@ -31,12 +31,12 @@ class InternalSpring
     /// </summary>
     public var damping:Float;
 
-    public function new(?pmA:Int, ?pmB:Int, ?damp:Float, ?k:Float, ?d:Float) 
+    public function new(?pmA:Int, ?pmB:Int, ?d:Float, ?k:Float, ?damp:Float) 
     {
         pointMassA = (null == pmA) ? 0 : pmA;
         pointMassB = (null == pmB) ? 0 : pmB;
-        springD = (null == damp) ? 0 : damp;
+        springD = (null == d) ? 0 : d;
         springK = (null == k) ? 0 : k;
-        damping = (null == d) ? 0 : d;
+        damping = (null == damp) ? 0 : damp;
     }
 }
