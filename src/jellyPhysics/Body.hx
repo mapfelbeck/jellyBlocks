@@ -632,13 +632,13 @@ class Body
             
             var found:Bool = false;
             
-            var b1:Int;
-            var b2:Int;
+            var b1:Int = 0;
+            var b2:Int = 1;
             for (j in 0...bBpmCount)
             {
                 var hitPt:Vector2 = null;
                 var norm:Vector2;
-                var edgeD:Float = -1.0;
+                var edgeD:Float = 0.0;
 
                 b1 = j;
 

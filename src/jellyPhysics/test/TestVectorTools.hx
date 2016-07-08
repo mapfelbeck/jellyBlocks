@@ -57,4 +57,17 @@ class TestVectorTools extends TestCase
         assertEquals(5.0, distance);
     }
     
+    public function testDotProduct()
+    {
+        var ptA:Vector2 = new Vector2(1, 1);
+        var ptB:Vector2 = new Vector2(2, 2);
+        var dot = VectorTools.Dot(ptA, ptB);        
+        assertEquals(4.0, dot);
+        
+        ptA = new Vector2(0, 1);
+        ptB = new Vector2(1, 0);
+        dot = VectorTools.Dot(ptA, ptB);
+        assertEquals(0.0, dot);
+    }
+    
 }

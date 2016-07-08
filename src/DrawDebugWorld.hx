@@ -30,7 +30,7 @@ class DrawDebugWorld
     public static var COLOR_YELLOW:Int = 0xFFFF00;
     public static var COLOR_AQUA:Int = 0x00FFFF;
     
-    public var ColorOfAABB:Int = COLOR_WHITE;
+    public var ColorOfAABB:Int = COLOR_YELLOW;
     public var ColorOfBackground:Int = COLOR_BLACK;
     public var ColorOfGlobalVerts:Int = COLOR_YELLOW;
     public var ColorOfGlobalBody:Int = COLOR_YELLOW;
@@ -44,7 +44,7 @@ class DrawDebugWorld
     public var DrawingGlobalVerts:Bool = false;
     public var DrawingGlobalBody:Bool = false;
     public var DrawingPhysicsBody:Bool = true;
-    public var DrawingInternalSprings:Bool = true;
+    public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;
     
     public function new(sprite:Sprite, physicsWorld:World) 
