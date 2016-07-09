@@ -60,7 +60,7 @@ class TestWorld3 extends Sprite
         
         var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
         
-        var penetrationThreshhold:Float = 0.3;
+        var penetrationThreshhold:Float = 1;
         
         physicsWorld = new World(materialCount, materialMatrix, defaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
@@ -68,19 +68,15 @@ class TestWorld3 extends Sprite
     
     private function PhysicsAccumulator(elapsed:Float){
         var gravity:Vector2 = new Vector2(0, 9.8);
-        gravity.y *= 0.3;
+        gravity.y *= 0.5;
 
-        var body:Body = physicsWorld.GetBody(1);
-        if(!body.IsStatic){
-            body.AddGlobalForce(body.DerivedPos, gravity);
-        }
-        /*for(i in 0...physicsWorld.NumberBodies)
+        for(i in 0...physicsWorld.NumberBodies)
         {
             var body:Body = physicsWorld.GetBody(i);
-            if(!body.IsStatic){
+            if (!body.IsStatic){
                 body.AddGlobalForce(body.DerivedPos, gravity);
             }
-        }*/
+        }
     }
     
     private function addBodiesToWorld():Void
@@ -94,7 +90,7 @@ class TestWorld3 extends Sprite
         groundShape.AddVertex(new Vector2(0, 2));
         groundShape.Finish(true);
                 
-        var groundBody:Body = new Body(groundShape, 1, new Vector2(0, 9), 0, new Vector2(1, 1), false);
+        var groundBody:Body = new Body(groundShape, Math.POSITIVE_INFINITY, new Vector2(0, 9), 0, new Vector2(1, 1), false);
         groundBody.IsStatic = true;
         physicsWorld.AddBody(groundBody);
 
@@ -112,17 +108,21 @@ class TestWorld3 extends Sprite
         var shapeDamp:Float = 15;
         var edgeK:Float = 450;
         var edgeDamp:Float = 15;
-        /*var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
+        var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
         for (x in springBodyXPositions){
-            var squareBody:SpringBody = new SpringBody(squareShape, mass, new Vector2( x, -9), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            var squareBody:SpringBody = new SpringBody(squareShape, mass, new Vector2( x, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
             physicsWorld.AddBody(squareBody);
-        }*/
-        var squareBody1:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, -4), Math.PI/4, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        }
+        var rotationAmount =  Math.PI / 3.8;
+        var rotatedSquareBody:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, -5), rotationAmount, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        rotatedSquareBody.Label = "rotated";
+        physicsWorld.AddBody(rotatedSquareBody);
+        /*var squareBody1:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, -4), Math.PI/4, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         var squareBody2:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         squareBody1.Label = "top";
         squareBody2.Label = "bottom";
         physicsWorld.AddBody(squareBody1);
-        physicsWorld.AddBody(squareBody2);
+        physicsWorld.AddBody(squareBody2);*/
 
 /*
         var diamondShape:ClosedShape = new ClosedShape();

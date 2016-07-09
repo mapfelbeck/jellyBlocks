@@ -70,4 +70,20 @@ class TestVectorTools extends TestCase
         assertEquals(1.0, dot);
     }
     
+    public function testCCW()
+    {
+        var ptNNE:Vector2 = new Vector2(1, -2);
+        var ptENE:Vector2 = new Vector2(2, -1);
+        
+        //rotating from north-north-east to east-north east is clockwise
+        var isCCW:Bool = VectorTools.IsCCW(ptNNE, ptENE);
+        assertFalse(isCCW);
+        
+        //rotating from south-south-west to south-south-east is counter-clockwise
+        var ptSSW:Vector2 = new Vector2(-1, 2);
+        var ptSSE:Vector2 = new Vector2(1, 2);
+        isCCW = VectorTools.IsCCW(ptSSW, ptSSE);
+        assertTrue(isCCW);
+    }
+    
 }

@@ -46,7 +46,7 @@ class Body
     
     public var DeleteThis:Bool;
     
-    public var VelocityDamping:Float;
+    public var VelocityDamping:Float = 0.99;
         
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2,
             angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool) 
@@ -519,7 +519,6 @@ class Body
         }
 
         DerivedOmega = angleChange / elaspsed;
-
         LastAngle = DerivedAngle;
     }
     
@@ -551,6 +550,10 @@ class Body
         }
         
         var perFrameFriction = Math.pow((1.0 - VelocityDamping), elapsed);
+        
+        /*if (Label != null){
+            trace("label: " + Label);
+        }*/
         
         for (i in 0...PointMasses.length){
             PointMasses[i].Velocity.x *= perFrameFriction;

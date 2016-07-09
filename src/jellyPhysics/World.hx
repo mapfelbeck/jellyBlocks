@@ -35,8 +35,6 @@ class World
     private var defaultMaterialPair:MaterialPair;
     private var materialPairs:MaterialMatrix;
     
-    private var bodyDamping:Float;
-    
     private var collisionList:Array<BodyCollisionInfo>;
     
     private var penetrationThreshold:Float;
