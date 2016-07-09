@@ -303,19 +303,19 @@ class World
             if (A.Mass!=Math.POSITIVE_INFINITY)
             {
                 A.Position.x += info.Normal.x * Amove;
-                A.Position.y += info.Normal.y * Amove;
+                A.Position.y -= info.Normal.y * Amove;
             }
 
             if (B1.Mass!=Math.POSITIVE_INFINITY)
             {
                 B1.Position.x -= info.Normal.x * B1move;
-                B1.Position.y -= info.Normal.y * B1move;
+                B1.Position.y += info.Normal.y * B1move;
             }
 
             if (B2.Mass!=Math.POSITIVE_INFINITY)
             {
                 B2.Position.x -= info.Normal.x * B2move;
-                B2.Position.y -= info.Normal.y * B2move;
+                B2.Position.y += info.Normal.y * B2move;
             }
             
             var tangent:Vector2 = VectorTools.GetPerpendicular(info.Normal);
@@ -327,7 +327,7 @@ class World
             var f:Float = fNumerator / jDenom;
 
             // adjust velocity if relative velocity is moving toward each other.
-            if (relDot <= 0.0001)
+            if (relDot >= 0.0001)
             {
                 if (A.Mass != Math.POSITIVE_INFINITY)
                 {

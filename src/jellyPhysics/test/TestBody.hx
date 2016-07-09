@@ -119,4 +119,27 @@ class TestBody extends TestCase
         assertTrue(null != collisions);
         assertEquals(1, collisions.length);
     }
+    
+    public function testClosestPointOnEdgeSquared()
+    {
+        var closedShape:ClosedShape = new ClosedShape();
+        
+        closedShape.Begin();
+        closedShape.AddVertex(new Vector2(0, 0));
+        closedShape.AddVertex(new Vector2(4, 0));
+        closedShape.AddVertex(new Vector2(4, 4));
+        closedShape.AddVertex(new Vector2(0, 4));
+        closedShape.Finish(true);
+
+        var testBody:Body = new Body(closedShape, 5, new Vector2(0, 0), 0, new Vector2(1, 1), false);
+        
+        var pointOnEdge:PointOnEdge = testBody.GetClosestPointOnEdgeSquared(new Vector2(0, -4), 0);
+
+        assertEquals(0, pointOnEdge.EdgeNum);
+        assertTrue(4.001 > pointOnEdge.Distance);
+        assertTrue(3.999 < pointOnEdge.Distance);
+        assertEquals(0.0, pointOnEdge.Point.x);
+        assertEquals(-2.0, pointOnEdge.Point.y);
+        assertEquals(0.5, pointOnEdge.EdgeDistance);
+    }
 }

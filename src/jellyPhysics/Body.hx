@@ -14,6 +14,7 @@ import jellyPhysics.PointMassRef;
  */
 class Body
 {
+    public var Label:String;
     public var UpdateDelegate:Function;
     public var DelateDelegate:Function;
     public var CollisionCallback:Function;
@@ -264,15 +265,11 @@ class Body
         }
         
         var toP:Vector2 = new Vector2(point.x - ptA.x, point.y - ptA.y);
+        //E = edge vector
         var E:Vector2 = new Vector2(ptB.x - ptA.x, ptB.y - ptA.y);
         
-        // get the length of the edge, and use that to normalize the vector.
-        var edgeLength:Float = Math.sqrt((E.x * E.x) + (E.y * E.y));
-        if (edgeLength > 0.00001)
-        {
-            E.x /= edgeLength;
-            E.y /= edgeLength;
-        }
+        var edgeLength:Float = E.length;
+        E.normalize(1.0);
         
         //normal
         var n:Vector2 = VectorTools.GetPerpendicular(E);
@@ -339,16 +336,12 @@ class Body
         }
         
         var toP:Vector2 = new Vector2(point.x - ptA.x, point.y - ptA.y);
+        //E = edge vector
         var E:Vector2 = new Vector2(ptB.x - ptA.x, ptB.y - ptA.y);
         
-        // get the length of the edge, and use that to normalize the vector.
-        var edgeLength:Float = Math.sqrt((E.x * E.x) + (E.y * E.y));
-        if (edgeLength > 0.00001)
-        {
-            E.x /= edgeLength;
-            E.y /= edgeLength;
-        }
-        
+        var edgeLength:Float = E.length;
+        E.normalize(1.0);
+                
         //normal
         var n:Vector2 = VectorTools.GetPerpendicular(E);
         
@@ -420,7 +413,7 @@ class Body
         var R:Vector2 = VectorTools.Subtract(DerivedPos, point);
         
         var Rv4:Vector4 = VectorTools.Vec4FromVec2(R);
-        var forcev4:Vector4 = VectorTools.Vec4FromVec2(force);        
+        var forcev4:Vector4 = VectorTools.Vec4FromVec2(force);
         var torqueF:Float = Rv4.crossProduct(forcev4).z;
         
         for (i in 0...PointMasses.length)

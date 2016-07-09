@@ -65,9 +65,9 @@ class TestVectorTools extends TestCase
         assertEquals(4.0, dot);
         
         ptA = new Vector2(0, 1);
-        ptB = new Vector2(1, 0);
+        ptB = new Vector2(1, 1);
         dot = VectorTools.Dot(ptA, ptB);
-        assertEquals(0.0, dot);
+        assertEquals(1.0, dot);
     }
     
 }

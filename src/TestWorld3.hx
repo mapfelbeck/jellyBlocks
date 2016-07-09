@@ -70,10 +70,10 @@ class TestWorld3 extends Sprite
         var gravity:Vector2 = new Vector2(0, 9.8);
         gravity.y *= 0.3;
 
-            var body:Body = physicsWorld.GetBody(1);
-            if(!body.IsStatic){
-                body.AddGlobalForce(body.DerivedPos, gravity);
-            }
+        var body:Body = physicsWorld.GetBody(1);
+        if(!body.IsStatic){
+            body.AddGlobalForce(body.DerivedPos, gravity);
+        }
         /*for(i in 0...physicsWorld.NumberBodies)
         {
             var body:Body = physicsWorld.GetBody(i);
@@ -108,18 +108,21 @@ class TestWorld3 extends Sprite
         
         var mass:Float = 1.0;
         var angle:Float = 0.0;
-        var shapeK:Float = 0.5;
-        var shapeDamp:Float = 0.5;
-        var edgeK:Float = 0.5;
-        var edgeDamp:Float = 0.5;
-        //var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
-        var springBodyXPositions:Array<Float> = [ 0 ];
+        var shapeK:Float = 450;
+        var shapeDamp:Float = 15;
+        var edgeK:Float = 450;
+        var edgeDamp:Float = 15;
+        /*var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
         for (x in springBodyXPositions){
-            var squareBody:SpringBody = new SpringBody(squareShape, mass, new Vector2( x, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-            var squareBody2:SpringBody = new SpringBody(squareShape, mass, new Vector2( x, 3), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            var squareBody:SpringBody = new SpringBody(squareShape, mass, new Vector2( x, -9), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
             physicsWorld.AddBody(squareBody);
-            physicsWorld.AddBody(squareBody2);
-        }
+        }*/
+        var squareBody1:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, -4), Math.PI/4, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        var squareBody2:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        squareBody1.Label = "top";
+        squareBody2.Label = "bottom";
+        physicsWorld.AddBody(squareBody1);
+        physicsWorld.AddBody(squareBody2);
 
 /*
         var diamondShape:ClosedShape = new ClosedShape();
