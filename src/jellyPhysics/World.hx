@@ -300,19 +300,19 @@ class World
 
             if (A.Mass!=Math.POSITIVE_INFINITY)
             {
-                A.Position.x += info.Normal.x * Amove;
+                A.Position.x -= info.Normal.x * Amove;
                 A.Position.y -= info.Normal.y * Amove;
             }
 
             if (B1.Mass!=Math.POSITIVE_INFINITY)
             {
-                B1.Position.x -= info.Normal.x * B1move;
+                B1.Position.x += info.Normal.x * B1move;
                 B1.Position.y += info.Normal.y * B1move;
             }
 
             if (B2.Mass!=Math.POSITIVE_INFINITY)
             {
-                B2.Position.x -= info.Normal.x * B2move;
+                B2.Position.x += info.Normal.x * B2move;
                 B2.Position.y += info.Normal.y * B2move;
             }
             
