@@ -68,21 +68,15 @@ class PressureBody extends SpringBody
                 // currently we are talking about the edge from i --> j.
                 // first calculate the volume of the body, and cache normals as we go.
                 var edge1N:Vector2 = new Vector2(PointMasses[i].Position.x - PointMasses[prev].Position.x,
-                                            PointMasses[i].Position.y - PointMasses[prev].Position.y);
+                                                 PointMasses[i].Position.y - PointMasses[prev].Position.y);
                 edge1N = VectorTools.GetPerpendicular(edge1N);
 
                 var edge2N:Vector2 = new Vector2(PointMasses[next].Position.x - PointMasses[i].Position.x,
-                                                PointMasses[next].Position.y - PointMasses[i].Position.y);
+                                                 PointMasses[next].Position.y - PointMasses[i].Position.y);
                 edge2N = VectorTools.GetPerpendicular(edge2N);
 
                 var norm:Vector2 = new Vector2(edge1N.x + edge2N.x, edge1N.y + edge2N.y);
-
-                var nL:Float = Math.sqrt((norm.x * norm.x) + (norm.y * norm.y));
-                if (nL > 0.001)
-                {
-                    norm.x /= nL;
-                    norm.y /= nL;
-                }
+                norm.normalize(1.0);
 
                 var edgeL:Float = Math.sqrt((edge2N.x * edge2N.x) + (edge2N.y * edge2N.y));
 
@@ -99,7 +93,7 @@ class PressureBody extends SpringBody
             }
 
             // now loop through, adding forces!
-            var invVolume:Float = 1.0 / Volume;
+            var invVolume:Float = -1.0 / Volume;
 
             for (i in 0...PointMasses.length)
             {

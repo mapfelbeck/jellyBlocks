@@ -60,7 +60,7 @@ class TestWorld3 extends Sprite
         
         var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
         
-        var penetrationThreshhold:Float = 1;
+        var penetrationThreshhold:Float = 2;
         
         physicsWorld = new World(materialCount, materialMatrix, defaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
@@ -99,20 +99,20 @@ class TestWorld3 extends Sprite
         
         var mass:Float = 1.0;
         var angle:Float = 0.0;
-        var shapeK:Float = 450;
-        var shapeDamp:Float = 15;
-        var edgeK:Float = 450;
-        var edgeDamp:Float = 15;
-        var pressureAmount:Float = 250.0;
+        var shapeK:Float = 100;
+        var shapeDamp:Float = 50;
+        var edgeK:Float = 100;
+        var edgeDamp:Float = 50;
+        var pressureAmount:Float = 100.0;
         var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
         for (x in springBodyXPositions){
             var squareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( x, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-            //physicsWorld.AddBody(squareBody);
+            physicsWorld.AddBody(squareBody);
         }
 
         var rotationAmount =  Math.PI / 3.8;
-        var pressureBody:PressureBody = new PressureBody(getDiamondShape(), 1, new Vector2( 0, -5), Math.PI/3.9, new Vector2(2, 2), false,
-                                            shapeK/2, shapeDamp, edgeK, edgeDamp, -pressureAmount);
+        var pressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 0, -5), Math.PI/3.9, new Vector2(1, 1), false,
+                                            shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         pressureBody.Label = "PressureBody";
         physicsWorld.AddBody(pressureBody);
         /*var squareBody1:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, -4), Math.PI/4, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
