@@ -41,8 +41,8 @@ class DrawDebugWorld
     public var SizeOfVert:Float = 4;
     
     public var DrawingAABB:Bool = false;
-    public var DrawingGlobalVerts:Bool = false;
-    public var DrawingGlobalBody:Bool = false;
+    public var DrawingGlobalVerts:Bool = true;
+    public var DrawingGlobalBody:Bool = true;
     public var DrawingPhysicsBody:Bool = true;
     public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;

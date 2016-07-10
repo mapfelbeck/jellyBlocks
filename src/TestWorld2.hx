@@ -50,9 +50,6 @@ class TestWorld2 extends Sprite
         addBodiesToWorld();
         
         worldRender = new DrawDebugWorld(drawSurface, physicsWorld);
-        //backgroundWidth = this.stage.stageWidth - (2 * overscan);
-        //backgroundHeight = this.stage.stageHeight - (2 * overscan);
-        //worldRender.renderSize = new Vector2(backgroundWidth, backgroundHeight);
     }
     
     private function createWorld()
@@ -73,6 +70,13 @@ class TestWorld2 extends Sprite
     
     private function addBodiesToWorld():Void
     {
+        var mass:Float = 1.0;
+        var shapeK:Float = 100;
+        var shapeDamp:Float = 50;
+        var edgeK:Float = 100;
+        var edgeDamp:Float = 50;
+        var pressureAmount:Float = 100.0;
+        
         var squareShape:ClosedShape = new ClosedShape();
 
         squareShape.Begin();
@@ -82,7 +86,7 @@ class TestWorld2 extends Sprite
         squareShape.AddVertex(new Vector2(0, 4));
         squareShape.Finish(true);
         
-        var squareBody:Body = new Body(squareShape, 1, new Vector2(0, 0), 0, new Vector2(1, 1), false);
+        var squareBody:Body = new Body(squareShape, mass, new Vector2(0, 0), 0, new Vector2(1, 1), false);
         
         physicsWorld.AddBody(squareBody);
         
@@ -95,29 +99,29 @@ class TestWorld2 extends Sprite
         triangleShape.AddVertex(new Vector2(0, 4));
         triangleShape.Finish(true);
         
-        var triangleBody:Body = new Body(triangleShape, 1, new Vector2(5, 5), 0, new Vector2(1, 1), false);
+        var triangleBody:Body = new Body(triangleShape, mass, new Vector2(5, 5), 0, new Vector2(1, 1), false);
         
         physicsWorld.AddBody(triangleBody);
         
-        var springBody:Body = new SpringBody(squareShape, 1, new Vector2( -6, -2), 1, new Vector2(1, 1), false,
-                                            0.5, 0.5, 0.5, 0.5);
+        var springBody:Body = new SpringBody(squareShape, mass, new Vector2( -6, -2), 1, new Vector2(1, 1), false,
+                                            shapeK, shapeDamp, edgeK, edgeDamp);
         physicsWorld.AddBody(springBody);
         
         var diamondShape:ClosedShape = new ClosedShape();
 
         diamondShape.Begin();
-        diamondShape.AddVertex(new Vector2(0, 2.5));
-        diamondShape.AddVertex(new Vector2(1.5, 1.5));
-        diamondShape.AddVertex(new Vector2(2.5, 0));
-        diamondShape.AddVertex(new Vector2(1.5, -1.5));
         diamondShape.AddVertex(new Vector2(0, -2.5));
-        diamondShape.AddVertex(new Vector2(-1.5, -1.5));
-        diamondShape.AddVertex(new Vector2(-2.5, 0));
+        diamondShape.AddVertex(new Vector2(1.5, -1.5));
+        diamondShape.AddVertex(new Vector2(2.5, 0));
+        diamondShape.AddVertex(new Vector2(1.5, 1.5));
+        diamondShape.AddVertex(new Vector2(0, 2.5));
         diamondShape.AddVertex(new Vector2(-1.5, 1.5));
+        diamondShape.AddVertex(new Vector2(-2.5, 0));        
+        diamondShape.AddVertex(new Vector2(-1.5, -1.5));
         diamondShape.Finish(true);
         
-        var pressureBody:Body = new PressureBody(diamondShape, 1, new Vector2( 6, -4), 0, new Vector2(1, 1), false,
-                                            0.5, 0.5, 0.5, 0.5, 1);
+        var pressureBody:Body = new PressureBody(diamondShape, mass, new Vector2( 6, -4), 0, new Vector2(1, 1), false,
+                                            shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         physicsWorld.AddBody(pressureBody);
         
     }
