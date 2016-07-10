@@ -1,4 +1,5 @@
 package;
+
 import jellyPhysics.*;
 import lime.math.Vector2;
 import openfl.display.Sprite;
@@ -11,7 +12,7 @@ import openfl.geom.ColorTransform;
  * ...
  * @author Michael Apfelbeck
  */
-class TestWorld3 extends Sprite
+class TestWorld4 extends Sprite
 {
     private var drawSurface:Sprite;
     private var physicsWorld:World;
@@ -21,7 +22,7 @@ class TestWorld3 extends Sprite
     public function new() 
     {
         super();
-        trace("TestWorld3 created");
+        trace("TestWorld4 created");
         if (this.stage != null){
             Init(null);
         }else{
@@ -205,4 +206,5 @@ class TestWorld3 extends Sprite
         removeEventListener(Event.REMOVED_FROM_STAGE, Close);
         removeEventListener(Event.ENTER_FRAME, Update);
     }
+    
 }

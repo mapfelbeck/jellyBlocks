@@ -1,0 +1,11 @@
+DrawDebugWorld
+Create an option that draws bodies as solid rather than wire frames.
+Add some kind of config options.
+Add draw color by material option.
+
+TestWorld4
+Currently a copy of TestWorld3. Create a material collider test bed out of it.
+
+Create draggable bodies so the test worlds are more interactive.
+
+Does VectorTools.isCCW even need to be fixed? Unit test is currently commented out.
