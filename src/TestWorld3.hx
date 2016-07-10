@@ -70,13 +70,15 @@ class TestWorld3 extends Sprite
         var gravity:Vector2 = new Vector2(0, 9.8);
         gravity.y *= 0.5;
 
-        for(i in 0...physicsWorld.NumberBodies)
+        /*for(i in 0...physicsWorld.NumberBodies)
         {
             var body:Body = physicsWorld.GetBody(i);
             if (!body.IsStatic){
                 body.AddGlobalForce(body.DerivedPos, gravity);
             }
-        }
+        }*/
+        var body:Body = physicsWorld.GetBody(1);
+        body.AddGlobalForce(body.DerivedPos, new Vector2(2,0));
     }
     
     private var squareShape:ClosedShape;
@@ -104,6 +106,7 @@ class TestWorld3 extends Sprite
         var edgeK:Float = 100;
         var edgeDamp:Float = 50;
         var pressureAmount:Float = 100.0;
+        /*
         var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
         for (x in springBodyXPositions){
             var squareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( x, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
@@ -114,14 +117,13 @@ class TestWorld3 extends Sprite
         var pressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 0, -5), Math.PI/3.9, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         pressureBody.Label = "PressureBody";
-        physicsWorld.AddBody(pressureBody);
-        /*var squareBody1:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, -4), Math.PI/4, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        var squareBody2:SpringBody = new SpringBody(squareShape, mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        squareBody1.Label = "top";
-        squareBody2.Label = "bottom";
+        physicsWorld.AddBody(pressureBody);*/
+        var squareBody1:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( -4, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        var squareBody2:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        squareBody1.Label = "left";
+        squareBody2.Label = "right";
         physicsWorld.AddBody(squareBody1);
-        physicsWorld.AddBody(squareBody2);*/
-        
+        physicsWorld.AddBody(squareBody2);        
     }
     private function getSquareShape():ClosedShape{
         if(squareShape == null){
