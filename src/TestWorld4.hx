@@ -7,17 +7,24 @@ import openfl.events.*;
 import openfl.display.FPS;
 import haxe.Timer;
 import openfl.geom.ColorTransform;
-
 /**
  * ...
  * @author Michael Apfelbeck
  */
 class TestWorld4 extends Sprite
 {
+    private static var MATERIAL_GROUND:Int = 0;
+    private static var MATERIAL_TYPE_1:Int = 1;
+    private static var MATERIAL_TYPE_2:Int = 2;
+    private static var MATERIAL_TYPE_3:Int = 3;
+    
     private var drawSurface:Sprite;
     private var physicsWorld:World;
     private var worldRender:DrawDebugWorld;
     var lastTimeStamp:Float;
+    
+    private var squareShape:ClosedShape;
+    private var bigSquareShape:ClosedShape;
     
     public function new() 
     {
@@ -61,7 +68,7 @@ class TestWorld4 extends Sprite
         
         var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
         
-        var penetrationThreshhold:Float = 0.3;
+        var penetrationThreshhold:Float = 2;
         
         physicsWorld = new World(materialCount, materialMatrix, defaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
@@ -78,37 +85,48 @@ class TestWorld4 extends Sprite
                 body.AddGlobalForce(body.DerivedPos, gravity);
             }
         }
-        //var body:Body = physicsWorld.GetBody(1);
-        //body.AddGlobalForce(body.DerivedPos, new Vector2(2,0));
     }
     
-    private var squareShape:ClosedShape;
-    private var bigSquareShape:ClosedShape;
-    private var diamondShape:ClosedShape;
     private function addBodiesToWorld():Void
-    {
-        var groundShape:ClosedShape = new ClosedShape();
-
-        groundShape.Begin();
-        groundShape.AddVertex(new Vector2(0, 0));
-        groundShape.AddVertex(new Vector2(35, 0));
-        groundShape.AddVertex(new Vector2(35, 2));
-        groundShape.AddVertex(new Vector2(0, 2));
-        groundShape.Finish(true);
-                
-        var groundBody:Body = new Body(groundShape, Math.POSITIVE_INFINITY, new Vector2(0, 9), 0, new Vector2(1, 1), false);
+    {                
+        var groundBody:Body = new Body(getSquareShape(), Math.POSITIVE_INFINITY, new Vector2(0, 9), 0, new Vector2(16, 1), false);
         groundBody.IsStatic = true;
+        groundBody.Material = MATERIAL_GROUND;
         physicsWorld.AddBody(groundBody);
         
         var mass:Float = 1.0;
         var angle:Float = 0.0;
-        var shapeK:Float = 100;
-        var shapeDamp:Float = 50;
+        var shapeK:Float = 200;
+        var shapeDamp:Float = 100;
         var edgeK:Float = 100;
         var edgeDamp:Float = 50;
-        var pressureAmount:Float = 100.0;
+        var pressureAmount:Float = 50.0;
+             
+        var type1PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( -5, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        type1PressureBody.Material = MATERIAL_GROUND;
+        physicsWorld.AddBody(type1PressureBody);
         
-        var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
+        var type1SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( -5, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        type1SquareBody.Material = MATERIAL_GROUND;
+        physicsWorld.AddBody(type1SquareBody); 
+             
+        var type2PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 0, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        type2PressureBody.Material = MATERIAL_GROUND;
+        physicsWorld.AddBody(type2PressureBody);
+        
+        var type2SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( 0, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        type2SquareBody.Material = MATERIAL_GROUND;
+        physicsWorld.AddBody(type2SquareBody); 
+             
+        var type3PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 5, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        type3PressureBody.Material = MATERIAL_GROUND;
+        physicsWorld.AddBody(type3PressureBody);
+        
+        var type3SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( 5, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        type3SquareBody.Material = MATERIAL_GROUND;
+        physicsWorld.AddBody(type3SquareBody);   
+        
+        /*var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
         for (x in springBodyXPositions){
             var squareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( x, 6.8), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
             physicsWorld.AddBody(squareBody);
@@ -120,8 +138,9 @@ class TestWorld4 extends Sprite
         var pressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 0, -7), Math.PI/4, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         pressureBody.Label = "PressureBody";
-        physicsWorld.AddBody(pressureBody);
+        physicsWorld.AddBody(pressureBody);*/
     }
+    
     private function getSquareShape():ClosedShape{
         if(squareShape == null){
             squareShape = new ClosedShape();
@@ -150,23 +169,6 @@ class TestWorld4 extends Sprite
             bigSquareShape.Finish(true);
         }
         return bigSquareShape;
-    }
-    
-    private function getDiamondShape():ClosedShape{
-        if(diamondShape == null){
-            diamondShape = new ClosedShape();
-            diamondShape.Begin();
-            diamondShape.AddVertex(new Vector2(0, -2.5));
-            diamondShape.AddVertex(new Vector2(1.5, -1.5));
-            diamondShape.AddVertex(new Vector2(2.5, 0));
-            diamondShape.AddVertex(new Vector2(1.5, 1.5));
-            diamondShape.AddVertex(new Vector2(0, 2.5));
-            diamondShape.AddVertex(new Vector2(-1.5, 1.5));
-            diamondShape.AddVertex(new Vector2(-2.5, 0));        
-            diamondShape.AddVertex(new Vector2(-1.5, -1.5));
-            diamondShape.Finish(true);
-        }
-        return diamondShape;
     }
     
     private function createDrawSurface():Sprite
