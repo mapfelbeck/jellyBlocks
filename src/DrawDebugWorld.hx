@@ -11,6 +11,19 @@ import jellyPhysics.World;
  */
 class DrawDebugWorld
 {
+    public class DrawBodyOption{
+        public var MaterialNum:Int;
+        public var Color:Int;
+        public var IsSolid:Bool;
+        public function new(materialNum:Int, color:Int, isSolid:Bool){
+            MaterialNum = materialNum;
+            Color = color;
+            IsSolid = isSolid;
+        }
+    }
+    public var drawLookup:Map<Int,DrawBodyOption>;
+    public var drawGlobalBodyDefault:DrawBodyOption;
+    public var drawPhysicsBodyDefault:DrawBodyOption;
     public var renderSize:Vector2;
     public var backgroundColor:Int;
     
@@ -49,6 +62,10 @@ class DrawDebugWorld
     
     public function new(sprite:Sprite, physicsWorld:World) 
     {
+        drawLookup = new Map<Int,DrawBodyOption>();
+        drawGlobalBodyDefault = new DrawBodyOption();
+        drawPhysicsBodyDefault = new DrawBodyOption();
+    
         renderTarget = sprite;
         graphics = renderTarget.graphics;
         world = physicsWorld;

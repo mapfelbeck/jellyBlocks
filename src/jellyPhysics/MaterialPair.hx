@@ -20,5 +20,14 @@ class MaterialPair
     public function new() 
     {
         
-    }    
+    }
+    
+    public static function clone(material:MaterialPair):MaterialPair{
+        var newMaterial : MaterialPair = new MaterialPair();
+        newMaterial.Collide = material.Collide;
+        newMaterial.CollisionFilter = material.CollisionFilter;
+        newMaterial.Friction = material.Friction;
+        newMaterial.Elasticity = material.Elasticity;
+        return newMaterial;
+    }
 }

@@ -33,7 +33,7 @@ class MaterialMatrix
         for (i in 0...count){
             var materialRow:Array<MaterialPair> = new Array<MaterialPair>();
             for (j in 0...count){
-                materialRow.push(defaultPair);
+                materialRow.push(MaterialPair.clone(defaultMaterial));
             }
             materials.push(materialRow);
         }

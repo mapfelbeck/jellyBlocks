@@ -52,7 +52,7 @@ class Body
             angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool) 
     {
         if (massPerPoint <= 0){
-            throw "Body constructor: mass per point cannot be nero or negative";
+            throw "Body constructor: mass per point cannot be zero or negative";
         }
         
         BoundingBox = new AABB();

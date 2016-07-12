@@ -26,7 +26,7 @@ class Main extends Sprite
         
         this.stage.quality = "HIGH";
 		
-        var testWorld:Sprite = new TestWorld4();
+        var testWorld:Sprite = new TestWorld3();
         stage.addChild(testWorld);
         
         //var bitmapData:BitmapData = Assets.getBitmapData("assets/meh.png");

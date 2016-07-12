@@ -61,10 +61,10 @@ class TestWorld4 extends Sprite
     {
         var materialCount:Int = 3;
         var defaultMaterial:MaterialPair = makeMaterial(true, 0.3, 0.8);
-        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial);
+        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, 3);
+        /*materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));
         materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));
-        materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));
-        materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));
+        materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));*/
         materialMatrix.SetMaterialPairCollide(MATERIAL_GROUND, MATERIAL_TYPE_1, true);
         materialMatrix.SetMaterialPairCollide(MATERIAL_GROUND, MATERIAL_TYPE_2, true);
         materialMatrix.SetMaterialPairCollide(MATERIAL_TYPE_1, MATERIAL_TYPE_2, false);
