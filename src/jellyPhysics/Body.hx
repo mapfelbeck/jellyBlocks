@@ -675,6 +675,9 @@ class Body
                         closestAway = dist;
                         infoAway.BodyBPointMassA = b1;
                         infoAway.BodyBPointMassB = b2;
+                        /*if (b1 == -1 || b2 ==-1){
+                            trace("wat?");
+                        }*/
                         infoAway.EdgeD = edgeD;
                         infoAway.HitPoint = hitPt;
                         infoAway.Normal = norm;
@@ -690,6 +693,9 @@ class Body
                         closestSame = dist;
                         infoSame.BodyBPointMassA = b1;
                         infoSame.BodyBPointMassB = b2;
+                        /*if (b1 == -1 || b2 ==-1){
+                            trace("wat!");
+                        }*/
                         infoSame.EdgeD = edgeD;
                         infoSame.HitPoint = hitPt;
                         infoSame.Normal = norm;

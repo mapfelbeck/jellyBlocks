@@ -4,7 +4,7 @@ Add some kind of config options.
 Add draw color by material option.
 
 TestWorld4
-Currently a copy of TestWorld3. Create a material collider test bed out of it.
+Material based collision is all busted right now.
 
 Create draggable bodies so the test worlds are more interactive.
 

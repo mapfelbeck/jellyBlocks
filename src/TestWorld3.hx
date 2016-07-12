@@ -185,6 +185,12 @@ class TestWorld3 extends Sprite
         //trace("frame time: " + frameTime);
         lastTimeStamp = currTimeStamp;
         
+        /*var minTime:Float = 1.0 / 120.0;
+        if (minTime > frameTime){
+            trace("this took how long? " + frameTime);
+        }
+        var updateTime:Float = frameTime < minTime?minTime:frameTime;
+        Update(updateTime);*/
         Update(frameTime);
         
         Draw();

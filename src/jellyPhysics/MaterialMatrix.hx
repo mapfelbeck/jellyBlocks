@@ -33,7 +33,7 @@ class MaterialMatrix
         for (i in 0...count){
             var materialRow:Array<MaterialPair> = new Array<MaterialPair>();
             for (j in 0...count){
-                materialRow.push(defaultMaterial);
+                materialRow.push(defaultPair);
             }
             materials.push(materialRow);
         }
@@ -71,7 +71,7 @@ class MaterialMatrix
     }
     
     // Ebable/disable collision
-    public function SetMaterialPairCollid(a:Int, b:Int, collide:Bool):Void
+    public function SetMaterialPairCollide(a:Int, b:Int, collide:Bool):Void
     {
         if ((a >= 0) && (a < count) && (b >= 0) && (b < count))
         {

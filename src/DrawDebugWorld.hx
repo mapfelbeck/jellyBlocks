@@ -42,7 +42,7 @@ class DrawDebugWorld
     
     public var DrawingAABB:Bool = false;
     public var DrawingGlobalVerts:Bool = false;
-    public var DrawingGlobalBody:Bool = true;
+    public var DrawingGlobalBody:Bool = false;
     public var DrawingPhysicsBody:Bool = true;
     public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;
@@ -65,10 +65,6 @@ class DrawDebugWorld
         graphics.beginFill(backgroundColor);
         graphics.drawRect(0, 0, renderSize.x, renderSize.y);
         graphics.endFill();
-        
-        //render.graphics.lineStyle(2, 0x708090);
-        //render.graphics.drawRect(16, 16, 16, 16);
-        //render.graphics.drawRect(0, 0, 64, 64);
         
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);

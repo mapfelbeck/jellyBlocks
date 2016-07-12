@@ -7,6 +7,7 @@ import openfl.events.*;
 import openfl.display.FPS;
 import haxe.Timer;
 import openfl.geom.ColorTransform;
+import haxe.Constraints.Function;
 /**
  * ...
  * @author Michael Apfelbeck
@@ -16,7 +17,6 @@ class TestWorld4 extends Sprite
     private static var MATERIAL_GROUND:Int = 0;
     private static var MATERIAL_TYPE_1:Int = 1;
     private static var MATERIAL_TYPE_2:Int = 2;
-    private static var MATERIAL_TYPE_3:Int = 3;
     
     private var drawSurface:Sprite;
     private var physicsWorld:World;
@@ -59,12 +59,15 @@ class TestWorld4 extends Sprite
     
     private function createWorld()
     {
-        var materialCount : Int = 1;
-        var defaultMaterial:MaterialPair = new MaterialPair();
-        defaultMaterial.Collide = true;
-        defaultMaterial.Friction = 0.3;
-        defaultMaterial.Elasticity = 0.8;
-        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, materialCount);
+        var materialCount:Int = 3;
+        var defaultMaterial:MaterialPair = makeMaterial(true, 0.3, 0.8);
+        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial);
+        materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));
+        materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));
+        materialMatrix.AddMaterial(makeMaterial(true, 0.3, 0.8));
+        materialMatrix.SetMaterialPairCollide(MATERIAL_GROUND, MATERIAL_TYPE_1, true);
+        materialMatrix.SetMaterialPairCollide(MATERIAL_GROUND, MATERIAL_TYPE_2, true);
+        materialMatrix.SetMaterialPairCollide(MATERIAL_TYPE_1, MATERIAL_TYPE_2, false);
         
         var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
         
@@ -72,6 +75,15 @@ class TestWorld4 extends Sprite
         
         physicsWorld = new World(materialCount, materialMatrix, defaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
+    }
+    
+    private function makeMaterial(collide:Bool, friction:Float, elasticity:Float, ?filter:Function):MaterialPair{
+        var material:MaterialPair = new MaterialPair();
+        material.Collide = collide;
+        material.Friction = friction;
+        material.Elasticity = elasticity;
+        material.CollisionFilter = filter;
+        return material;
     }
     
     private function PhysicsAccumulator(elapsed:Float){
@@ -102,43 +114,21 @@ class TestWorld4 extends Sprite
         var edgeDamp:Float = 50;
         var pressureAmount:Float = 50.0;
              
-        var type1PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( -5, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
-        type1PressureBody.Material = MATERIAL_GROUND;
+        var type1PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( -3, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        type1PressureBody.Material = MATERIAL_TYPE_1;
         physicsWorld.AddBody(type1PressureBody);
         
-        var type1SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( -5, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        type1SquareBody.Material = MATERIAL_GROUND;
+        var type1SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( -3, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        type1SquareBody.Material = MATERIAL_TYPE_1;
         physicsWorld.AddBody(type1SquareBody); 
              
-        var type2PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 0, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
-        type2PressureBody.Material = MATERIAL_GROUND;
+        var type2PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 3, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        type2PressureBody.Material = MATERIAL_TYPE_2;
         physicsWorld.AddBody(type2PressureBody);
         
-        var type2SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( 0, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        type2SquareBody.Material = MATERIAL_GROUND;
-        physicsWorld.AddBody(type2SquareBody); 
-             
-        var type3PressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 5, 6.25), 0, new Vector2(.5, .5), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
-        type3PressureBody.Material = MATERIAL_GROUND;
-        physicsWorld.AddBody(type3PressureBody);
-        
-        var type3SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( 5, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        type3SquareBody.Material = MATERIAL_GROUND;
-        physicsWorld.AddBody(type3SquareBody);   
-        
-        /*var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
-        for (x in springBodyXPositions){
-            var squareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( x, 6.8), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-            physicsWorld.AddBody(squareBody);
-            squareBody = new SpringBody(getSquareShape(), mass, new Vector2( x, 4.6), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-            physicsWorld.AddBody(squareBody);
-        }
-
-        var rotationAmount =  Math.PI / 3.8;
-        var pressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 0, -7), Math.PI/4, new Vector2(1, 1), false,
-                                            shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
-        pressureBody.Label = "PressureBody";
-        physicsWorld.AddBody(pressureBody);*/
+        var type2SquareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( 3, 4), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        type2SquareBody.Material = MATERIAL_TYPE_2;
+        physicsWorld.AddBody(type2SquareBody);
     }
     
     private function getSquareShape():ClosedShape{

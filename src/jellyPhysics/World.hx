@@ -220,6 +220,10 @@ class World
             {
                 info.BodyA.CollisionCallback(info.BodyB);
             }
+            
+            /*if (info.BodyAPointMass == -1 || info.BodyBPointMassA == -1 || info.BodyBPointMassB == -1){
+                trace("borked.");
+            }*/
 
             var A:PointMass = info.BodyA.GetPointMass(info.BodyAPointMass);
             var B1:PointMass = info.BodyB.GetPointMass(info.BodyBPointMassA);
@@ -237,6 +241,9 @@ class World
             // collision filter!
             var materialPair:MaterialPair = materialPairs.Get(info.BodyA.Material,
                                                                 info.BodyB.Material);
+            if (!materialPair.Collide){
+                continue;
+            }
             if (materialPair != null && materialPair.CollisionFilter != null &&
             materialPair.CollisionFilter(info.BodyA, info.BodyAPointMass, info.BodyB, info.BodyBPointMassA, info.BodyBPointMassB, info.HitPoint, relDot)){
                 continue;
