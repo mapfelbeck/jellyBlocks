@@ -21,9 +21,21 @@ class World
     }
     private var collider:ColliderBase;
     
+    public var externalAccumulator:Function;
+    
     public var PhysicsIter:Int;
     
-    public var externalAccumulator:Function;
+    private var minFPS = 10.0;
+    public var MinFPS(get, null):Float;
+    public function get_MinFPS(){
+        return minFPS;
+    }
+    
+    private var maxFPS = 120.0;
+    public var MaxFPS(get, null):Float;
+    public function get_MaxFPS(){
+        return maxFPS;
+    }
     
     private var BodyDamping:Float = .5;
     
@@ -135,7 +147,14 @@ class World
     
     public function Update(elapsed:Float)
     {
-        var iterElapsed = elapsed / PhysicsIter;
+        //stability hack
+        //If the framerate drops too low or too high the system looses
+        //stability, so keep updates bracketed inside a 10-120 FPS range
+        var physicsElapsed:Float;
+        physicsElapsed = Math.min(elapsed, 1.0 / minFPS);
+        physicsElapsed = Math.max(physicsElapsed, 1 / maxFPS);
+        
+        var iterElapsed = physicsElapsed / PhysicsIter;
         
         for (iter in 0...PhysicsIter){
             penetrationCount = 0;

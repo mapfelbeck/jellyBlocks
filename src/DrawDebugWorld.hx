@@ -11,19 +11,9 @@ import jellyPhysics.World;
  */
 class DrawDebugWorld
 {
-    public class DrawBodyOption{
-        public var MaterialNum:Int;
-        public var Color:Int;
-        public var IsSolid:Bool;
-        public function new(materialNum:Int, color:Int, isSolid:Bool){
-            MaterialNum = materialNum;
-            Color = color;
-            IsSolid = isSolid;
-        }
-    }
-    public var drawLookup:Map<Int,DrawBodyOption>;
-    public var drawGlobalBodyDefault:DrawBodyOption;
-    public var drawPhysicsBodyDefault:DrawBodyOption;
+    public var drawLookup:Map<Int,DebugDrawBodyOption>;
+    public var drawGlobalBodyDefault:DebugDrawBodyOption;
+    public var drawPhysicsBodyDefault:DebugDrawBodyOption;
     public var renderSize:Vector2;
     public var backgroundColor:Int;
     
@@ -62,9 +52,9 @@ class DrawDebugWorld
     
     public function new(sprite:Sprite, physicsWorld:World) 
     {
-        drawLookup = new Map<Int,DrawBodyOption>();
-        drawGlobalBodyDefault = new DrawBodyOption();
-        drawPhysicsBodyDefault = new DrawBodyOption();
+        drawLookup = new Map<Int,DebugDrawBodyOption>();
+        drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
+        drawPhysicsBodyDefault = new DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
     
         renderTarget = sprite;
         graphics = renderTarget.graphics;
@@ -87,7 +77,7 @@ class DrawDebugWorld
             var body:Body = world.GetBody(i);
             DrawingAABB?drawAABB(body.BoundingBox):null;
             DrawingGlobalBody?drawGlobalBody(body.GlobalShape):null;
-            DrawingPhysicsBody?drawPhysicsBody(body.PointMasses):null;
+            DrawingPhysicsBody?drawPhysicsBody(body):null;
             DrawingGlobalVerts?drawGlobalVerts(body.GlobalShape):null;
             DrawingPointMasses?drawPointMasses(body.PointMasses):null;
             if (Std.is(body, SpringBody)){
@@ -101,19 +91,14 @@ class DrawDebugWorld
         }
     }
     
-    function drawPhysicsBody(pointMasses:Array<PointMass>) 
+    public function SetMaterialDrawOptions(material:Int, color:Int, isSolid:Bool) 
     {
-        graphics.lineStyle(0, ColorOfPhysicsBody);
-        var point:Vector2 = pointMasses[0].Position;
-        graphics.moveTo((point.x * scale.x) + offset.x, (point.y * scale.y) + offset.y);
-        for (i in 0...pointMasses.length){
-            var next:Vector2;
-            if (i == pointMasses.length-1){
-                next = pointMasses[0].Position;
-            }else{
-                next = pointMasses[i+1].Position;
-            }
-            graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);            
+        if (drawLookup.exists(material)){
+            drawLookup[material].Color = color;
+            drawLookup[material].IsSolid = isSolid;
+        }else{
+            var newOption:DebugDrawBodyOption = new DebugDrawBodyOption(material, color, isSolid);
+            drawLookup.set(material, newOption);
         }
     }
     
@@ -151,11 +136,39 @@ class DrawDebugWorld
         }
         graphics.endFill();
     }
+        
+    function drawPhysicsBody(body:Body) 
+    {
+        var shape:Array<Vector2> = new Array<Vector2>();
+        for (i in 0...body.PointMasses.length){
+            shape.push(body.PointMasses[i].Position);
+        }
+        
+        drawBody(shape, getDrawOptions(body));
+    }
+    
+    private function getDrawOptions(body:Body):DebugDrawBodyOption{
+        var drawOpts:DebugDrawBodyOption;
+        if (drawLookup.exists(body.Material)){
+            drawOpts = drawLookup.get(body.Material);
+        }else{
+            drawOpts = drawPhysicsBodyDefault;
+        }
+        return drawOpts;
+    }
     
     function drawGlobalBody(shape:Array<Vector2>) 
     {
-        graphics.lineStyle(0, ColorOfGlobalBody);
+        drawBody(shape, drawGlobalBodyDefault);
+    }
+    
+    function drawBody(shape:Array<Vector2>, opts:DebugDrawBodyOption) 
+    {
+        graphics.lineStyle(0, opts.Color);
         var start:Vector2 = shape[0];
+        if (opts.IsSolid){
+            graphics.beginFill(opts.Color, 1.0);
+        }
         graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
         for (i in 0...shape.length){
             var next:Vector2;
@@ -165,6 +178,9 @@ class DrawDebugWorld
                 next = shape[i+1];
             }
             graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
+        }
+        if (opts.IsSolid){
+            graphics.endFill();
         }
     }
     
