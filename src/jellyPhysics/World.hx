@@ -118,7 +118,7 @@ class World
         var closestD:Float = 1000.0;
         for (i in 0...collider.Count)
         {
-            var dist:Float = 0.0;
+            //var dist:Float = 0.0;
             var pmRef:PointMassRef = collider.GetBody(i).GetClosestPointMass(point);
             if (pmRef.Distance < closestD)
             {
@@ -132,7 +132,7 @@ class World
             return null;
         }
         
-        return new BodyPointMassRef(bodyID, pmID);
+        return new BodyPointMassRef(bodyID, pmID, closestD);
     }
     
     public function GetBodyContaining(point:Vector2):Body

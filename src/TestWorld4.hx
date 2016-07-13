@@ -64,10 +64,15 @@ class TestWorld4 extends Sprite
     }
     
     private var mouseActive:Bool = false;
-    private var mouseSpring:InternalSpring = null;
+    private var mouseLocation:Vector2 = null;
+    private var mouseBody:BodyPointMassRef = null;
+    private var mouseCurrDistance:Float;
     private function OnMouseMove(e:MouseEvent):Void 
     {
-        //trace("mouse move");
+        if(mouseActive){
+            mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
+            trace("mouse world location: " + mouseLocation.x + ", " + mouseLocation.y);
+        }        
     }
     
     //convert local coordinate on this sprite to world coordinate in the physics world
@@ -77,20 +82,30 @@ class TestWorld4 extends Sprite
                                     (local.y - worldRender.offset.y) / worldRender.scale.y);
         return world;
     }
+    
+    //convert physics world coordinate to local coordinate on this sprite
+    private function worldToLocal(world:Vector2):Vector2{
+        var local:Vector2 = new Vector2(
+                                    (world.x * worldRender.scale.x)+worldRender.offset.x,
+                                    (world.y * worldRender.scale.y)+ worldRender.offset.y );
+        return local;
+    }
+    
     private function OnMouseDown(e:MouseEvent):Void 
     {
         trace("mouse down");
-        var mouseLocation:Vector2 = localToWorld(new Vector2(e.localX, e.localY));
+        mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
+        mouseBody = physicsWorld.GetClosestPointMass(mouseLocation);
         trace("mouse sprite location: " + e.stageX + ", " + e.stageY);
         trace("mouse world location: " + mouseLocation.x + ", " + mouseLocation.y);
-        var closestDistance:Float = Math.POSITIVE_INFINITY;
-        var closestBody:Body = null;
+        mouseActive = true;
         //mouseSpring = new InternalSpring(0, 0, 100, 250, 150);
     }
     
     private function OnMouseUp(e:MouseEvent):Void 
     {
         trace("mouse up");
+        mouseActive = false;
     }
     
     private function createWorld()
@@ -130,6 +145,14 @@ class TestWorld4 extends Sprite
             if (!body.IsStatic){
                 body.AddGlobalForce(body.DerivedPos, gravity);
             }
+        }
+        
+        if (mouseActive){
+            var body:Body = physicsWorld.GetBody(mouseBody.BodyID);
+            var pointMass:PointMass = body.PointMasses[mouseBody.PointMassIndex];
+            var force:Vector2 = VectorTools.CalculateSpringForce(mouseLocation, new Vector2(0, 0), pointMass.Position, pointMass.Velocity, mouseBody.Distance, 250, 50);
+            pointMass.Force.x -= force.x;
+            pointMass.Force.y -= force.y;
         }
     }
     
@@ -233,6 +256,16 @@ class TestWorld4 extends Sprite
     private function Draw():Void
     {
         worldRender.Draw();
+        if (mouseActive){
+            drawSurface.graphics.lineStyle(0, DrawDebugWorld.COLOR_GREEN, 1.0);
+            
+            var mouseLocal:Vector2 = worldToLocal(mouseLocation);
+            drawSurface.graphics.moveTo(mouseLocal.x, mouseLocal.y);
+            var body:Body = physicsWorld.GetBody(mouseBody.BodyID);
+            var pointMass:PointMass = body.PointMasses[mouseBody.PointMassIndex];
+            var location:Vector2 = worldToLocal(pointMass.Position);
+            drawSurface.graphics.lineTo(location.x, location.y);
+        }
     }
     
     private function Close(e:Event):Void
