@@ -47,6 +47,9 @@ class TestWorld4 extends Sprite
         removeEventListener(Event.ADDED_TO_STAGE, Init);
         addEventListener(Event.REMOVED_FROM_STAGE, Close);
         addEventListener(Event.ENTER_FRAME, OnEnterFrame);
+        addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDown);
+        addEventListener(MouseEvent.MOUSE_UP, OnMouseUp);
+        addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMove);
         
         addChildAt(createDrawSurface(), 0);
         addChild(new FPS(0, 0, 0x808080));
@@ -58,6 +61,36 @@ class TestWorld4 extends Sprite
         worldRender.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
         worldRender.SetMaterialDrawOptions(MATERIAL_TYPE_1, DrawDebugWorld.COLOR_YELLOW, true);
         worldRender.SetMaterialDrawOptions(MATERIAL_TYPE_2, DrawDebugWorld.COLOR_RED, true);
+    }
+    
+    private var mouseActive:Bool = false;
+    private var mouseSpring:InternalSpring = null;
+    private function OnMouseMove(e:MouseEvent):Void 
+    {
+        //trace("mouse move");
+    }
+    
+    //convert local coordinate on this sprite to world coordinate in the physics world
+    private function localToWorld(local:Vector2):Vector2{
+        var world:Vector2 = new Vector2(
+                                    (local.x - worldRender.offset.x) / worldRender.scale.x,
+                                    (local.y - worldRender.offset.y) / worldRender.scale.y);
+        return world;
+    }
+    private function OnMouseDown(e:MouseEvent):Void 
+    {
+        trace("mouse down");
+        var mouseLocation:Vector2 = localToWorld(new Vector2(e.localX, e.localY));
+        trace("mouse sprite location: " + e.stageX + ", " + e.stageY);
+        trace("mouse world location: " + mouseLocation.x + ", " + mouseLocation.y);
+        var closestDistance:Float = Math.POSITIVE_INFINITY;
+        var closestBody:Body = null;
+        //mouseSpring = new InternalSpring(0, 0, 100, 250, 150);
+    }
+    
+    private function OnMouseUp(e:MouseEvent):Void 
+    {
+        trace("mouse up");
     }
     
     private function createWorld()
