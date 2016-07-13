@@ -41,7 +41,21 @@ class Body
     public var IsAsleep:Bool;
     
     public var ObjectTag:Object;
-    public var BodyNumber:Int;    
+    //public var BodyNumber:Int;
+    public var BodyNumber(get, set):Int;
+    private var bodyNumber:Int;    
+    function get_BodyNumber():Int 
+    {
+        return bodyNumber;
+    }    
+    function set_BodyNumber(value:Int):Int 
+    {
+        if (Label == null){
+            Label = Std.string(value);
+        }
+        return bodyNumber = value;
+    }
+    
     public var GroupNumber:Int;
     
     public var DeleteThis:Bool;
@@ -389,20 +403,19 @@ class Body
     // Given a global point, find the closest PointMass in this body.
     public function GetClosestPointMass(point:Vector2):PointMassRef
     {
-        var closestSquared:Float = 100000.0;
         var closestIndex:Int = -1;
-        
+        var length:Float = 100000.0;
         for (i in 0...PointMasses.length)
         {
             var diff:Vector2 = VectorTools.Subtract(point, PointMasses[i].Position);
-            var tempDist:Float = VectorTools.LengthSquared(diff);
-            if (tempDist < closestSquared)
+            var tempLength:Float = diff.length;
+            if (tempLength < length)
             {
-                closestSquared = tempDist;
+                length = tempLength;
                 closestIndex = i;
             }
         }
-        return new PointMassRef(closestIndex, Math.sqrt(closestSquared));
+        return new PointMassRef(closestIndex, length);
     }
     
     // Add a global force on this body.

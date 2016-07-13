@@ -87,7 +87,7 @@ class TestWorld4 extends Sprite
     private function worldToLocal(world:Vector2):Vector2{
         var local:Vector2 = new Vector2(
                                     (world.x * worldRender.scale.x)+worldRender.offset.x,
-                                    (world.y * worldRender.scale.y)+ worldRender.offset.y );
+                                    (world.y * worldRender.scale.y) + worldRender.offset.y );
         return local;
     }
     

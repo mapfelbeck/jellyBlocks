@@ -112,16 +112,20 @@ class World
     
     public function GetClosestPointMass(point:Vector2):BodyPointMassRef
     {
+        trace("GetClosestPointMass");
         var bodyID:Int = -1;
         var pmID:Int = -1;
 
         var closestD:Float = 1000.0;
         for (i in 0...collider.Count)
         {
-            //var dist:Float = 0.0;
-            var pmRef:PointMassRef = collider.GetBody(i).GetClosestPointMass(point);
+            var body:Body = collider.GetBody(i);
+            trace("Checking body " + body.Label);
+            var pmRef:PointMassRef = body.GetClosestPointMass(point);
+            trace("Closest pointmass on this body is this far away: " + pmRef.Distance);
             if (pmRef.Distance < closestD)
             {
+                trace("new closestD");
                 closestD = pmRef.Distance;
                 bodyID = i;
                 pmID = pmRef.Index;
