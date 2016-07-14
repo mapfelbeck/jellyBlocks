@@ -244,7 +244,7 @@ class World
             //ToDo: track down the bug that leads to bad values in the 
             // collision info object and makes this function blow up
             if (info.BodyAPointMass == -1 || info.BodyBPointMassA == -1 || info.BodyBPointMassB == -1){
-                trace("borked.");
+                trace("There's a good chance something has gone horribly wrong.");
                 continue;
             }
 

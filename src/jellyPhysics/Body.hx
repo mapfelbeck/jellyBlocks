@@ -641,9 +641,9 @@ class Body
             infoAway.BodyB = bodyB;
             
             infoSame = new BodyCollisionInfo();
-            infoAway.BodyA = bodyA;
-            infoAway.BodyAPointMass = i;
-            infoAway.BodyB = bodyB;
+            infoSame.BodyA = bodyA;
+            infoSame.BodyAPointMass = i;
+            infoSame.BodyB = bodyB;
             
             var found:Bool = false;
             
@@ -694,9 +694,6 @@ class Body
                         closestAway = dist;
                         infoAway.BodyBPointMassA = b1;
                         infoAway.BodyBPointMassB = b2;
-                        if (b1 == -1 || b2 ==-1){
-                            trace("wat?");
-                        }
                         infoAway.EdgeD = edgeD;
                         infoAway.HitPoint = hitPt;
                         infoAway.Normal = norm;
@@ -712,9 +709,6 @@ class Body
                         closestSame = dist;
                         infoSame.BodyBPointMassA = b1;
                         infoSame.BodyBPointMassB = b2;
-                        if (b1 == -1 || b2 ==-1){
-                            trace("wat!");
-                        }
                         infoSame.EdgeD = edgeD;
                         infoSame.HitPoint = hitPt;
                         infoSame.Normal = norm;
@@ -728,13 +722,11 @@ class Body
             if ((found) && (closestAway > penThreshhold) && (closestSame < closestAway) &&
                 BodyCollisionInfoSameCreated)
             {
-                trace("1, should be busted now");
                 infoSame.Penetration = Math.sqrt(infoSame.Penetration);
                 infoList.push(infoSame);
             }
             else if (BodyCollisionInfoAwayCreated)
             {
-                trace("2");
                 infoAway.Penetration = Math.sqrt(infoAway.Penetration);
                 infoList.push(infoAway);
             }
