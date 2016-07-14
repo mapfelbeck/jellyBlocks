@@ -367,6 +367,9 @@ class Body
             // x is outside the line segment, distance is from pt to ptA.
             //dist = (pt - ptA).Length();
             dist = VectorTools.DistanceSquared(point, ptA);
+            if (dist < 0.0){
+                trace("wat??");
+            }
             hitPt = ptA;
             edgeD = 0;
             normal = n;
@@ -376,6 +379,9 @@ class Body
             // x is outside of the line segment, distance is from pt to ptB.
             //dist = (pt - ptB).Length();
             dist = VectorTools.DistanceSquared(point, ptB);
+            if (dist < 0.0){
+                trace("wat!!");
+            }
             hitPt = ptB;
             edgeD = 1;
             normal = n;
@@ -580,7 +586,7 @@ class Body
             trace("BodyCollide given at least one null arg.");
             return null;
         }
-        
+        var added:Bool = false;
         var infoList:Array<BodyCollisionInfo> = new Array<BodyCollisionInfo>();
         var bApmCount:Int = bodyA.PointMasses.length;
         var bBpmCount:Int = bodyB.PointMasses.length;
@@ -589,8 +595,8 @@ class Body
         
         // check all PointMasses on bodyA for collision against bodyB.
         // if there is a collision, return detailed info.
-        var infoAway:BodyCollisionInfo = new BodyCollisionInfo();
-        var infoSame:BodyCollisionInfo = new BodyCollisionInfo();
+        var infoAway:BodyCollisionInfo = null;
+        var infoSame:BodyCollisionInfo = null;
         var BodyCollisionInfoAwayCreated:Bool = false;
         var BodyCollisionInfoSameCreated:Bool = false;
         
@@ -629,12 +635,12 @@ class Body
             var closestAway:Float = 100000.0;
             var closestSame:Float = 100000.0;
             
-            infoAway.Clear();
+            infoAway = new BodyCollisionInfo();
             infoAway.BodyA = bodyA;
             infoAway.BodyAPointMass = i;
             infoAway.BodyB = bodyB;
             
-            infoSame.Clear();
+            infoSame = new BodyCollisionInfo();
             infoAway.BodyA = bodyA;
             infoAway.BodyAPointMass = i;
             infoAway.BodyB = bodyB;
@@ -688,9 +694,9 @@ class Body
                         closestAway = dist;
                         infoAway.BodyBPointMassA = b1;
                         infoAway.BodyBPointMassB = b2;
-                        /*if (b1 == -1 || b2 ==-1){
+                        if (b1 == -1 || b2 ==-1){
                             trace("wat?");
-                        }*/
+                        }
                         infoAway.EdgeD = edgeD;
                         infoAway.HitPoint = hitPt;
                         infoAway.Normal = norm;
@@ -706,9 +712,9 @@ class Body
                         closestSame = dist;
                         infoSame.BodyBPointMassA = b1;
                         infoSame.BodyBPointMassB = b2;
-                        /*if (b1 == -1 || b2 ==-1){
+                        if (b1 == -1 || b2 ==-1){
                             trace("wat!");
-                        }*/
+                        }
                         infoSame.EdgeD = edgeD;
                         infoSame.HitPoint = hitPt;
                         infoSame.Normal = norm;
@@ -722,11 +728,13 @@ class Body
             if ((found) && (closestAway > penThreshhold) && (closestSame < closestAway) &&
                 BodyCollisionInfoSameCreated)
             {
+                trace("1, should be busted now");
                 infoSame.Penetration = Math.sqrt(infoSame.Penetration);
                 infoList.push(infoSame);
             }
             else if (BodyCollisionInfoAwayCreated)
             {
+                trace("2");
                 infoAway.Penetration = Math.sqrt(infoAway.Penetration);
                 infoList.push(infoAway);
             }

@@ -112,7 +112,6 @@ class World
     
     public function GetClosestPointMass(point:Vector2):BodyPointMassRef
     {
-        trace("GetClosestPointMass");
         var bodyID:Int = -1;
         var pmID:Int = -1;
 
@@ -120,12 +119,9 @@ class World
         for (i in 0...collider.Count)
         {
             var body:Body = collider.GetBody(i);
-            trace("Checking body " + body.Label);
             var pmRef:PointMassRef = body.GetClosestPointMass(point);
-            trace("Closest pointmass on this body is this far away: " + pmRef.Distance);
             if (pmRef.Distance < closestD)
             {
-                trace("new closestD");
                 closestD = pmRef.Distance;
                 bodyID = i;
                 pmID = pmRef.Index;
@@ -176,6 +172,7 @@ class World
             AccumulateAndIntegrate(iterElapsed);
             
             var collisions:Array<BodyCollisionInfo> = collider.BuildCollisions();
+            //trace("collision count: " + collisions.length);
             HandleCollisions(collisions);
             
             for (i in 0...collider.Count){
@@ -244,9 +241,12 @@ class World
                 info.BodyA.CollisionCallback(info.BodyB);
             }
             
-            /*if (info.BodyAPointMass == -1 || info.BodyBPointMassA == -1 || info.BodyBPointMassB == -1){
+            //ToDo: track down the bug that leads to bad values in the 
+            // collision info object and makes this function blow up
+            if (info.BodyAPointMass == -1 || info.BodyBPointMassA == -1 || info.BodyBPointMassB == -1){
                 trace("borked.");
-            }*/
+                continue;
+            }
 
             var A:PointMass = info.BodyA.GetPointMass(info.BodyAPointMass);
             var B1:PointMass = info.BodyB.GetPointMass(info.BodyBPointMassA);

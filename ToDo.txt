@@ -1,10 +1,4 @@
-DrawDebugWorld
-Create an option that draws bodies as solid rather than wire frames.
-Add some kind of config options.
-Add draw color by material option.
-
-TestWorld4
-Material based collision is all busted right now.
+ToDo: track down the bug that leads to bad values in the BodyCollisionInfo objects and makes World.BodyCollisionInfo blow up.
 
 Create draggable bodies so the test worlds are more interactive.
 

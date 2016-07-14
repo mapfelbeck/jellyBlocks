@@ -2,8 +2,10 @@ package;
 import jellyPhysics.*;
 import flash.display.Graphics;
 import lime.math.Vector2;
+import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import jellyPhysics.World;
+import openfl.text.TextField;
 
 /**
  * ...
@@ -44,12 +46,13 @@ class DrawDebugWorld
     
     public var SizeOfVert:Float = 4;
     
+    public var DrawingLabels:Bool = true;
     public var DrawingAABB:Bool = true;
     public var DrawingGlobalVerts:Bool = false;
     public var DrawingGlobalBody:Bool = false;
     public var DrawingPhysicsBody:Bool = true;
     public var DrawingInternalSprings:Bool = false;
-    public var DrawingPointMasses:Bool = false;
+    public var DrawingPointMasses:Bool = true;
     
     public function new(sprite:Sprite, physicsWorld:World) 
     {
@@ -76,6 +79,16 @@ class DrawDebugWorld
         
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
+            /*if (DrawingLabels && body.Label != null){
+                var labelText:TextField = new TextField();
+                labelText.text = body.Label;
+                var bitmapdata:BitmapData = new BitmapData(Std.int(labelText.width), Std.int(labelText.height), false, 0xFFFFFF);
+                graphics.beginBitmapFill(bitmapdata);
+                bitmapdata.draw(labelText);
+                graphics.moveTo(300, 300);
+                graphics.drawRect(0,0,labelText.width,labelText.height);
+                graphics.endFill();
+            }*/
             DrawingAABB?drawAABB(body.BoundingBox):null;
             DrawingGlobalBody?drawGlobalBody(body.GlobalShape):null;
             DrawingPhysicsBody?drawPhysicsBody(body):null;

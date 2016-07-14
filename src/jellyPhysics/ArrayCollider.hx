@@ -60,6 +60,14 @@ class ArrayCollider implements ColliderBase
             for (j in (i + 1)...bodies.length){
                 var bodyA:Body = bodies[i];
                 var bodyB:Body = bodies[j];
+                if (null == bodyA)
+                {
+                    trace("wat!?");
+                }
+                if (null == bodyB)
+                {
+                    trace("wat!!");
+                }
                 
                 var boxA:AABB = bodyA.BoundingBox;
                 var boxB:AABB = bodyB.BoundingBox;
@@ -68,8 +76,24 @@ class ArrayCollider implements ColliderBase
                     continue;
                 }
                 
-                collisions = collisions.concat(Body.BodyCollide(bodyA, bodyB, penetrationThreshold));
-                collisions = collisions.concat(Body.BodyCollide(bodyB, bodyA, penetrationThreshold));
+                var aCollide:Array<BodyCollisionInfo> = Body.BodyCollide(bodyA, bodyB, penetrationThreshold);
+                for (i in 0...aCollide.length){
+                    var info:BodyCollisionInfo = aCollide[i];
+                    if (info == null || info.BodyA == null || info.BodyB == null || info.BodyAPointMass ==-1 || info.BodyBPointMassA ==-1 || info.BodyBPointMassB ==-1){
+                        trace("what the hell broke?");
+                    }
+                }
+                collisions = collisions.concat(aCollide);
+                var bCollide:Array<BodyCollisionInfo> = Body.BodyCollide(bodyB, bodyA, penetrationThreshold);       
+                for (i in 0...bCollide.length){
+                    var info:BodyCollisionInfo = bCollide[i];
+                    if (info == null || info.BodyA == null || info.BodyB == null || info.BodyAPointMass ==-1 || info.BodyBPointMassA ==-1 || info.BodyBPointMassB ==-1){
+                        trace("what the hell broke?");
+                    }
+                }
+                collisions = collisions.concat(bCollide);
+                //collisions = collisions.concat(Body.BodyCollide(bodyA, bodyB, penetrationThreshold));
+                //collisions = collisions.concat(Body.BodyCollide(bodyB, bodyA, penetrationThreshold));
             }
         }
         return collisions;

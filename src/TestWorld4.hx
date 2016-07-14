@@ -49,6 +49,7 @@ class TestWorld4 extends Sprite
         addEventListener(Event.ENTER_FRAME, OnEnterFrame);
         addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDown);
         addEventListener(MouseEvent.MOUSE_UP, OnMouseUp);
+        addEventListener(MouseEvent.MOUSE_OUT, OnMouseUp);
         addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMove);
         
         addChildAt(createDrawSurface(), 0);
@@ -71,7 +72,7 @@ class TestWorld4 extends Sprite
     {
         if(mouseActive){
             mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
-            trace("mouse world location: " + mouseLocation.x + ", " + mouseLocation.y);
+            //trace("mouse world location: " + mouseLocation.x + ", " + mouseLocation.y);
         }        
     }
     
@@ -93,18 +94,18 @@ class TestWorld4 extends Sprite
     
     private function OnMouseDown(e:MouseEvent):Void 
     {
-        trace("mouse down");
+        //trace("mouse down");
         mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
         mouseBody = physicsWorld.GetClosestPointMass(mouseLocation);
-        trace("mouse sprite location: " + e.stageX + ", " + e.stageY);
-        trace("mouse world location: " + mouseLocation.x + ", " + mouseLocation.y);
+        //trace("mouse sprite location: " + e.stageX + ", " + e.stageY);
+        //trace("mouse world location: " + mouseLocation.x + ", " + mouseLocation.y);
         mouseActive = true;
         //mouseSpring = new InternalSpring(0, 0, 100, 250, 150);
     }
     
     private function OnMouseUp(e:MouseEvent):Void 
     {
-        trace("mouse up");
+        //trace("mouse up");
         mouseActive = false;
     }
     

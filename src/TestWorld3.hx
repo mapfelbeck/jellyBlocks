@@ -39,6 +39,10 @@ class TestWorld3 extends Sprite
         removeEventListener(Event.ADDED_TO_STAGE, Init);
         addEventListener(Event.REMOVED_FROM_STAGE, Close);
         addEventListener(Event.ENTER_FRAME, OnEnterFrame);
+        addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDown);
+        addEventListener(MouseEvent.MOUSE_UP, OnMouseUp);
+        addEventListener(MouseEvent.MOUSE_OUT, OnMouseUp);
+        addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMove);
         
         addChildAt(createDrawSurface(), 0);
         addChild(new FPS(0, 0, 0x808080));
@@ -60,7 +64,7 @@ class TestWorld3 extends Sprite
         
         var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
         
-        var penetrationThreshhold:Float = 0.3;
+        var penetrationThreshhold:Float = 1.0;
         
         physicsWorld = new World(materialCount, materialMatrix, defaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
@@ -77,8 +81,53 @@ class TestWorld3 extends Sprite
                 body.AddGlobalForce(body.DerivedPos, gravity);
             }
         }
-        //var body:Body = physicsWorld.GetBody(1);
-        //body.AddGlobalForce(body.DerivedPos, new Vector2(2,0));
+        
+        if (mouseActive){
+            var body:Body = physicsWorld.GetBody(mouseBody.BodyID);
+            var pointMass:PointMass = body.PointMasses[mouseBody.PointMassIndex];
+            var force:Vector2 = VectorTools.CalculateSpringForce(mouseLocation, new Vector2(0, 0), pointMass.Position, pointMass.Velocity, mouseBody.Distance, 250, 50);
+            pointMass.Force.x -= force.x;
+            pointMass.Force.y -= force.y;
+        }
+    }
+    
+    private var mouseActive:Bool = false;
+    private var mouseLocation:Vector2 = null;
+    private var mouseBody:BodyPointMassRef = null;
+    private var mouseCurrDistance:Float;
+    private function OnMouseMove(e:MouseEvent):Void 
+    {
+        if(mouseActive){
+            mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
+        }        
+    }
+    
+    //convert local coordinate on this sprite to world coordinate in the physics world
+    private function localToWorld(local:Vector2):Vector2{
+        var world:Vector2 = new Vector2(
+                                    (local.x - worldRender.offset.x) / worldRender.scale.x,
+                                    (local.y - worldRender.offset.y) / worldRender.scale.y);
+        return world;
+    }
+    
+    //convert physics world coordinate to local coordinate on this sprite
+    private function worldToLocal(world:Vector2):Vector2{
+        var local:Vector2 = new Vector2(
+                                    (world.x * worldRender.scale.x)+worldRender.offset.x,
+                                    (world.y * worldRender.scale.y) + worldRender.offset.y );
+        return local;
+    }
+    
+    private function OnMouseDown(e:MouseEvent):Void 
+    {
+        mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
+        mouseBody = physicsWorld.GetClosestPointMass(mouseLocation);
+        mouseActive = true;
+    }
+    
+    private function OnMouseUp(e:MouseEvent):Void 
+    {
+        mouseActive = false;
     }
     
     private var squareShape:ClosedShape;
@@ -185,12 +234,6 @@ class TestWorld3 extends Sprite
         //trace("frame time: " + frameTime);
         lastTimeStamp = currTimeStamp;
         
-        /*var minTime:Float = 1.0 / 120.0;
-        if (minTime > frameTime){
-            trace("this took how long? " + frameTime);
-        }
-        var updateTime:Float = frameTime < minTime?minTime:frameTime;
-        Update(updateTime);*/
         Update(frameTime);
         
         Draw();
@@ -204,6 +247,16 @@ class TestWorld3 extends Sprite
     private function Draw():Void
     {
         worldRender.Draw();
+        if (mouseActive){
+            drawSurface.graphics.lineStyle(0, DrawDebugWorld.COLOR_GREEN, 1.0);
+            
+            var mouseLocal:Vector2 = worldToLocal(mouseLocation);
+            drawSurface.graphics.moveTo(mouseLocal.x, mouseLocal.y);
+            var body:Body = physicsWorld.GetBody(mouseBody.BodyID);
+            var pointMass:PointMass = body.PointMasses[mouseBody.PointMassIndex];
+            var location:Vector2 = worldToLocal(pointMass.Position);
+            drawSurface.graphics.lineTo(location.x, location.y);
+        }
     }
     
     private function Close(e:Event):Void
