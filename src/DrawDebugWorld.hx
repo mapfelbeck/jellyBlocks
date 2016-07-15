@@ -23,6 +23,8 @@ class DrawDebugWorld
     private var graphics:Graphics;
     private var world:World;
     
+    private var labels:Array<TextField>;
+    
     public var offset:Vector2 = new Vector2(0, 0);
     public var scale:Vector2 = new Vector2(20.0, 20.0);
     
@@ -36,6 +38,7 @@ class DrawDebugWorld
     public static var COLOR_YELLOW:Int = 0xFFFF00;
     public static var COLOR_AQUA:Int = 0x00FFFF;
     
+    public var ColorOfText:Int = COLOR_GREY;
     public var ColorOfAABB:Int = COLOR_GREY;
     public var ColorOfBackground:Int = COLOR_BLACK;
     public var ColorOfGlobalVerts:Int = COLOR_YELLOW;
@@ -47,7 +50,7 @@ class DrawDebugWorld
     public var SizeOfVert:Float = 4;
     
     public var DrawingLabels:Bool = true;
-    public var DrawingAABB:Bool = true;
+    public var DrawingAABB:Bool = false;
     public var DrawingGlobalVerts:Bool = false;
     public var DrawingGlobalBody:Bool = false;
     public var DrawingPhysicsBody:Bool = true;
@@ -68,6 +71,30 @@ class DrawDebugWorld
         renderSize = new Vector2(sprite.stage.stageWidth - (2 * sprite.x), sprite.stage.stageHeight - (2 * sprite.y));
         offset.x = renderSize.x / 2;
         offset.y = renderSize.y / 2;
+        
+        if (DrawingLabels){
+            createTextLabels(world.NumberBodies);
+        }
+    }
+    
+    function createTextLabels(count:Int) 
+    {
+        if(labels==null){
+            labels = new Array<TextField>();
+        }
+        
+        while (labels.length > count){
+            var label:TextField = labels.pop();
+            renderTarget.removeChild(label);
+            renderTarget = null;
+        }
+        
+        while (labels.length < count){
+            var label:TextField = new TextField();
+            label.mouseEnabled = false;
+            renderTarget.addChild(label);
+            labels.push(label);
+        }
     }
     
     public function Draw():Void
@@ -77,18 +104,26 @@ class DrawDebugWorld
         graphics.drawRect(0, 0, renderSize.x, renderSize.y);
         graphics.endFill();
         
+        if (DrawingLabels){
+            if (labels.length != world.NumberBodies){
+                createTextLabels(world.NumberBodies);
+            }
+        }
+        
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
-            /*if (DrawingLabels && body.Label != null){
-                var labelText:TextField = new TextField();
-                labelText.text = body.Label;
-                var bitmapdata:BitmapData = new BitmapData(Std.int(labelText.width), Std.int(labelText.height), false, 0xFFFFFF);
-                graphics.beginBitmapFill(bitmapdata);
-                bitmapdata.draw(labelText);
-                graphics.moveTo(300, 300);
-                graphics.drawRect(0,0,labelText.width,labelText.height);
-                graphics.endFill();
-            }*/
+            if (DrawingLabels){
+                //graphics.lineStyle(0, ColorOfText);
+                var labelText:TextField = labels[i];
+                labelText.textColor = ColorOfText;
+                var text:String = body.Label;
+                if (text == null){text = "*"; }
+                
+                labelText.text = text;
+                var location:Vector2 = worldToLocal(body.DerivedPos);
+                labelText.x = location.x - (labelText.textWidth / 2);
+                labelText.y = location.y - (labelText.textHeight /2 );
+            }
             DrawingAABB?drawAABB(body.BoundingBox):null;
             DrawingGlobalBody?drawGlobalBody(body.GlobalShape):null;
             DrawingPhysicsBody?drawPhysicsBody(body):null;
@@ -103,6 +138,13 @@ class DrawDebugWorld
                 DrawingInternalSprings?drawInternalSprings(springBody):null;
             }
         }
+    }
+    
+    private function worldToLocal(world:Vector2):Vector2{
+        var local:Vector2 = new Vector2();
+        local.x = (world.x * scale.x) + offset.x;
+        local.y = (world.y * scale.y) + offset.y;
+        return local;
     }
     
     public function SetMaterialDrawOptions(material:Int, color:Int, isSolid:Bool) 
