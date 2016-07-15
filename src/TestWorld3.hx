@@ -11,11 +11,10 @@ import openfl.geom.ColorTransform;
  * ...
  * @author Michael Apfelbeck
  */
-class TestWorld3 extends Sprite
+class TestWorld3 extends TestWorldBase
 {
     private var drawSurface:Sprite;
     private var physicsWorld:World;
-    private var worldRender:DrawDebugWorld;
     var lastTimeStamp:Float;
     
     public function new() 
@@ -102,22 +101,6 @@ class TestWorld3 extends Sprite
         }        
     }
     
-    //convert local coordinate on this sprite to world coordinate in the physics world
-    private function localToWorld(local:Vector2):Vector2{
-        var world:Vector2 = new Vector2(
-                                    (local.x - worldRender.offset.x) / worldRender.scale.x,
-                                    (local.y - worldRender.offset.y) / worldRender.scale.y);
-        return world;
-    }
-    
-    //convert physics world coordinate to local coordinate on this sprite
-    private function worldToLocal(world:Vector2):Vector2{
-        var local:Vector2 = new Vector2(
-                                    (world.x * worldRender.scale.x)+worldRender.offset.x,
-                                    (world.y * worldRender.scale.y) + worldRender.offset.y );
-        return local;
-    }
-    
     private function OnMouseDown(e:MouseEvent):Void 
     {
         mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
@@ -130,9 +113,6 @@ class TestWorld3 extends Sprite
         mouseActive = false;
     }
     
-    private var squareShape:ClosedShape;
-    private var bigSquareShape:ClosedShape;
-    private var diamondShape:ClosedShape;
     private function addBodiesToWorld():Void
     {
         var groundShape:ClosedShape = new ClosedShape();
@@ -158,63 +138,17 @@ class TestWorld3 extends Sprite
         
         var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
         for (x in springBodyXPositions){
-            var squareBody:SpringBody = new SpringBody(getSquareShape(), mass, new Vector2( x, 6.8), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            var squareBody:SpringBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 6.8), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
             physicsWorld.AddBody(squareBody);
-            squareBody = new SpringBody(getSquareShape(), mass, new Vector2( x, 4.6), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            squareBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 4.6), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
             physicsWorld.AddBody(squareBody);
         }
 
         var rotationAmount =  Math.PI / 3.8;
-        var pressureBody:PressureBody = new PressureBody(getBigSquareShape(), mass, new Vector2( 0, -7), Math.PI/4, new Vector2(1, 1), false,
+        var pressureBody:PressureBody = new PressureBody(getBigSquareShape(2), mass, new Vector2( 0, -7), Math.PI/4, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         pressureBody.Label = "PressureBody";
         physicsWorld.AddBody(pressureBody);
-    }
-    private function getSquareShape():ClosedShape{
-        if(squareShape == null){
-            squareShape = new ClosedShape();
-            squareShape.Begin();
-            squareShape.AddVertex(new Vector2(0, 0));
-            squareShape.AddVertex(new Vector2(2, 0));
-            squareShape.AddVertex(new Vector2(2, 2));
-            squareShape.AddVertex(new Vector2(0, 2));
-            squareShape.Finish(true);
-        }
-        return squareShape;
-    }
-    
-    private function getBigSquareShape():ClosedShape{
-        if(bigSquareShape == null){
-            bigSquareShape = new ClosedShape();
-            bigSquareShape.Begin();
-            bigSquareShape.AddVertex(new Vector2(0, -4));
-            bigSquareShape.AddVertex(new Vector2(2, -4));
-            bigSquareShape.AddVertex(new Vector2(4, -4));
-            bigSquareShape.AddVertex(new Vector2(4, -2));
-            bigSquareShape.AddVertex(new Vector2(4, 0));
-            bigSquareShape.AddVertex(new Vector2(2, 0));
-            bigSquareShape.AddVertex(new Vector2(0, 0));
-            bigSquareShape.AddVertex(new Vector2(0, -2));
-            bigSquareShape.Finish(true);
-        }
-        return bigSquareShape;
-    }
-    
-    private function getDiamondShape():ClosedShape{
-        if(diamondShape == null){
-            diamondShape = new ClosedShape();
-            diamondShape.Begin();
-            diamondShape.AddVertex(new Vector2(0, -2.5));
-            diamondShape.AddVertex(new Vector2(1.5, -1.5));
-            diamondShape.AddVertex(new Vector2(2.5, 0));
-            diamondShape.AddVertex(new Vector2(1.5, 1.5));
-            diamondShape.AddVertex(new Vector2(0, 2.5));
-            diamondShape.AddVertex(new Vector2(-1.5, 1.5));
-            diamondShape.AddVertex(new Vector2(-2.5, 0));        
-            diamondShape.AddVertex(new Vector2(-1.5, -1.5));
-            diamondShape.Finish(true);
-        }
-        return diamondShape;
     }
     
     private function createDrawSurface():Sprite
