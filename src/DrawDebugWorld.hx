@@ -242,7 +242,7 @@ class DrawDebugWorld
     
     function drawAABB(box:AABB) 
     {
-        graphics.lineStyle(0, ColorOfAABB, 1.0);
+        graphics.lineStyle(0, ColorOfAABB, 0.5);
                 
         graphics.drawRect((box.UL.x * scale.x) + offset.x, (box.UL.y * scale.y) + offset.y, 
                                  box.Width * scale.x, box.Height * scale.y);

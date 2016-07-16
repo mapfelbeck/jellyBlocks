@@ -1,11 +1,11 @@
 package;
 
-import openfl.display.Sprite;
+import haxe.Timer;
 import jellyPhysics.*;
 import lime.math.Vector2;
-import openfl.events.*;
 import openfl.display.FPS;
-import haxe.Timer;
+import openfl.display.Sprite;
+import openfl.events.*;
 
 /**
  * ...
@@ -19,13 +19,15 @@ class TestWorldBase extends Sprite
     
     public var mouseActive:Bool = false;
     public var hasGravity:Bool = true;
-    public var mouseDraggingOn:Bool = true;
+    public var hasMouse:Bool = true;
     
-    public var worldRender:DrawDebugWorld;
+    private var worldRender:DrawDebugWorld;
     
     public var mouseLocation:Vector2 = null;
     public var mouseBody:BodyPointMassRef = null;
     public var mouseCurrDistance:Float;
+    
+    public var defaultMaterial:MaterialPair;
     
     public function new() 
     {
@@ -54,6 +56,11 @@ class TestWorldBase extends Sprite
         addEventListener(MouseEvent.MOUSE_OUT, OnMouseUp);
         addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMove);
         
+        defaultMaterial = new MaterialPair();
+        defaultMaterial.Collide = true;
+        defaultMaterial.Friction = 0.3;
+        defaultMaterial.Elasticity = 0.8;
+        
         addChildAt(createDrawSurface(), 0);
         addChild(new FPS(0, 0, 0x808080));
         
@@ -61,6 +68,12 @@ class TestWorldBase extends Sprite
         addBodiesToWorld();
         
         worldRender = new DrawDebugWorld(drawSurface, physicsWorld);
+        setupDrawParam(worldRender);
+    }
+    
+    public function setupDrawParam(render:DrawDebugWorld):Void
+    {
+        
     }
     
     private function createDrawSurface():Sprite
@@ -125,7 +138,7 @@ class TestWorldBase extends Sprite
             }
         }
         
-        if (mouseDraggingOn && mouseActive){
+        if (hasMouse && mouseActive){
             var body:Body = physicsWorld.GetBody(mouseBody.BodyID);
             var pointMass:PointMass = body.PointMasses[mouseBody.PointMassIndex];
             var force:Vector2 = VectorTools.CalculateSpringForce(mouseLocation, new Vector2(0, 0), pointMass.Position, pointMass.Velocity, mouseBody.Distance, 250, 50);
@@ -209,10 +222,6 @@ class TestWorldBase extends Sprite
     
     public function getMaterialMatrix():MaterialMatrix{
         var materialCount : Int = 1;
-        var defaultMaterial:MaterialPair = new MaterialPair();
-        defaultMaterial.Collide = true;
-        defaultMaterial.Friction = 0.3;
-        defaultMaterial.Elasticity = 0.8;
         var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, materialCount);
         
         return materialMatrix;

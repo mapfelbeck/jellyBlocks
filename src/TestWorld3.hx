@@ -1,9 +1,7 @@
 package;
 import jellyPhysics.*;
 import lime.math.Vector2;
-import openfl.display.Sprite;
 import openfl.events.*;
-import openfl.geom.ColorTransform;
 
 /**
  * ...
