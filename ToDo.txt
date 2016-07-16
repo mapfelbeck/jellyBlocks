@@ -1,5 +1,5 @@
-ToDo: track down the bug that leads to bad values in the BodyCollisionInfo objects and makes World.BodyCollisionInfo blow up.
+ToDo: 
 
-Create draggable bodies so the test worlds are more interactive.
+Move common test code into base class.
 
 Does VectorTools.isCCW even need to be fixed? Unit test is currently commented out.
