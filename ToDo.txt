@@ -1,5 +1,12 @@
-ToDo: 
+ToDo:
+    Does VectorTools.isCCW even need to be fixed? Unit test is currently commented out.
+    Ensure collision filtering works.
+    Ensure callback on collision works.
+    Add titles to test worlds.
 
-Move common test code into base class.
-
-Does VectorTools.isCCW even need to be fixed? Unit test is currently commented out.
+Test screens:
+    1. Unit Test world
+    2. Static, scaled amd rotated bodies, No gravity or mouse control
+    3. Basic gravity sandbox with spring and pressure bodies
+    4. Material collision filtering with custom draw options
+    5. Custom control and collision callbacks

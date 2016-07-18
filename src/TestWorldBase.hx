@@ -6,6 +6,7 @@ import lime.math.Vector2;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.*;
+import openfl.text.TextField;
 
 /**
  * ...
@@ -15,19 +16,32 @@ class TestWorldBase extends Sprite
 {
     public var drawSurface:Sprite;
     public var physicsWorld:World;
-    private var lastTimeStamp:Float;
     
     public var mouseActive:Bool = false;
     public var hasGravity:Bool = true;
     public var hasMouse:Bool = true;
-    
-    private var worldRender:DrawDebugWorld;
-    
+        
     public var mouseLocation:Vector2 = null;
     public var mouseBody:BodyPointMassRef = null;
     public var mouseCurrDistance:Float;
     
     public var defaultMaterial:MaterialPair;
+    
+    public var Title(get, set):String;
+    private var title:String = "Test World";
+    function get_Title():String 
+    {
+        return title;
+    }    
+    function set_Title(value:String):String 
+    {   
+        setTitle(value);
+        return title = value;
+    }
+    
+    private var worldRender:DrawDebugWorld;
+    private var lastTimeStamp:Float;
+    private var titleTextField:TextField;
     
     public function new() 
     {
@@ -62,6 +76,7 @@ class TestWorldBase extends Sprite
         defaultMaterial.Elasticity = 0.8;
         
         addChildAt(createDrawSurface(), 0);
+        addChildAt(setTitle(title), 1);
         addChild(new FPS(0, 0, 0x808080));
         
         createWorld();
@@ -74,6 +89,17 @@ class TestWorldBase extends Sprite
     public function setupDrawParam(render:DrawDebugWorld):Void
     {
         
+    }
+    
+    function setTitle(value:String):TextField
+    {
+        if (titleTextField == null){
+            titleTextField = new TextField();
+        }
+        titleTextField.text = value;
+        titleTextField.textColor = 0x000000;
+        titleTextField.x = overscan * 2.5;
+        return titleTextField;
     }
     
     private function createDrawSurface():Sprite
