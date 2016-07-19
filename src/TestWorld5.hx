@@ -1,8 +1,8 @@
 package;
 import jellyPhysics.*;
 import lime.math.Vector2;
-import openfl.events.Event;
-import openfl.events.KeyboardEvent;
+import openfl.events.*;
+import openfl.text.*;
 import openfl.ui.Keyboard;
 
 /**
@@ -20,6 +20,12 @@ class TestWorld5 extends TestWorldBase
     
     private var blobBody:PressureBody;
     
+    private var collideYellow:Bool = false;
+    private var collideGreen:Bool = false;
+    
+    private var yellowText:TextField;
+    private var greenText:TextField;
+    
     public function new()
     {
         super();
@@ -34,6 +40,7 @@ class TestWorld5 extends TestWorldBase
         input = new InputPoll(stage);
         //stage.addEventListener(KeyboardEvent.KEY_DOWN,reportKeyDown); 
         //stage.addEventListener(KeyboardEvent.KEY_UP,reportKeyUp); 
+        setupCollisionTextFields();
     }
     
     override public function getMaterialMatrix():MaterialMatrix 
@@ -49,8 +56,6 @@ class TestWorld5 extends TestWorldBase
         return materialMatrix;
     }
     
-    private var collideYellow:Bool = false;
-    private var collideGreen:Bool = false;
     function collisionFilterYellow(bodyA:Body, bodyApm:Int, bodyB:Body, bodyBpmA:Int, bodyBpmB:Int, hitPoint:Vector2, relDot:Float):Bool
     {
         collideYellow = true;
@@ -63,19 +68,50 @@ class TestWorld5 extends TestWorldBase
         return false;
     }
     
+    private function setText(textField:TextField, text:String, color:Int){
+        textField.text = text;
+        textField.setTextFormat(new TextFormat(null, null, color));
+    }
+    
     override function Update(elapsed:Float):Void 
     {
         super.Update(elapsed);
         if (collideYellow){
-            trace("yellow");
-            collideYellow = false;
+            setText(yellowText, "The blob is touching the yellow square.", DrawDebugWorld.COLOR_YELLOW);
+        }else{
+            setText(yellowText, "The blob is not touching the yellow square.", DrawDebugWorld.COLOR_YELLOW);
         }
+        if (collideGreen){
+            setText(greenText, "The blob is touching the green square.", DrawDebugWorld.COLOR_GREEN);
+        }else{
+            setText(greenText, "The blob is not touching the green square.", DrawDebugWorld.COLOR_GREEN);
+        }
+        collideYellow = false;
+        collideGreen = false;
         /*if (input.isDown(Keyboard.RIGHT)){
             trace("Right arrow key is down");
             //apply torque to blobBody
         }else{
             trace("Right arrow key is up");
         }*/
+    }
+    
+    function setupCollisionTextFields():Void 
+    {
+        yellowText = new TextField();
+        yellowText.text = "*";
+        yellowText.setTextFormat(new TextFormat(null, null, DrawDebugWorld.COLOR_YELLOW));
+        yellowText.autoSize = TextFieldAutoSize.LEFT;
+        yellowText.mouseEnabled = false;
+        drawSurface.addChild(yellowText);
+        
+        greenText = new TextField();
+        greenText.text = "*";
+        greenText.setTextFormat(new TextFormat(null, null, DrawDebugWorld.COLOR_GREEN));
+        greenText.autoSize = TextFieldAutoSize.LEFT;
+        greenText.y += overscan;
+        greenText.mouseEnabled = false;
+        drawSurface.addChild(greenText);
     }
     
     /*private function reportKeyUp(e:KeyboardEvent):Void 
