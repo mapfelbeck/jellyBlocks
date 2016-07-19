@@ -110,7 +110,7 @@ class World
         return null;
     }
     
-    public function GetClosestPointMass(point:Vector2):BodyPointMassRef
+    public function GetClosestPointMass(point:Vector2, ?ignoreStatic:Bool):BodyPointMassRef
     {
         var bodyID:Int = -1;
         var pmID:Int = -1;
@@ -119,6 +119,9 @@ class World
         for (i in 0...collider.Count)
         {
             var body:Body = collider.GetBody(i);
+            if (body.IsStatic && ignoreStatic){
+                continue;
+            }
             var pmRef:PointMassRef = body.GetClosestPointMass(point);
             if (pmRef.Distance < closestD)
             {
