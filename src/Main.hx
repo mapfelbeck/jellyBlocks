@@ -16,7 +16,7 @@ class Main extends Sprite
         
         this.stage.quality = "HIGH";
 		
-        var testWorld:Sprite = new TestWorld4();
+        var testWorld:Sprite = new TestWorld5();
         stage.addChild(testWorld);
 	}
 

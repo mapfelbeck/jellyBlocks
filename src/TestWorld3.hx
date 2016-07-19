@@ -12,6 +12,7 @@ class TestWorld3 extends TestWorldBase
     public function new() 
     {
         super();
+        Title = "Collision Test World";
     }    
     
     public override function addBodiesToWorld():Void

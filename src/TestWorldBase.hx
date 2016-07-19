@@ -6,7 +6,7 @@ import lime.math.Vector2;
 import openfl.display.FPS;
 import openfl.display.Sprite;
 import openfl.events.*;
-import openfl.text.TextField;
+import openfl.text.*;
 
 /**
  * ...
@@ -97,6 +97,7 @@ class TestWorldBase extends Sprite
             titleTextField = new TextField();
         }
         titleTextField.text = value;
+        titleTextField.autoSize = TextFieldAutoSize.LEFT;
         titleTextField.textColor = 0x000000;
         titleTextField.x = overscan * 2.5;
         return titleTextField;
@@ -167,7 +168,8 @@ class TestWorldBase extends Sprite
         if (hasMouse && mouseActive){
             var body:Body = physicsWorld.GetBody(mouseBody.BodyID);
             var pointMass:PointMass = body.PointMasses[mouseBody.PointMassIndex];
-            var force:Vector2 = VectorTools.CalculateSpringForce(mouseLocation, new Vector2(0, 0), pointMass.Position, pointMass.Velocity, mouseBody.Distance, 250, 50);
+            var force:Vector2 = VectorTools.CalculateSpringForce(mouseLocation, 
+                                new Vector2(0, 0), pointMass.Position, pointMass.Velocity, mouseBody.Distance, 250, 50);
             pointMass.Force.x -= force.x;
             pointMass.Force.y -= force.y;
         }
@@ -207,15 +209,33 @@ class TestWorldBase extends Sprite
         var bigSquareShape:ClosedShape = new ClosedShape();
         bigSquareShape.Begin();
         bigSquareShape.AddVertex(new Vector2(0, -size*2));
-        bigSquareShape.AddVertex(new Vector2(2, -size*2));
+        bigSquareShape.AddVertex(new Vector2(size, -size*2));
         bigSquareShape.AddVertex(new Vector2(size*2, -size*2));
-        bigSquareShape.AddVertex(new Vector2(size*2, -2));
+        bigSquareShape.AddVertex(new Vector2(size*2, -size));
         bigSquareShape.AddVertex(new Vector2(size*2, 0));
         bigSquareShape.AddVertex(new Vector2(size, 0));
         bigSquareShape.AddVertex(new Vector2(0, 0));
         bigSquareShape.AddVertex(new Vector2(0, -size));
         bigSquareShape.Finish(true);
         return bigSquareShape;
+    }
+    
+    public function getCircleShape(radius:Float, ?count:Int):ClosedShape{
+        if (null == count){
+            count = 12;
+        }
+        
+        var circleShape:ClosedShape = new ClosedShape();
+        circleShape.Begin();
+        for (i in 0...count){
+            var point:Vector2 = new Vector2();
+            point.x =  Math.cos(2 * (Math.PI / count) * i) * radius;
+            point.y = Math.sin(2 * (Math.PI / count) * i) * radius;
+            circleShape.AddVertex(point);
+        }
+        
+        circleShape.Finish(true);
+        return circleShape;
     }
     
     //convert local coordinate on this sprite to world coordinate in the physics world

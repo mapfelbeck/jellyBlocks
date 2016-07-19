@@ -16,6 +16,7 @@ class TestWorld2 extends TestWorldBase
     public function new() 
     {
         super();
+        Title = "Shape Test World";
         hasGravity = false;
         hasMouse = false;
     }

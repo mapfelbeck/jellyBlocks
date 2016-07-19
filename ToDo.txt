@@ -2,7 +2,10 @@ ToDo:
     Does VectorTools.isCCW even need to be fixed? Unit test is currently commented out.
     Ensure collision filtering works.
     Ensure callback on collision works.
-    Add titles to test worlds.
+    Add keyboard polling.
+        https://www.kirupa.com/forum/showthread.php?255836-Key-isDown-AS3
+        http://www.bit-101.com/blog/?p=2406
+        http://www.richardlord.net/blog/polling-the-keyboard-in-actionscript-3
 
 Test screens:
     1. Unit Test world

@@ -17,6 +17,7 @@ class TestWorld4 extends TestWorldBase
     public function new() 
     {
         super();
+        Title = "Material Test World";
     }
     
     override public function getMaterialMatrix():MaterialMatrix 
