@@ -49,9 +49,6 @@ class TestWorld5 extends TestWorldBase
         
         materialMatrix.SetMaterialPairFilterCallback(MATERIAL_BLOB, MATERIAL_TYPE_YELLOW, collisionFilterYellow);
         materialMatrix.SetMaterialPairFilterCallback(MATERIAL_BLOB, MATERIAL_TYPE_GREEN, collisionFilterGreen);
-
-        //materialMatrix.SetMaterialPairCollide(MATERIAL_BLOB, MATERIAL_TYPE_YELLOW, true);
-        //materialMatrix.SetMaterialPairCollide(MATERIAL_BLOB, MATERIAL_TYPE_GREEN, true);
         
         return materialMatrix;
     }
@@ -64,8 +61,11 @@ class TestWorld5 extends TestWorldBase
     
     function collisionFilterGreen(bodyA:Body, bodyApm:Int, bodyB:Body, bodyBpmA:Int, bodyBpmB:Int, hitPoint:Vector2, relDot:Float):Bool
     {
-        collideGreen = true;
         return false;
+    }
+    
+    function collisionCallbackGreen(otherBody:Body):Void{
+        collideGreen = true;
     }
     
     private function setText(textField:TextField, text:String, color:Int){
@@ -73,6 +73,17 @@ class TestWorld5 extends TestWorldBase
         textField.setTextFormat(new TextFormat(null, null, color));
     }
     
+    override function PhysicsAccumulator(elapsed:Float) 
+    {
+        super.PhysicsAccumulator(elapsed);
+        
+        if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
+        {
+            trace("rotate blob counter clock wise");
+        }else if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT)){
+            trace("rotate blob lclockwise");
+        }
+    }
     override function Update(elapsed:Float):Void 
     {
         super.Update(elapsed);
@@ -168,6 +179,7 @@ class TestWorld5 extends TestWorldBase
         
         springBody = new SpringBody(getBigSquareShape(1), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         springBody.Material = MATERIAL_TYPE_GREEN;
+        springBody.CollisionCallback = collisionCallbackGreen;
         physicsWorld.AddBody(springBody);
         
         blobBody = new PressureBody(getCircleShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, 0.2*shapeK, 5.0*shapeDamp, edgeK, edgeDamp, pressureAmount);
