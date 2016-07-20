@@ -65,7 +65,9 @@ class TestWorld5 extends TestWorldBase
     }
     
     function collisionCallbackGreen(otherBody:Body):Void{
-        collideGreen = true;
+        if(otherBody.Label == "Blob"){
+            collideGreen = true;
+        }
     }
     
     private function setText(textField:TextField, text:String, color:Int){
@@ -77,11 +79,28 @@ class TestWorld5 extends TestWorldBase
     {
         super.PhysicsAccumulator(elapsed);
         
+        var rotationAmount:Float = 0;
         if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
         {
-            trace("rotate blob counter clock wise");
-        }else if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT)){
-            trace("rotate blob lclockwise");
+            rotationAmount = -1;
+        }
+        else if (!input.isDown(Keyboard.LEFT) && input.isDown(Keyboard.RIGHT))
+        {
+            rotationAmount = 1;
+        }
+        
+        if (rotationAmount != 0){
+            var blobCenter:Vector2 = blobBody.DerivedPos;
+            for (i in 0...blobBody.PointMasses.length){
+                var pmPosition:Vector2 = blobBody.PointMasses[i].Position;
+                var origin:Vector2 = VectorTools.Subtract(pmPosition, blobCenter);
+                var rotationForce:Vector2 = new Vector2(0, 0);
+                var torqueForce:Float = 3;
+                rotationForce.x = origin.x * Math.cos(rotationAmount) - origin.y * Math.sin(rotationAmount);
+                rotationForce.y = origin.x * Math.sin(rotationAmount) + origin.y * Math.cos(rotationAmount);
+                blobBody.PointMasses[i].Force.x += rotationForce.x * torqueForce;
+                blobBody.PointMasses[i].Force.y += rotationForce.y * torqueForce;
+            }
         }
     }
     override function Update(elapsed:Float):Void 
