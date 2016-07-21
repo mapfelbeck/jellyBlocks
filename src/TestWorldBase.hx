@@ -184,6 +184,9 @@ class TestWorldBase extends Sprite
     
     private function OnMouseDown(e:MouseEvent):Void 
     {
+        if (!hasMouse){
+            return;
+        }
         mouseLocation = localToWorld(new Vector2(e.localX, e.localY));
         mouseBody = physicsWorld.GetClosestPointMass(mouseLocation, true);
         if(mouseBody != null){

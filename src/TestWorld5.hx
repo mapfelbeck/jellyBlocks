@@ -35,12 +35,35 @@ class TestWorld5 extends TestWorldBase
     override function Init(e:Event):Void 
     {
         super.Init(e);
-        //hasMouse = false;
+        hasMouse = false;
         //setup mouse here
         input = new InputPoll(stage);
         //stage.addEventListener(KeyboardEvent.KEY_DOWN,reportKeyDown); 
         //stage.addEventListener(KeyboardEvent.KEY_UP,reportKeyUp); 
         setupCollisionTextFields();
+        
+        addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDownEvent);
+        addEventListener(MouseEvent.MOUSE_UP, OnMouseUpEvent);
+        addEventListener(MouseEvent.MOUSE_OUT, OnMouseUpEvent);
+        addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMoveEvent);
+    }
+    
+    private var mousePressed:Bool = false;
+    private var mouseWorldPos:Vector2;
+    private function OnMouseDownEvent(e:MouseEvent):Void 
+    {
+        mousePressed = true;
+        mouseWorldPos = localToWorld(new Vector2(e.localX, e.localY));
+    }
+    
+    private function OnMouseUpEvent(e:MouseEvent):Void 
+    {
+        mousePressed = false;
+    }
+    
+    private function OnMouseMoveEvent(e:MouseEvent):Void 
+    {
+        mouseWorldPos = localToWorld(new Vector2(e.localX, e.localY));
     }
     
     override public function getMaterialMatrix():MaterialMatrix 
@@ -79,8 +102,33 @@ class TestWorld5 extends TestWorldBase
     {
         super.PhysicsAccumulator(elapsed);
         
-        var rotationAmount:Float = 0;
-        if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
+        if(mousePressed){
+            var rotationAmount:Float = 0;
+            if (mouseWorldPos.x < blobBody.DerivedPos.x)
+            {
+                rotationAmount = -1;
+            }
+            else if (mouseWorldPos.x > blobBody.DerivedPos.x)
+            {
+                rotationAmount = 1;
+            }
+            
+            if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 3.0){
+                var blobCenter:Vector2 = blobBody.DerivedPos;
+                for (i in 0...blobBody.PointMasses.length){
+                    var pmPosition:Vector2 = blobBody.PointMasses[i].Position;
+                    var origin:Vector2 = VectorTools.Subtract(pmPosition, blobCenter);
+                    var rotationForce:Vector2 = new Vector2(0, 0);
+                    var torqueForce:Float = 3;
+                    rotationForce.x = origin.x * Math.cos(rotationAmount) - origin.y * Math.sin(rotationAmount);
+                    rotationForce.y = origin.x * Math.sin(rotationAmount) + origin.y * Math.cos(rotationAmount);
+                    blobBody.PointMasses[i].Force.x += rotationForce.x * torqueForce;
+                    blobBody.PointMasses[i].Force.y += rotationForce.y * torqueForce;
+                }
+            }        
+        }
+        /*keyboard controls
+         * if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
         {
             rotationAmount = -1;
         }
@@ -89,7 +137,7 @@ class TestWorld5 extends TestWorldBase
             rotationAmount = 1;
         }
         
-        if (rotationAmount != 0){
+        if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 3.0){
             var blobCenter:Vector2 = blobBody.DerivedPos;
             for (i in 0...blobBody.PointMasses.length){
                 var pmPosition:Vector2 = blobBody.PointMasses[i].Position;
@@ -101,7 +149,7 @@ class TestWorld5 extends TestWorldBase
                 blobBody.PointMasses[i].Force.x += rotationForce.x * torqueForce;
                 blobBody.PointMasses[i].Force.y += rotationForce.y * torqueForce;
             }
-        }
+        }*/
     }
     override function Update(elapsed:Float):Void 
     {
