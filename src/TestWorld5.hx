@@ -15,9 +15,7 @@ class TestWorld5 extends TestWorldBase
     private static var MATERIAL_TYPE_YELLOW:Int = 1;
     private static var MATERIAL_TYPE_GREEN:Int = 2;
     private static var MATERIAL_BLOB:Int   = 3;
-    
-    private var input:InputPoll;
-    
+        
     private var blobBody:PressureBody;
     
     private var collideYellow:Bool = false;
@@ -35,13 +33,11 @@ class TestWorld5 extends TestWorldBase
     override function Init(e:Event):Void 
     {
         super.Init(e);
-        hasMouse = false;
-        //setup mouse here
-        input = new InputPoll(stage);
-        //stage.addEventListener(KeyboardEvent.KEY_DOWN,reportKeyDown); 
-        //stage.addEventListener(KeyboardEvent.KEY_UP,reportKeyUp); 
         setupCollisionTextFields();
         
+        //hasMouse = false turns off the default mouse controls, this should probably
+        //be handled in a better way
+        hasMouse = false;
         addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDownEvent);
         addEventListener(MouseEvent.MOUSE_UP, OnMouseUpEvent);
         addEventListener(MouseEvent.MOUSE_OUT, OnMouseUpEvent);
@@ -100,10 +96,11 @@ class TestWorld5 extends TestWorldBase
     
     override function PhysicsAccumulator(elapsed:Float) 
     {
-        super.PhysicsAccumulator(elapsed);
+        super.PhysicsAccumulator(elapsed);        
+        
+        var rotationAmount:Float = 0;
         
         if(mousePressed){
-            var rotationAmount:Float = 0;
             if (mouseWorldPos.x < blobBody.DerivedPos.x)
             {
                 rotationAmount = -1;
@@ -127,8 +124,8 @@ class TestWorld5 extends TestWorldBase
                 }
             }        
         }
-        /*keyboard controls
-         * if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
+        //keyboard controls
+        if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
         {
             rotationAmount = -1;
         }
@@ -149,7 +146,7 @@ class TestWorld5 extends TestWorldBase
                 blobBody.PointMasses[i].Force.x += rotationForce.x * torqueForce;
                 blobBody.PointMasses[i].Force.y += rotationForce.y * torqueForce;
             }
-        }*/
+        }
     }
     override function Update(elapsed:Float):Void 
     {
@@ -166,12 +163,6 @@ class TestWorld5 extends TestWorldBase
         }
         collideYellow = false;
         collideGreen = false;
-        /*if (input.isDown(Keyboard.RIGHT)){
-            trace("Right arrow key is down");
-            //apply torque to blobBody
-        }else{
-            trace("Right arrow key is up");
-        }*/
     }
     
     function setupCollisionTextFields():Void 
@@ -192,19 +183,10 @@ class TestWorld5 extends TestWorldBase
         drawSurface.addChild(greenText);
     }
     
-    /*private function reportKeyUp(e:KeyboardEvent):Void 
-    {
-        trace("Key up: " + e.keyCode);
-    }
-    
-    private function reportKeyDown(e:KeyboardEvent):Void 
-    {
-        trace("Key down: " + e.keyCode);
-    }*/
-    
     override public function setupDrawParam(render:DrawDebugWorld):Void 
     {
         super.setupDrawParam(render);
+        render.DrawingAABB = false;
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
@@ -249,7 +231,7 @@ class TestWorld5 extends TestWorldBase
         springBody.CollisionCallback = collisionCallbackGreen;
         physicsWorld.AddBody(springBody);
         
-        blobBody = new PressureBody(getCircleShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, 0.2*shapeK, 5.0*shapeDamp, edgeK, edgeDamp, pressureAmount);
+        blobBody = new PressureBody(getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, 0.2*shapeK, 5.0*shapeDamp, edgeK, edgeDamp, pressureAmount);
         blobBody.Label = "Blob";
         blobBody.Material = MATERIAL_BLOB;
         physicsWorld.AddBody(blobBody);        

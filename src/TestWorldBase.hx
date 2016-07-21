@@ -28,6 +28,9 @@ class TestWorldBase extends Sprite
     public var defaultMaterial:MaterialPair;
     
     public var Title(get, set):String;
+    
+    private var input:InputPoll;
+    
     private var title:String = "Test World";
     function get_Title():String 
     {
@@ -59,7 +62,9 @@ class TestWorldBase extends Sprite
     private var backgroundHeight:Int;
     private var backgroundWidth:Int;
     private function Init(e:Event):Void
-    {
+    {        
+        input = new InputPoll(stage);
+        
         lastTimeStamp = Timer.stamp();
         
         removeEventListener(Event.ADDED_TO_STAGE, Init);
@@ -225,22 +230,22 @@ class TestWorldBase extends Sprite
         return bigSquareShape;
     }
     
-    public function getCircleShape(radius:Float, ?count:Int):ClosedShape{
+    public function getPolygonShape(radius:Float, ?count:Int):ClosedShape{
         if (null == count){
             count = 12;
         }
         
-        var circleShape:ClosedShape = new ClosedShape();
-        circleShape.Begin();
+        var polygonShape:ClosedShape = new ClosedShape();
+        polygonShape.Begin();
         for (i in 0...count){
             var point:Vector2 = new Vector2();
             point.x =  Math.cos(2 * (Math.PI / count) * i) * radius;
             point.y = Math.sin(2 * (Math.PI / count) * i) * radius;
-            circleShape.AddVertex(point);
+            polygonShape.AddVertex(point);
         }
         
-        circleShape.Finish(true);
-        return circleShape;
+        polygonShape.Finish(true);
+        return polygonShape;
     }
     
     //convert local coordinate on this sprite to world coordinate in the physics world
