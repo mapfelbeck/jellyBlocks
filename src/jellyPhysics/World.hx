@@ -25,7 +25,7 @@ class World
     
     public var PhysicsIter:Int;
     
-    private var minFPS = 10.0;
+    private var minFPS = 20.0;
     public var MinFPS(get, null):Float;
     public function get_MinFPS(){
         return minFPS;
@@ -148,14 +148,20 @@ class World
         return null;
     }
     
+    function bracketFrameRate(elapsed:Float) 
+    {
+        var adjusted:Float;
+        adjusted = Math.min(elapsed, 1.0 / minFPS);
+        adjusted = Math.max(adjusted, 1 / maxFPS);
+        return adjusted;
+    }
+    
     public function Update(elapsed:Float)
     {
         //stability hack
         //If the framerate drops too low or too high the system looses
-        //stability, so keep updates bracketed inside a 10-120 FPS range
-        var physicsElapsed:Float;
-        physicsElapsed = Math.min(elapsed, 1.0 / minFPS);
-        physicsElapsed = Math.max(physicsElapsed, 1 / maxFPS);
+        //stability, so keep updates bracketed inside a 20-120 FPS range
+        var physicsElapsed:Float = bracketFrameRate(elapsed);
         
         var iterElapsed = physicsElapsed / PhysicsIter;
         

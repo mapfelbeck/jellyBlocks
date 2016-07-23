@@ -62,12 +62,28 @@ class TestWorld5 extends TestWorldBase
         mouseWorldPos = localToWorld(new Vector2(e.localX, e.localY));
     }
     
+    override public function setupDrawParam(render:DrawDebugWorld):Void 
+    {
+        super.setupDrawParam(render);
+        render.DrawingAABB = false;
+        render.DrawingGlobalBody = false;
+        render.DrawingPointMasses = false;
+        render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_YELLOW, DrawDebugWorld.COLOR_YELLOW, true);
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_GREEN, DrawDebugWorld.COLOR_GREEN, true);
+        render.SetMaterialDrawOptions(MATERIAL_BLOB, DrawDebugWorld.COLOR_RED, true);
+    }
+    
     override public function getMaterialMatrix():MaterialMatrix 
     {
         var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, 4);
         
         materialMatrix.SetMaterialPairFilterCallback(MATERIAL_BLOB, MATERIAL_TYPE_YELLOW, collisionFilterYellow);
         materialMatrix.SetMaterialPairFilterCallback(MATERIAL_BLOB, MATERIAL_TYPE_GREEN, collisionFilterGreen);
+        
+        //default material friction is 0.3, pretty slippery
+        //give the blob more friction, 0.75
+        materialMatrix.SetMaterialPairData(MATERIAL_GROUND, MATERIAL_BLOB, 0.75, 0.8);
         
         return materialMatrix;
     }
@@ -110,7 +126,7 @@ class TestWorld5 extends TestWorldBase
                 rotationAmount = 1;
             }
             
-            if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 3.0){
+            if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 1.0){
                 var blobCenter:Vector2 = blobBody.DerivedPos;
                 for (i in 0...blobBody.PointMasses.length){
                     var pmPosition:Vector2 = blobBody.PointMasses[i].Position;
@@ -181,18 +197,6 @@ class TestWorld5 extends TestWorldBase
         greenText.y += overscan;
         greenText.mouseEnabled = false;
         drawSurface.addChild(greenText);
-    }
-    
-    override public function setupDrawParam(render:DrawDebugWorld):Void 
-    {
-        super.setupDrawParam(render);
-        render.DrawingAABB = false;
-        render.DrawingGlobalBody = false;
-        render.DrawingPointMasses = false;
-        render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_YELLOW, DrawDebugWorld.COLOR_YELLOW, true);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_GREEN, DrawDebugWorld.COLOR_GREEN, true);
-        render.SetMaterialDrawOptions(MATERIAL_BLOB, DrawDebugWorld.COLOR_RED, true);
     }
     
     override public function addBodiesToWorld():Void 
