@@ -68,7 +68,7 @@ class SpringBody extends Body
                     PointMasses[s.pointMassA].Velocity,
                     PointMasses[s.pointMassB].Position, 
                     PointMasses[s.pointMassB].Velocity,
-                    s.springD, s.springK, s.damping);
+                    s.springLen, s.springK, s.damping);
 
                 PointMasses[s.pointMassA].Force.x += force.x;
                 PointMasses[s.pointMassA].Force.y += force.y;

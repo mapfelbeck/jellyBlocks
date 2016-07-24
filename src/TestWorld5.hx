@@ -24,10 +24,14 @@ class TestWorld5 extends TestWorldBase
     private var yellowText:TextField;
     private var greenText:TextField;
     
+    private var blockSprings:Array<ExtrernalSpring>;
+    
     public function new()
     {
         super();
-        Title = "Collision Callback Test World";	
+        Title = "Collision Callback Test World";
+        
+        blockSprings = new Array<ExtrernalSpring>();
     }
     
     override function Init(e:Event):Void 
@@ -42,6 +46,24 @@ class TestWorld5 extends TestWorldBase
         addEventListener(MouseEvent.MOUSE_UP, OnMouseUpEvent);
         addEventListener(MouseEvent.MOUSE_OUT, OnMouseUpEvent);
         addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMoveEvent);
+    }
+    
+    override function Draw()
+    {
+        super.Draw();
+        
+        var color = DrawDebugWorld.COLOR_WHITE;
+        drawSurface.graphics.lineStyle(0, color, 0.5);
+        var scale:Vector2 = worldRender.scale;
+        var offset:Vector2 = worldRender.offset;
+        for (i in 0...blockSprings.length)
+        {
+            var spring:ExtrernalSpring = blockSprings[i];
+            var pmA:PointMass = spring.BodyA.PointMasses[spring.pointMassA];
+            var pmB:PointMass = spring.BodyB.PointMasses[spring.pointMassB];
+            drawSurface.graphics.moveTo((pmA.Position.x * scale.x) + offset.x, (pmA.Position.y * scale.y) + offset.y);
+            drawSurface.graphics.lineTo((pmB.Position.x * scale.x) + offset.x, (pmB.Position.y * scale.y) + offset.y);
+        }
     }
     
     private var mousePressed:Bool = false;
@@ -112,7 +134,28 @@ class TestWorld5 extends TestWorldBase
     
     override function PhysicsAccumulator(elapsed:Float) 
     {
-        super.PhysicsAccumulator(elapsed);        
+        super.PhysicsAccumulator(elapsed);
+        
+        for (i in 0...blockSprings.length)
+        {
+            var spring:ExtrernalSpring = blockSprings[i];
+            var a:Body = spring.BodyA;
+            var pmA = a.PointMasses[spring.pointMassA];
+            var b:Body = spring.BodyB;
+            var pmB = b.PointMasses[spring.pointMassB];
+            
+            var force = VectorTools.CalculateSpringForce(pmA.Position, pmA.Velocity, pmB.Position, pmB.Velocity, spring.springLen, spring.springK, spring.damping);
+            /*if (force.x != 0){
+                trace("wat?");
+            }
+            if (force.y != 0){
+                trace("wat!");
+            }*/
+            pmA.Force.x += force.x;
+            pmA.Force.y += force.y;
+            pmB.Force.x -= force.x;
+            pmB.Force.y -= force.y;
+        }
         
         var rotationAmount:Float = 0;
         
@@ -126,7 +169,7 @@ class TestWorld5 extends TestWorldBase
                 rotationAmount = 1;
             }
             
-            if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 1.0){
+            if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 2.0){
                 var blobCenter:Vector2 = blobBody.DerivedPos;
                 for (i in 0...blobBody.PointMasses.length){
                     var pmPosition:Vector2 = blobBody.PointMasses[i].Position;
@@ -141,7 +184,7 @@ class TestWorld5 extends TestWorldBase
             }        
         }
         //keyboard controls
-        if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
+        /*if (input.isDown(Keyboard.LEFT) && !input.isDown(Keyboard.RIGHT))
         {
             rotationAmount = -1;
         }
@@ -162,7 +205,7 @@ class TestWorld5 extends TestWorldBase
                 blobBody.PointMasses[i].Force.x += rotationForce.x * torqueForce;
                 blobBody.PointMasses[i].Force.y += rotationForce.y * torqueForce;
             }
-        }
+        }*/
     }
     override function Update(elapsed:Float):Void 
     {
@@ -226,18 +269,58 @@ class TestWorld5 extends TestWorldBase
         var edgeDamp:Float = 50;
         var pressureAmount:Float = 100.0;
         
+        blobBody = new PressureBody(getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, 0.2*shapeK, 5.0*shapeDamp, edgeK, edgeDamp, pressureAmount);
+        blobBody.Label = "Blob";
+        blobBody.Material = MATERIAL_BLOB;
+        physicsWorld.AddBody(blobBody);   
+        
         var springBody:SpringBody = new SpringBody(getBigSquareShape(1), mass, new Vector2( -6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         springBody.Material = MATERIAL_TYPE_YELLOW;
         physicsWorld.AddBody(springBody);
         
-        springBody = new SpringBody(getBigSquareShape(1), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        springBody.Material = MATERIAL_TYPE_GREEN;
-        springBody.CollisionCallback = collisionCallbackGreen;
-        physicsWorld.AddBody(springBody);
+        //the green block is a composite of 4
+        var greenBodyUL:SpringBody = new SpringBody(getSquareShape(1), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        greenBodyUL.Material = MATERIAL_TYPE_GREEN;
+        greenBodyUL.CollisionCallback = collisionCallbackGreen;
+        physicsWorld.AddBody(greenBodyUL);
         
-        blobBody = new PressureBody(getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, 0.2*shapeK, 5.0*shapeDamp, edgeK, edgeDamp, pressureAmount);
-        blobBody.Label = "Blob";
-        blobBody.Material = MATERIAL_BLOB;
-        physicsWorld.AddBody(blobBody);        
+        var greenBodyUR:SpringBody = new SpringBody(getSquareShape(1), mass, new Vector2( 7, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        greenBodyUR.Material = MATERIAL_TYPE_GREEN;
+        greenBodyUR.CollisionCallback = collisionCallbackGreen;
+        physicsWorld.AddBody(greenBodyUR);
+        
+        var greenBodyLR:SpringBody = new SpringBody(getSquareShape(1), mass, new Vector2( 7, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        greenBodyLR.Material = MATERIAL_TYPE_GREEN;
+        greenBodyLR.CollisionCallback = collisionCallbackGreen;
+        physicsWorld.AddBody(greenBodyLR);
+        
+        var greenBodyLL:SpringBody = new SpringBody(getSquareShape(1), mass, new Vector2( 6, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        greenBodyLL.Material = MATERIAL_TYPE_GREEN;
+        greenBodyLL.CollisionCallback = collisionCallbackGreen;
+        physicsWorld.AddBody(greenBodyLL);
+        
+        //connect those green blocks with springs
+        var externalK:Float = 50.0;
+        var externalDamp:Float = 20.0;
+        var spring:ExtrernalSpring;
+        spring = new ExtrernalSpring(greenBodyUL, greenBodyUR, 1, 0, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
+        spring = new ExtrernalSpring(greenBodyUL, greenBodyUR, 2, 3, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
+        
+        spring = new ExtrernalSpring(greenBodyUR, greenBodyLR, 2, 1, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
+        spring = new ExtrernalSpring(greenBodyUR, greenBodyLR, 3, 0, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
+        
+        spring = new ExtrernalSpring(greenBodyLR, greenBodyLL, 3, 2, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
+        spring = new ExtrernalSpring(greenBodyLR, greenBodyLL, 0, 1, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
+        
+        spring = new ExtrernalSpring(greenBodyLL, greenBodyUL, 0, 3, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
+        spring = new ExtrernalSpring(greenBodyLL, greenBodyUL, 1, 2, 0.0, externalK, externalDamp);
+        blockSprings.push(spring);
     }
 }

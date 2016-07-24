@@ -104,7 +104,7 @@ class VectorTools
         return null;
     }
     
-    public static function CalculateSpringForce(posA:Vector2, velA:Vector2, posB:Vector2, velB:Vector2, springD:Float, springK:Float, damping:Float):Vector2
+    public static function CalculateSpringForce(posA:Vector2, velA:Vector2, posB:Vector2, velB:Vector2, springLen:Float, springK:Float, damping:Float):Vector2
     {
         var BtoA:Vector2 = new Vector2();
         BtoA.x = posA.x - posB.x;
@@ -120,7 +120,7 @@ class VectorTools
             BtoA.y = 0;
         }
         
-        dist = springD - dist;
+        dist = springLen - dist;
 
         //Vector2 relVel = velA - velB;
         var relVel:Vector2 = new Vector2();

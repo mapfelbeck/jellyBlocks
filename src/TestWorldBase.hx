@@ -115,6 +115,8 @@ class TestWorldBase extends Sprite
         drawSurface.x = overscan;
         drawSurface.y = overscan;
         
+        drawSurface.cacheAsBitmap = true;
+        
         return drawSurface;
     }
     
@@ -270,7 +272,7 @@ class TestWorldBase extends Sprite
         
         var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
         
-        var penetrationThreshhold:Float = 1.0;
+        var penetrationThreshhold:Float = 10.0;
         
         physicsWorld = new World(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.externalAccumulator = PhysicsAccumulator;

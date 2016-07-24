@@ -19,7 +19,7 @@ class InternalSpring
     /// <summary>
     /// The "rest length" (deisred length) of the spring.  at this length, no force is exerted on the points.
     /// </summary>
-    public var springD:Float;
+    public var springLen:Float;
 
     /// <summary>
     /// spring constant, or "strength" of the spring.
@@ -31,11 +31,11 @@ class InternalSpring
     /// </summary>
     public var damping:Float;
 
-    public function new(?pmA:Int, ?pmB:Int, ?d:Float, ?k:Float, ?damp:Float) 
+    public function new(?pmA:Int, ?pmB:Int, ?length:Float, ?k:Float, ?damp:Float) 
     {
         pointMassA = (null == pmA) ? 0 : pmA;
         pointMassB = (null == pmB) ? 0 : pmB;
-        springD = (null == d) ? 0 : d;
+        springLen = (null == length) ? 0 : length;
         springK = (null == k) ? 0 : k;
         damping = (null == damp) ? 0 : damp;
     }
