@@ -1,76 +1,58 @@
 package;
-import haxe.Timer;
 import jellyPhysics.*;
 import lime.math.Vector2;
-import openfl.display.FPS;
-import openfl.display.Sprite;
 import openfl.events.*;
+
 /**
  * ...
  * @author Michael Apfelbeck
- * 
- * Static body world
  */
 class TestWorld2 extends TestWorldBase
 {    
-    public function new() 
+    public function new(inputPoll:InputPoll) 
     {
-        super();
-        Title = "Shape Test World";
-        hasGravity = false;
-        hasMouse = false;
-    }
-    
-    public override function setupDrawParam(render:DrawDebugWorld):Void{
-        render.DrawingAABB = true;
-    }
+        super(inputPoll);
+        Title = "Collision Test World";
+        PromptText = "Create a bunch of bodies and add gravity to test collisions.";
+    }    
     
     public override function addBodiesToWorld():Void
     {
+        super.addBodiesToWorld();
+        
+        var groundShape:ClosedShape = new ClosedShape();
+
+        groundShape.Begin();
+        groundShape.AddVertex(new Vector2(0, 0));
+        groundShape.AddVertex(new Vector2(35, 0));
+        groundShape.AddVertex(new Vector2(35, 2));
+        groundShape.AddVertex(new Vector2(0, 2));
+        groundShape.Finish(true);
+                
+        var groundBody:Body = new Body(groundShape, Math.POSITIVE_INFINITY, new Vector2(0, 9), 0, new Vector2(1, 1), false);
+        groundBody.IsStatic = true;
+        physicsWorld.AddBody(groundBody);
+        
         var mass:Float = 1.0;
+        var angle:Float = 0.0;
         var shapeK:Float = 100;
         var shapeDamp:Float = 50;
         var edgeK:Float = 100;
         var edgeDamp:Float = 50;
         var pressureAmount:Float = 100.0;
         
-        var squareBody:Body = new Body(getSquareShape(4), mass, new Vector2(0, 0), 0, new Vector2(1, 1), false);
-        
-        physicsWorld.AddBody(squareBody);
-        
-        
-        var triangleShape:ClosedShape = new ClosedShape();
+        var springBodyXPositions:Array<Float> = [ -12, -8, -4, 0, 4, 8, 12];
+        for (x in springBodyXPositions){
+            var squareBody:SpringBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 6.8), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            physicsWorld.AddBody(squareBody);
+            squareBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 4.6), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            physicsWorld.AddBody(squareBody);
+        }
 
-        triangleShape.Begin();
-        triangleShape.AddVertex(new Vector2(2, 0));
-        triangleShape.AddVertex(new Vector2(4, 4));
-        triangleShape.AddVertex(new Vector2(0, 4));
-        triangleShape.Finish(true);
-        
-        var triangleBody:Body = new Body(triangleShape, mass, new Vector2(5, 5), 0, new Vector2(1, 1), false);
-        
-        physicsWorld.AddBody(triangleBody);
-        
-        var springBody:Body = new SpringBody(getSquareShape(4), mass, new Vector2( -6, -2), 1, new Vector2(1, 1), false,
-                                            shapeK, shapeDamp, edgeK, edgeDamp);
-        physicsWorld.AddBody(springBody);
-        
-        var diamondShape:ClosedShape = new ClosedShape();
-
-        diamondShape.Begin();
-        diamondShape.AddVertex(new Vector2(0, -2.5));
-        diamondShape.AddVertex(new Vector2(1.5, -1.5));
-        diamondShape.AddVertex(new Vector2(2.5, 0));
-        diamondShape.AddVertex(new Vector2(1.5, 1.5));
-        diamondShape.AddVertex(new Vector2(0, 2.5));
-        diamondShape.AddVertex(new Vector2(-1.5, 1.5));
-        diamondShape.AddVertex(new Vector2(-2.5, 0));        
-        diamondShape.AddVertex(new Vector2(-1.5, -1.5));
-        diamondShape.Finish(true);
-        
-        var pressureBody:Body = new PressureBody(diamondShape, mass, new Vector2( 6, -4), 0, new Vector2(1, 1), false,
+        var rotationAmount =  Math.PI / 3.8;
+        var pressureBody:PressureBody = new PressureBody(getBigSquareShape(2), mass, new Vector2( 0, -7), Math.PI/4, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        pressureBody.Label = "PressureBody";
         physicsWorld.AddBody(pressureBody);
-        
-    }
+    } 
 }

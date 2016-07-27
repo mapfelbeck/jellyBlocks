@@ -49,6 +49,7 @@ class DrawDebugWorld
     
     public var SizeOfVert:Float = 4;
     
+    public var DrawingBackground:Bool = true;
     public var DrawingLabels:Bool = true;
     public var DrawingAABB:Bool = false;
     public var DrawingGlobalVerts:Bool = false;
@@ -100,9 +101,12 @@ class DrawDebugWorld
     public function Draw():Void
     {
         graphics.clear();
-        graphics.beginFill(backgroundColor);
-        graphics.drawRect(0, 0, renderSize.x, renderSize.y);
-        graphics.endFill();
+        
+        if(DrawingBackground){
+            graphics.beginFill(backgroundColor);
+            graphics.drawRect(0, 0, renderSize.x, renderSize.y);
+            graphics.endFill();
+        }
         
         if (DrawingLabels){
             if (labels.length != world.NumberBodies){

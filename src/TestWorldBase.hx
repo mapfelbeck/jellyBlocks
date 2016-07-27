@@ -39,17 +39,31 @@ class TestWorldBase extends Sprite
     function set_Title(value:String):String 
     {   
         setTitle(value);
-        return title = value;
+        return title;
+    }
+    
+    private var promptText:String = "";
+    public var PromptText(get, set):String;
+    function get_PromptText():String 
+    {
+        return promptText;
+    }    
+    function set_PromptText(value:String):String 
+    {   
+        setPromptText(value);
+        return promptText;
     }
     
     private var worldRender:DrawDebugWorld;
     private var lastTimeStamp:Float;
     private var titleTextField:TextField;
+    private var promptTextField:TextField;
     
-    public function new() 
+    public function new(inputPoll:InputPoll) 
     {
         super();
-        trace("TestWorldBase created");
+        
+        input = inputPoll;
         if (this.stage != null){
             Init(null);
         }else{
@@ -62,9 +76,7 @@ class TestWorldBase extends Sprite
     private var backgroundHeight:Int;
     private var backgroundWidth:Int;
     private function Init(e:Event):Void
-    {        
-        input = new InputPoll(stage);
-        
+    {
         lastTimeStamp = Timer.stamp();
         
         removeEventListener(Event.ADDED_TO_STAGE, Init);
@@ -82,6 +94,7 @@ class TestWorldBase extends Sprite
         
         addChildAt(createDrawSurface(), 0);
         addChildAt(setTitle(title), 1);
+        addChildAt(setPromptText(promptText), 2);
         addChild(new FPS(0, 0, 0x808080));
         
         createWorld();
@@ -100,12 +113,31 @@ class TestWorldBase extends Sprite
     {
         if (titleTextField == null){
             titleTextField = new TextField();
+            titleTextField.mouseEnabled = false;
+            titleTextField.autoSize = TextFieldAutoSize.LEFT;
+            titleTextField.textColor = 0x000000;
         }
-        titleTextField.text = value;
-        titleTextField.autoSize = TextFieldAutoSize.LEFT;
-        titleTextField.textColor = 0x000000;
+        title = value;
+        titleTextField.text = title;
         titleTextField.x = overscan * 2.5;
         return titleTextField;
+    }
+    
+    function setPromptText(value:String):TextField
+    {
+        if (promptTextField == null){
+            promptTextField = new TextField();
+            promptTextField.mouseEnabled = false;
+            promptTextField.autoSize = TextFieldAutoSize.LEFT;
+            promptTextField.textColor = 0xFFFFFF;
+        }
+        promptText = value;
+        promptTextField.text = promptText;
+        if(drawSurface != null){
+            promptTextField.x = drawSurface.stage.stageWidth - (promptTextField.width + overscan * 1.5);
+            promptTextField.y = overscan * 1.5;
+        }
+        return promptTextField;
     }
     
     private function createDrawSurface():Sprite
