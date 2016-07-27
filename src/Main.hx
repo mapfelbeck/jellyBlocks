@@ -20,7 +20,7 @@ class Main extends Sprite
     private var worlds:Array<Function>;
     
     private static var worldCount:Int = 5;
-    private var currIndex:Int = 0;
+    private var currIndex:Int = 4;
     
 	public function new() 
 	{

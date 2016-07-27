@@ -162,6 +162,12 @@ class DrawDebugWorld
         }
     }
     
+    public function SetDefaultBodyDrawOptions(color:Int, isSolid:Bool) 
+    {
+        drawPhysicsBodyDefault.Color = color;
+        drawPhysicsBodyDefault.IsSolid = isSolid;
+    }
+    
     function drawPointMasses(pointMasses:Array<PointMass>) 
     {
         graphics.lineStyle(0, ColorOfPointMasses);
