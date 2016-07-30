@@ -87,7 +87,7 @@ class DrawDebugWorld
         while (labels.length > count){
             var label:TextField = labels.pop();
             renderTarget.removeChild(label);
-            renderTarget = null;
+            label = null;
         }
         
         while (labels.length < count){

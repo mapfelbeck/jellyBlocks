@@ -42,7 +42,7 @@ class TestWorld4 extends TestWorldBase
         
         //hasMouse = false turns off the default mouse controls, this should probably
         //be handled in a better way
-        hasMouse = false;
+        hasDefaultMouse = false;
         addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDownEvent);
         addEventListener(MouseEvent.MOUSE_UP, OnMouseUpEvent);
         addEventListener(MouseEvent.MOUSE_OUT, OnMouseUpEvent);

@@ -19,7 +19,7 @@ class TestWorldBase extends Sprite
     
     public var mouseActive:Bool = false;
     public var hasGravity:Bool = true;
-    public var hasMouse:Bool = true;
+    public var hasDefaultMouse:Bool = true;
         
     public var mouseLocation:Vector2 = null;
     public var mouseBody:BodyPointMassRef = null;
@@ -82,10 +82,13 @@ class TestWorldBase extends Sprite
         removeEventListener(Event.ADDED_TO_STAGE, Init);
         addEventListener(Event.REMOVED_FROM_STAGE, Close);
         addEventListener(Event.ENTER_FRAME, OnEnterFrame);
-        addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDown);
-        addEventListener(MouseEvent.MOUSE_UP, OnMouseUp);
-        addEventListener(MouseEvent.MOUSE_OUT, OnMouseUp);
-        addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMove);
+        
+        if(hasDefaultMouse){
+            addEventListener(MouseEvent.MOUSE_DOWN, OnMouseDown);
+            addEventListener(MouseEvent.MOUSE_UP, OnMouseUp);
+            addEventListener(MouseEvent.MOUSE_OUT, OnMouseUp);
+            addEventListener(MouseEvent.MOUSE_MOVE, OnMouseMove);
+        }
         
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -204,7 +207,7 @@ class TestWorldBase extends Sprite
             }
         }
         
-        if (hasMouse && mouseActive){
+        if (hasDefaultMouse && mouseActive){
             var body:Body = physicsWorld.GetBody(mouseBody.BodyID);
             var pointMass:PointMass = body.PointMasses[mouseBody.PointMassIndex];
             var force:Vector2 = VectorTools.CalculateSpringForce(mouseLocation, 
@@ -223,7 +226,7 @@ class TestWorldBase extends Sprite
     
     private function OnMouseDown(e:MouseEvent):Void 
     {
-        if (!hasMouse){
+        if (!hasDefaultMouse){
             return;
         }
         mouseLocation = localToWorld(new Vector2(e.localX, e.localY));

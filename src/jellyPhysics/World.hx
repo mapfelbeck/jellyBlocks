@@ -172,11 +172,17 @@ class World
                 externalAccumulator(iterElapsed);
             }
             
-            for (i in collider.Count...0){
-                if (collider.GetBody(i).DeleteThis){
-                    RemoveBody(collider.GetBody(i));
+            var deleteThese:Array<Body> = new Array<Body>();
+            for (i in 0...collider.Count){
+                var body:Body = collider.GetBody(i);
+                if (body != null && body.DeleteThis){
+                    deleteThese.push(body);
                 }
             }
+            for (i in 0...deleteThese.length){
+                collider.Remove(deleteThese[i]);
+            }
+            deleteThese = null;
             
             AccumulateAndIntegrate(iterElapsed);
             

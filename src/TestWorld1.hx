@@ -19,7 +19,7 @@ class TestWorld1 extends TestWorldBase
         Title = "Shape Test World";
         PromptText = "Creates basic shapes.";
         hasGravity = false;
-        hasMouse = false;
+        hasDefaultMouse = false;
     }
     
     public override function setupDrawParam(render:DrawDebugWorld):Void{

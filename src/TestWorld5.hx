@@ -3,6 +3,7 @@ import jellyPhysics.Body;
 import jellyPhysics.MaterialMatrix;
 import jellyPhysics.SpringBody;
 import lime.math.Vector2;
+import openfl.events.*;
 
 /**
  * ...
@@ -15,8 +16,29 @@ class TestWorld5 extends TestWorldBase
     public function new(inputPoll:InputPoll) 
     {
         super(inputPoll);
+        hasDefaultMouse = false;
 		Title = "Delete Body World";
         PromptText = "Click/Tap on a body to delete it.";
+    }
+    
+    override function Init(e:Event):Void 
+    {
+        super.Init(e);
+        addEventListener(MouseEvent.MOUSE_DOWN, OnMouseClick);
+    }
+    
+    private function OnMouseClick(e:MouseEvent):Void 
+    {
+        var worldCoordinate:Vector2 = localToWorld(new Vector2(e.localX, e.localY));
+        
+        var clickedBody:Body = physicsWorld.GetBodyContaining(worldCoordinate);
+        
+        if (clickedBody != null){
+            //don't delete the ground body
+            if (!clickedBody.IsStatic){
+                clickedBody.DeleteThis = true;
+            }
+        }
     }
     
     override public function getMaterialMatrix():MaterialMatrix 
@@ -51,10 +73,10 @@ class TestWorld5 extends TestWorldBase
         
         var springBodyXPositions:Array<Float> = [ -12, -9, -6, -3, 0, 3, 6, 9, 12];
         for (x in springBodyXPositions){
-            var squareBody:SpringBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 6.8), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            var squareBody:SpringBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 7.0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
             squareBody.Material = SPRING_BODY_MATERIAL;
             physicsWorld.AddBody(squareBody);
-            squareBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 4.6), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+            squareBody = new SpringBody(getSquareShape(2), mass, new Vector2( x, 4.0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
             squareBody.Material = SPRING_BODY_MATERIAL;
             physicsWorld.AddBody(squareBody);
         }
