@@ -41,7 +41,7 @@ class Body
     public var IsAsleep:Bool;
     
     public var ObjectTag:Object;
-    //public var BodyNumber:Int;
+    
     public var BodyNumber(get, set):Int;
     private var bodyNumber:Int;    
     function get_BodyNumber():Int 

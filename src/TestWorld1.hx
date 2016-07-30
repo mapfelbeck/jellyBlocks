@@ -24,16 +24,17 @@ class TestWorld1 extends TestWorldBase
     
     public override function setupDrawParam(render:DrawDebugWorld):Void{
         render.DrawingAABB = true;
+        render.DrawingGlobalBody = true;
     }
     
     public override function addBodiesToWorld():Void
     {
         var mass:Float = 1.0;
-        var shapeK:Float = 450;
-        var shapeDamp:Float = 15;
-        var edgeK:Float = 450;
-        var edgeDamp:Float = 15;
-        var pressureAmount:Float = 250.0;
+        var shapeK:Float = 100;
+        var shapeDamp:Float = 50;
+        var edgeK:Float = 100;
+        var edgeDamp:Float = 50;
+        var pressureAmount:Float = 40.0;
         
         var squareBody:Body = new Body(getSquareShape(4), mass, new Vector2(0, 0), 0, new Vector2(1, 1), false);
         
@@ -50,12 +51,12 @@ class TestWorld1 extends TestWorldBase
         
         var triangleBody:Body = new Body(triangleShape, mass, new Vector2(5, 5), 0, new Vector2(1, 1), false);
         
-        //physicsWorld.AddBody(triangleBody);
+        physicsWorld.AddBody(triangleBody);
         
-        var springBody:Body = new SpringBody(getSquareShape(4), mass, new Vector2( -6, -2), 1, new Vector2(1, 1), false,
+        var springBody:SpringBody = new SpringBody(getSquareShape(4), mass, new Vector2( -6, -2), 1, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp);
-        //physicsWorld.AddBody(springBody);
-        
+        physicsWorld.AddBody(springBody);
+
         var diamondShape:ClosedShape = new ClosedShape();
 
         diamondShape.Begin();
@@ -69,12 +70,13 @@ class TestWorld1 extends TestWorldBase
         diamondShape.AddVertex(new Vector2(-1.5, -1.5));
         diamondShape.Finish(true);
         
-        var pressureBody:Body = new PressureBody(diamondShape, mass, new Vector2( 5, -4), 0, new Vector2(1, 1), false,
+        var pressureBody:PressureBody = new PressureBody(getBigSquareShape(2), mass, new Vector2( 5, -4), 0, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        pressureBody.ShapeMatchingOn = false;
         physicsWorld.AddBody(pressureBody);
         
-        pressureBody = new PressureBody(diamondShape, mass, new Vector2( 12, -4), 0, new Vector2(1, 1), false,
-                                            shapeK, shapeDamp*10, edgeK, edgeDamp, pressureAmount);
+        pressureBody = new PressureBody(getPolygonShape(1,8), mass, new Vector2( 12, -4), 0, new Vector2(1, 1), false,
+                                            shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         physicsWorld.AddBody(pressureBody);
         
     }

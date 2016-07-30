@@ -17,8 +17,19 @@ class SpringBody extends Body
 {
     public var Springs:Array<InternalSpring>;
 
-    // shape-matching spring constants.
-    private var ShapeMatchingOn:Bool = true;
+    // shape-matching on or off.
+    private var shapeMatchingOn:Bool = true;
+    public var ShapeMatchingOn(get, set):Bool;    
+    public function get_ShapeMatchingOn():Bool 
+    {
+        return shapeMatchingOn;
+    }
+    public function set_ShapeMatchingOn(value:Bool):Bool
+    {
+        shapeMatchingOn = value;
+        return shapeMatchingOn;
+    }
+    
     private var EdgeSpringK:Float;
     private var EdgeSpringDamp:Float;
     private var ShapeSpringK:Float;
@@ -44,7 +55,6 @@ class SpringBody extends Body
         EdgeSpringK = edgeSpringK;
         ShapeSpringK = bodyShapeSpringK;
         ShapeSpringDamp = bodyShapeSpringDamp;
-        ShapeMatchingOn = true;
         
         super.SetPositionAngle(position, angleInRadians, bodyScale);
         
@@ -77,10 +87,10 @@ class SpringBody extends Body
                 PointMasses[s.pointMassB].Force.y -= force.y;
             }
 
+            GlobalShape = BaseShape.transformVertices(DerivedPos, DerivedAngle, Scale);
             // shape matching forces.
-            if (ShapeMatchingOn)
+            if (shapeMatchingOn)
             {
-                GlobalShape = BaseShape.transformVertices(DerivedPos, DerivedAngle, Scale);
                 for (i in 0...PointMasses.length)
                 {
                     if (ShapeSpringK > 0)
@@ -111,6 +121,7 @@ class SpringBody extends Body
 
                         PointMasses[i].Force.x += force.x;
                         PointMasses[i].Force.y += force.y;
+                        //trace("force: [" + force.x + ", " + force.y + "]");
                     }
                 }
             }

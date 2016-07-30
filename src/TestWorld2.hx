@@ -50,9 +50,10 @@ class TestWorld2 extends TestWorldBase
         }
 
         var rotationAmount =  Math.PI / 3.8;
-        var pressureBody:PressureBody = new PressureBody(getBigSquareShape(2), mass, new Vector2( 0, -7), Math.PI/4, new Vector2(1, 1), false,
+        var pressureBody:PressureBody = new PressureBody(getPolygonShape(1, 12), mass, new Vector2( 0, -7), Math.PI/4, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         pressureBody.Label = "PressureBody";
+        pressureBody.ShapeMatchingOn = false;
         physicsWorld.AddBody(pressureBody);
     } 
 }

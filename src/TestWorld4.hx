@@ -268,10 +268,11 @@ class TestWorld4 extends TestWorldBase
         var shapeDamp:Float = 100;
         var edgeK:Float = 100;
         var edgeDamp:Float = 50;
-        var pressureAmount:Float = 100.0;
+        var pressureAmount:Float = 50.0;
         
-        blobBody = new PressureBody(getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, 0.2*shapeK, 5.0*shapeDamp, edgeK, edgeDamp, pressureAmount);
+        blobBody = new PressureBody(getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         blobBody.Label = "Blob";
+        blobBody.ShapeMatchingOn = false;
         blobBody.Material = MATERIAL_BLOB;
         physicsWorld.AddBody(blobBody);   
         
