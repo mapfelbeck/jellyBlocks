@@ -118,6 +118,7 @@ class VectorTools
         }else{
             BtoA.x = 0;
             BtoA.y = 0;
+            return BtoA;
         }
         
         dist = springLen - dist;
@@ -132,8 +133,7 @@ class VectorTools
 
         BtoA.x *= ((dist * springK) - (totalRelVel * damping));
         BtoA.y *= ((dist * springK) - (totalRelVel * damping));
-        return BtoA;
-        //return BtoA * ((dist * springK) - (totalRelVel * damping));  
+        return BtoA; 
     }
     
     public static function Subtract(vectorA:Vector2, vectorB:Vector2):Vector2
