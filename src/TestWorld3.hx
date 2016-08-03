@@ -18,7 +18,7 @@ class TestWorld3 extends TestWorldBase
     {
         super(inputPoll);
         Title = "Material Test World";
-        PromptText = "Use material collision to prevent red adn yellow from colliding.";
+        PromptText = "Use material collision to prevent red and yellow from colliding.";
     }
     
     override public function getMaterialMatrix():MaterialMatrix 

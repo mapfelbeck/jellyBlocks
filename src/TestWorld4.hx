@@ -30,7 +30,7 @@ class TestWorld4 extends TestWorldBase
     {
         super(inputPoll);
         Title = "Collision Callback Test World";
-        PromptText = "Use material collision callbacks and body collision callbacks to find out what the red blob touches.";
+        PromptText = "Use material collision callbacks and body collision callbacks to find out what the red blob touches.\nClick/Touch to the left or right of the red blob to move it.";
         
         blockSprings = new Array<ExtrernalSpring>();
     }

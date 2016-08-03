@@ -75,6 +75,15 @@ class TestWorld1 extends TestWorldBase
         pressureBody.ShapeMatchingOn = false;
         physicsWorld.AddBody(pressureBody);
         
+        pressureBody = new PressureBody(getBigSquareShape(2), mass, new Vector2( -7, 6), 0, new Vector2(1, 1), false,
+                                            shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        //connect pt 1 to pt 5
+        pressureBody.Springs.push(new InternalSpring(1, 5, 4, edgeK/2, edgeDamp));
+        //connect pt 3 to pt 7
+        pressureBody.Springs.push(new InternalSpring(3, 7, 4, edgeK/2, edgeDamp));
+        pressureBody.ShapeMatchingOn = false;
+        physicsWorld.AddBody(pressureBody);
+        
         pressureBody = new PressureBody(getPolygonShape(1,8), mass, new Vector2( 12, -4), 0, new Vector2(1, 1), false,
                                             shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
         physicsWorld.AddBody(pressureBody);

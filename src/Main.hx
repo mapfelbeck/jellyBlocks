@@ -6,6 +6,7 @@ import openfl.display.Sprite;
 import haxe.Constraints.Function;
 import openfl.ui.Keyboard;
 import openfl.events.*;
+import openfl.text.*;
 
 /**
  * ...
@@ -21,6 +22,8 @@ class Main extends Sprite
     
     private static var worldCount:Int = 5;
     private var currIndex:Int = 3;
+    
+    private var cycleTextField:TextField;
     
 	public function new() 
 	{
@@ -41,8 +44,15 @@ class Main extends Sprite
         addEventListener(Event.ENTER_FRAME, OnEnterFrame);
         
         this.stage.quality = "HIGH";
-		
+        
         getWorldAndAttach();
+        
+        cycleTextField = new TextField();
+        cycleTextField.text = "PageUp/PageDown to cycle between test screens.";
+        cycleTextField.autoSize = TextFieldAutoSize.LEFT;
+        cycleTextField.x = stage.width - cycleTextField.width;
+		cycleTextField.y = 0;
+        stage.addChildAt(cycleTextField, 1);
     }
     
     function getWorldAndAttach() 
@@ -52,7 +62,7 @@ class Main extends Sprite
             currentWorld = null;
         }
         currentWorld = getWorld(currIndex);
-        stage.addChild(currentWorld);
+        stage.addChildAt(currentWorld, 0);
     }
     
     private var wasPageUp:Bool = false;
