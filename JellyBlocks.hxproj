@@ -16,6 +16,7 @@
   </output>
   <!-- Other classes to be compiled into your SWF -->
   <classpaths>
+    <class path="C:\github\jellyPhysics" />
     <class path="C:\HaxeToolkit\haxe\lib\openfl\3,6,1" />
     <class path="C:\HaxeToolkit\haxe\lib\lime\2,9,1" />
     <class path="C:\HaxeToolkit\haxe\lib\actuate\1,8,6" />
@@ -25,7 +26,7 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="openfl=3.6.1&#xA;lime=2.9.1&#xA;actuate=1.8.6&#xA;openfl-next&#xA;tools=2.9.1&#xA;no-compilation&#xA;openfl-flash&#xA;web&#xA;display" />
+    <option directives="jellyPhysics=1.0.0&#xA;openfl=3.6.1&#xA;lime=2.9.1&#xA;actuate=1.8.6&#xA;openfl-next&#xA;tools=2.9.1&#xA;no-compilation&#xA;openfl-flash&#xA;web&#xA;display" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
