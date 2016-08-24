@@ -1,7 +1,7 @@
 package;
 import jellyPhysics.*;
+import jellyPhysics.math.*;
 import flash.display.Graphics;
-import lime.math.Vector2;
 import openfl.display.BitmapData;
 import openfl.display.Sprite;
 import jellyPhysics.World;

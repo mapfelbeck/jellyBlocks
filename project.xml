@@ -16,7 +16,6 @@
 	<source path="src" />
 	<haxelib name="jellyPhysics" />
 	<haxelib name="openfl" />
-	<haxelib name="actuate" />
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
