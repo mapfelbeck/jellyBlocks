@@ -1,9 +1,9 @@
 package;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
-import flash.display.Graphics;
-import openfl.display.BitmapData;
-import openfl.display.Sprite;
+import openfl.display3D.Context3D;
+import openfl.display.*;
+import openfl.events.*;
 import jellyPhysics.World;
 import openfl.text.TextField;
 
@@ -58,7 +58,7 @@ class DrawDebugWorld
     public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;
     
-    public function new(sprite:Sprite, physicsWorld:World) 
+    public function new(sprite:Sprite, physicsWorld:World, width:Int, height:Int) 
     {
         drawLookup = new Map<Int,DebugDrawBodyOption>();
         drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
@@ -68,15 +68,26 @@ class DrawDebugWorld
         graphics = renderTarget.graphics;
         world = physicsWorld;
         backgroundColor = ColorOfBackground;
-        
-        renderSize = new Vector2(sprite.stage.stageWidth - (2 * sprite.x), sprite.stage.stageHeight - (2 * sprite.y));
+        renderSize = new Vector2(width - (2 * sprite.x), height - (2 * sprite.y));
         offset.x = renderSize.x / 2;
         offset.y = renderSize.y / 2;
         
         if (DrawingLabels){
             createTextLabels(world.NumberBodies);
         }
+        
+        //renderTarget.stage.stage3Ds[0].addEventListener( Event.CONTEXT3D_CREATE, initStage3D );
+        //renderTarget.stage.stage3Ds[0].requestContext3D();
     }
+    
+    /*private var context3D:Context3D;
+    private function initStage3D(e:Event):Void{
+        trace("initState3D");
+    }
+    
+    private function initStage3DError(e:Event):Void{
+        trace("initStage3DError");
+    }*/
     
     function createTextLabels(count:Int) 
     {
