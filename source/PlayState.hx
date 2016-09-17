@@ -6,6 +6,8 @@ import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
 import flixel.util.FlxColor;
+import flixel.input.keyboard.FlxKeyList;
+import flixel.input.keyboard.FlxKey;
 import flixel.graphics.tile.FlxDrawTrianglesItem.DrawData;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
@@ -13,7 +15,6 @@ import openfl.Assets;
 import openfl.Lib;
 import openfl.display.*;
 import haxe.ds.Vector;
-
 
 class PlayState extends FlxState
 {
@@ -37,6 +38,7 @@ class PlayState extends FlxState
     
     public var defaultMaterial:MaterialPair;
     
+    private var input:Input;
 	override public function create():Void
 	{
         #if mobile
@@ -51,6 +53,10 @@ class PlayState extends FlxState
         trace("Window width: " + WINDOW_WIDTH);
         trace("Window height: " + WINDOW_HEIGHT);
 		super.create();
+        
+        input = new Input();
+        input.AddInputCommand(FlxKey.LEFT, setBlobMovingLeft);
+        input.AddInputCommand(FlxKey.RIGHT, setBlobMovingRight);
         
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -127,12 +133,27 @@ class PlayState extends FlxState
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
-        physicsWorld.Update(elapsed);
         
+        input.Update(elapsed);
+        
+        physicsWorld.Update(elapsed);
+
         Draw();
         
         collideYellow = false;
         collideGreen = false;
+    }
+    
+    private var blobMoveLeft:Bool = false;
+    private var blobMoveRight:Bool = false;
+    
+    private function setBlobMovingLeft(){
+        trace("left");
+        blobMoveLeft = true;
+    }
+    private function setBlobMovingRight(){
+        trace("right");
+        blobMoveRight = true;
     }
     
     private function Draw():Void
