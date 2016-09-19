@@ -20,14 +20,11 @@ class Input
     public function Update(elapsed:Float) 
     {
         for (key in keys){
-            if (FlxG.keys.anyJustPressed([key])){
-                //trace("key " + key.toString + " is pressed");
+            if (FlxG.keys.anyPressed([key])){
                 for (action in actionMap.get(key)){
                     action();
                 }
-            }/*else{
-                trace("key " + key.toString + " is NOT pressed");
-            }*/
+            }
         }
     }
     

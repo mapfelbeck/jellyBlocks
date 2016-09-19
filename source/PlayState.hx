@@ -1,20 +1,13 @@
 package;
 
 import flixel.*;
-import flixel.addons.display.FlxTiledSprite;
-import flixel.text.FlxText;
-import flixel.ui.FlxButton;
-import flixel.math.FlxMath;
-import flixel.util.FlxColor;
-import flixel.input.keyboard.FlxKeyList;
 import flixel.input.keyboard.FlxKey;
-import flixel.graphics.tile.FlxDrawTrianglesItem.DrawData;
+import flixel.util.FlxColor;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
-import openfl.Assets;
 import openfl.Lib;
 import openfl.display.*;
-import haxe.ds.Vector;
+import blocks.*;
 
 class PlayState extends FlxState
 {
@@ -37,6 +30,9 @@ class PlayState extends FlxState
     private var blockSprings:Array<ExtrernalSpring>;
     
     public var defaultMaterial:MaterialPair;
+    
+    private var blobMoveLeft:Bool = false;
+    private var blobMoveRight:Bool = false;
     
     private var input:Input;
 	override public function create():Void
@@ -142,17 +138,15 @@ class PlayState extends FlxState
         
         collideYellow = false;
         collideGreen = false;
+        blobMoveLeft = false;
+        blobMoveRight = false;
     }
-    
-    private var blobMoveLeft:Bool = false;
-    private var blobMoveRight:Bool = false;
     
     private function setBlobMovingLeft(){
-        trace("left");
         blobMoveLeft = true;
     }
+    
     private function setBlobMovingRight(){
-        trace("right");
         blobMoveRight = true;
     }
     
@@ -193,7 +187,7 @@ class PlayState extends FlxState
         var edgeDamp:Float = 50;
         var pressureAmount:Float = 50.0;
         
-        blobBody = new PressureBody(getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount);
+        blobBody = new GameBlock(getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount, null);
         blobBody.Label = "Blob";
         blobBody.ShapeMatchingOn = false;
         blobBody.Material = MATERIAL_BLOB;
@@ -305,7 +299,12 @@ class PlayState extends FlxState
     }
         
     private function PhysicsAccumulator(elapsed:Float){
-        var gravity:Vector2 = new Vector2(0, 9.8);
+        GravityAccumulator(elapsed);
+        MoveAccumulator(elapsed);
+    }
+        
+    private function GravityAccumulator(elapsed:Float){
+        var gravity:Vector2 = new Vector2(0, 0.5 * 9.8);
 
         for(i in 0...physicsWorld.NumberBodies)
         {
@@ -324,16 +323,39 @@ class PlayState extends FlxState
             var pmB = b.PointMasses[spring.pointMassB];
             
             var force = VectorTools.CalculateSpringForce(pmA.Position, pmA.Velocity, pmB.Position, pmB.Velocity, spring.springLen, spring.springK, spring.damping);
-            /*if (force.x != 0){
-                trace("wat?");
-            }
-            if (force.y != 0){
-                trace("wat!");
-            }*/
+
             pmA.Force.x += force.x;
             pmA.Force.y += force.y;
             pmB.Force.x -= force.x;
             pmB.Force.y -= force.y;
+        }
+    }
+        
+    private function MoveAccumulator(elapsed:Float){
+        
+        var rotationAmount:Float = 0;
+        
+        if (blobMoveLeft)
+        {
+            rotationAmount += -1;
+        }
+        if (blobMoveRight)
+        {
+            rotationAmount += 1;
+        }
+        
+        if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 2.0){
+            var blobCenter:Vector2 = blobBody.DerivedPos;
+            for (i in 0...blobBody.PointMasses.length){
+                var pmPosition:Vector2 = blobBody.PointMasses[i].Position;
+                var origin:Vector2 = VectorTools.Subtract(pmPosition, blobCenter);
+                var rotationForce:Vector2 = new Vector2(0, 0);
+                var torqueForce:Float = 3;
+                rotationForce.x = origin.x * Math.cos(rotationAmount) - origin.y * Math.sin(rotationAmount);
+                rotationForce.y = origin.x * Math.sin(rotationAmount) + origin.y * Math.cos(rotationAmount);
+                blobBody.PointMasses[i].Force.x += rotationForce.x * torqueForce;
+                blobBody.PointMasses[i].Force.y += rotationForce.y * torqueForce;
+            }
         }
     }
 }
