@@ -4,7 +4,7 @@ package;
  * ...
  * @author ...
  */
-class ShapeEnums
+class GameConfig
 {
 
     public function new() 
