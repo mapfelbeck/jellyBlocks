@@ -1,4 +1,6 @@
 package;
+import builders.ShapeBuilder;
+import enums.ShapeType;
 import jellyPhysics.Body;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
@@ -58,10 +60,11 @@ class GameGround
         return bodies;
     }
     
-    function makeBody(height:Float, width:Float, relPosition:Vector2):Body
+    function makeBody(width:Float, height:Float, relPosition:Vector2):Body
     {
+        var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).width(width).height(height);
         var bodyPosition:Vector2 = VectorTools.Add(relPosition, position);
-        var shape:ClosedShape = ShapeMaker.getRectangleShape(height, width);
+        var shape:ClosedShape = shapeBuilder.create();
         var body:Body = new Body(shape, Math.POSITIVE_INFINITY, bodyPosition, 0.0, new Vector2(1, 1), true);
         return body;
     }    

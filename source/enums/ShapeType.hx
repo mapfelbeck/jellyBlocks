@@ -1,9 +1,12 @@
 package enums;
 
+/**
+ * @author 
+ */
 enum ShapeType 
 {
-    Single; 
-    Double; 
-    Triomino;
-    Tetromino;
+    Polygon;
+    Square;
+    Rectangle;
+    Custom;
 }

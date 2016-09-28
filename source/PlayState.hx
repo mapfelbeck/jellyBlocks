@@ -2,6 +2,7 @@ package;
 
 import flixel.*;
 import builders.GameBlockBuilder;
+import builders.ShapeBuilder;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
 import jellyPhysics.*;
@@ -9,7 +10,7 @@ import jellyPhysics.math.*;
 import openfl.Lib;
 import openfl.display.*;
 import blocks.*;
-import enums.BlockType;
+import enums.*;
 
 class PlayState extends FlxState
 {
@@ -181,9 +182,11 @@ class PlayState extends FlxState
         var edgeDamp:Float = 50;
         var pressureAmount:Float = 50.0;
         
+        var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Polygon).size(1.0).facetCount(16);
+        
         var blockBuilder = new GameBlockBuilder();
         blockBuilder = blockBuilder.setType(BlockType.Normal);
-        blockBuilder = blockBuilder.setShape(ShapeMaker.getPolygonShape(1, 16));
+        blockBuilder = blockBuilder.setShape(shapeBuilder.create());
         blockBuilder = blockBuilder.setMass(mass);
         blockBuilder = blockBuilder.setPosition(new Vector2( 0, 0));
         blockBuilder = blockBuilder.setRotation(0.0);
@@ -196,35 +199,34 @@ class PlayState extends FlxState
         blockBuilder = blockBuilder.setPressure(pressureAmount);
         blockBuilder = blockBuilder.setConfig(new BlockConfig());
         blobBody = blockBuilder.create();
-        /*bodyShapeSpringK:Float, bodyShapeSpringDamp:Float, edgeSpringK:Float, 
-    edgeSpringDamp:Float, gasPressure:Float, blockConfig:BlockConfig*/
-        //blobBody = new GameBlock(ShapeMaker.getPolygonShape(1, 16), mass, new Vector2( 0, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp, pressureAmount, null);
         blobBody.Label = "Blob";
         blobBody.ShapeMatchingOn = false;
         blobBody.Material = MATERIAL_BLOB;
         physicsWorld.AddBody(blobBody);
         
-        var springBody:SpringBody = new SpringBody(ShapeMaker.getBigSquareShape(1), mass, new Vector2( -6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        shapeBuilder = shapeBuilder.type(ShapeType.Custom).size(1).vertexes(getBigSquareShape(1.0));
+        var springBody:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( -6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         springBody.Material = MATERIAL_TYPE_YELLOW;
         physicsWorld.AddBody(springBody);
         
+        shapeBuilder = shapeBuilder.type(ShapeType.Square);
         //the green block is a composite of 4
-        var greenBodyUL:SpringBody = new SpringBody(ShapeMaker.getSquareShape(1), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        var greenBodyUL:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         greenBodyUL.Material = MATERIAL_TYPE_GREEN;
         greenBodyUL.CollisionCallback = collisionCallbackGreen;
         physicsWorld.AddBody(greenBodyUL);
         
-        var greenBodyUR:SpringBody = new SpringBody(ShapeMaker.getSquareShape(1), mass, new Vector2( 7, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        var greenBodyUR:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 7, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         greenBodyUR.Material = MATERIAL_TYPE_GREEN;
         greenBodyUR.CollisionCallback = collisionCallbackGreen;
         physicsWorld.AddBody(greenBodyUR);
         
-        var greenBodyLR:SpringBody = new SpringBody(ShapeMaker.getSquareShape(1), mass, new Vector2( 7, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        var greenBodyLR:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 7, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         greenBodyLR.Material = MATERIAL_TYPE_GREEN;
         greenBodyLR.CollisionCallback = collisionCallbackGreen;
         physicsWorld.AddBody(greenBodyLR);
         
-        var greenBodyLL:SpringBody = new SpringBody(ShapeMaker.getSquareShape(1), mass, new Vector2( 6, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        var greenBodyLL:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 6, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         greenBodyLL.Material = MATERIAL_TYPE_GREEN;
         greenBodyLL.CollisionCallback = collisionCallbackGreen;
         physicsWorld.AddBody(greenBodyLL);
@@ -252,6 +254,19 @@ class PlayState extends FlxState
         blockSprings.push(spring);
         spring = new ExternalSpring(greenBodyLL, greenBodyUL, 1, 2, 0.0, externalK, externalDamp);
         blockSprings.push(spring);
+    }
+    
+    private function getBigSquareShape(size:Float):Array<Vector2>{
+        var bigSquareShape:Array<Vector2> = new Array<Vector2>();
+        bigSquareShape.push(new Vector2(0, -size*2));
+        bigSquareShape.push(new Vector2(size, -size*2));
+        bigSquareShape.push(new Vector2(size*2, -size*2));
+        bigSquareShape.push(new Vector2(size*2, -size));
+        bigSquareShape.push(new Vector2(size*2, 0));
+        bigSquareShape.push(new Vector2(size, 0));
+        bigSquareShape.push(new Vector2(0, 0));
+        bigSquareShape.push(new Vector2(0, -size));
+        return bigSquareShape;
     }
     
     private function createWorld()
