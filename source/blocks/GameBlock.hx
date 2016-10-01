@@ -156,4 +156,8 @@ class GameBlock extends PressureBody
             }
         }
     }
+    
+    public function CollisionlessFrame():Void{
+        
+    }
 }

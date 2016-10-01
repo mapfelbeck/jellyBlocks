@@ -2,10 +2,12 @@ package;
 
 import flixel.*;
 import builders.GameBlockBuilder;
+import builders.GamePieceBuilder;
 import builders.ShapeBuilder;
 import flixel.input.keyboard.FlxKey;
 import flixel.util.FlxColor;
 import jellyPhysics.*;
+import gamepieces.GamePiece;
 import jellyPhysics.math.*;
 import openfl.Lib;
 import openfl.display.*;
@@ -210,6 +212,12 @@ class PlayState extends FlxState
         physicsWorld.AddBody(springBody);
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
+        
+        var squarePiece:GamePiece = null;
+        var pieceBuilder:GamePieceBuilder = new GamePieceBuilder().setShapeBuilder(shapeBuilder).setBlockBuilder(blockBuilder);
+        pieceBuilder = pieceBuilder.setPieceType(PieceType.Tetromino);
+        pieceBuilder = pieceBuilder.setPieceShape(TetrominoShape.Square);
+        
         //the green block is a composite of 4
         var greenBodyUL:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         greenBodyUL.Material = MATERIAL_TYPE_GREEN;

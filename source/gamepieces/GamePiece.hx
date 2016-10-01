@@ -72,7 +72,7 @@ class GamePiece
         collidedThisFrame = false;
         for (i in 0...blocks.length)
         {
-            var block = blocks[i];
+            var block:GameBlock = blocks[i];
             //has or has not?...
             if (block.HasEverCollided)
             {
@@ -92,7 +92,7 @@ class GamePiece
             //Console.WriteLine("collisionless frame");
             for(k in 0...blocks.length)
             {
-                block[k].CollisionlessFrame();
+                blocks[k].CollisionlessFrame();
             }
         }
         //FIXME: why is this here?
@@ -115,16 +115,16 @@ class GamePiece
         for (i in 0...attachSprings.length)
         {
             Force = VectorTools.CalculateSpringForce(
-                attatchSprings[i].bodyA.getPointMass(attatchSprings[i].pointMassA).Position, attatchSprings[i].bodyA.getPointMass(attatchSprings[i].pointMassA).Velocity,
-                attatchSprings[i].bodyB.getPointMass(attatchSprings[i].pointMassB).Position, attatchSprings[i].bodyB.getPointMass(attatchSprings[i].pointMassB).Velocity,
-                attatchSprings[i].springD, attatchSprings[i].springK, attatchSprings[i].damping);
+                attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Position, attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Velocity,
+                attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Position, attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Velocity,
+                attachSprings[i].damping, attachSprings[i].springK, attachSprings[i].damping);
 
-            attatchSprings[i].bodyA.getPointMass(attatchSprings[i].pointMassA).Force += Force;
-            attatchSprings[i].bodyB.getPointMass(attatchSprings[i].pointMassB).Force -= Force;
+            attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Force.add(Force);
+            attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Force.subtract(Force);
         }
     }
     
-    public function ApplyForce(Vector2 force):Void
+    public function ApplyForce(force:Vector2):Void
     {
         var position:Vector2;
         for (i in 0...blocks.length)
@@ -140,10 +140,10 @@ class GamePiece
 
         for(i in 0...blocks.length)
         {
-            center = VectorTools.Add(center, blocks[i].DerivedPosition);
+            center = VectorTools.Add(center, blocks[i].DerivedPos);
         }
 
-        center = VectorTools.Multiply(center, 1.0 / blocks.Count);
+        center = VectorTools.Multiply(center, 1.0 / blocks.length);
         return center;
     }
     
@@ -171,13 +171,13 @@ class GamePiece
         blocks.remove(block);
     }
 
-    private function RemoveSpringsAttachedTo(GameBlock block):Void
+    private function RemoveSpringsAttachedTo(block: GameBlock):Void
     {
         for (i in attachSprings.length...0)
         {
-            if (attatchSprings[i].bodyA == block || attatchSprings[i].bodyB == block)
+            if (attachSprings[i].BodyA == block || attachSprings[i].BodyB == block)
             {
-                attachSprings.remove(attatchSprings[i]);
+                attachSprings.remove(attachSprings[i]);
             }
         }
     }
