@@ -33,6 +33,7 @@ class PlayState extends FlxState
     private var collideYellow:Bool = false;
     private var collideGreen:Bool = false;
     private var blockSprings:Array<ExternalSpring>;
+    private var gamePieces:Array<GamePiece>;
     
     public var defaultMaterial:MaterialPair;
     
@@ -65,6 +66,7 @@ class PlayState extends FlxState
         defaultMaterial.Elasticity = 0.8;
         
         blockSprings = new Array<ExternalSpring>();
+        gamePieces = new Array<GamePiece>();
         
         createWorld();
         addBodiesToWorld();
@@ -170,7 +172,11 @@ class PlayState extends FlxState
     private var ground:GameGround;
     function addBodiesToWorld() 
     {
-        ground = new GameGround(2, 16, 20, new Vector2(0, 2));
+        var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
+        var blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY);
+        var pieceBuilder:GamePieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
+        
+        ground = new GameGround(2, 16, 20, new Vector2(0, 2), blockBuilder);
         var groundBodies:Array<Body> = ground.Assemble();
         for (i in 0...groundBodies.length){
             physicsWorld.AddBody(groundBodies[i]);
@@ -183,17 +189,14 @@ class PlayState extends FlxState
         var edgeK:Float = 100;
         var edgeDamp:Float = 50;
         var pressureAmount:Float = 50.0;
+        var externalK:Float = 50.0;
+        var externalDamp:Float = 20.0;
         
-        var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Polygon).size(1.0).facetCount(16);
-        
-        var blockBuilder = new GameBlockBuilder();
+        shapeBuilder = shapeBuilder.type(ShapeType.Polygon).size(1.0).facetCount(16);
+        blockBuilder = blockBuilder.setPosition(new Vector2(0, 0));
         blockBuilder = blockBuilder.setType(BlockType.Normal);
-        blockBuilder = blockBuilder.setShape(shapeBuilder.create());
+        blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         blockBuilder = blockBuilder.setMass(mass);
-        blockBuilder = blockBuilder.setPosition(new Vector2( 0, 0));
-        blockBuilder = blockBuilder.setRotation(0.0);
-        blockBuilder = blockBuilder.setScale(new Vector2( 1, 1));
-        blockBuilder = blockBuilder.setKinematic(false);
         blockBuilder = blockBuilder.setShapeK(shapeK);
         blockBuilder = blockBuilder.setShapeDamp(shapeDamp);
         blockBuilder = blockBuilder.setEdgeK(edgeK);
@@ -207,16 +210,24 @@ class PlayState extends FlxState
         physicsWorld.AddBody(blobBody);
         
         shapeBuilder = shapeBuilder.type(ShapeType.Custom).size(1).vertexes(getBigSquareShape(1.0));
-        var springBody:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( -6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
+        blockBuilder.setPressure(0).setPosition(new Vector2( -6, 0));
+        var springBody:GameBlock = blockBuilder.create();
         springBody.Material = MATERIAL_TYPE_YELLOW;
         physicsWorld.AddBody(springBody);
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
         
         var squarePiece:GamePiece = null;
-        var pieceBuilder:GamePieceBuilder = new GamePieceBuilder().setShapeBuilder(shapeBuilder).setBlockBuilder(blockBuilder);
+        blockBuilder = blockBuilder.setType(BlockType.Normal).setMaterial(MATERIAL_TYPE_GREEN).setCollisionCallback(collisionCallbackGreen);
+        shapeBuilder = shapeBuilder.type(ShapeType.Square);
         pieceBuilder = pieceBuilder.setPieceType(PieceType.Tetromino);
-        pieceBuilder = pieceBuilder.setPieceShape(TetrominoShape.Square);
+        pieceBuilder = pieceBuilder.setAttachSpringK(externalK);
+        pieceBuilder = pieceBuilder.setAttachSpringDamp(externalDamp);
+        pieceBuilder = pieceBuilder.setTetrominoShape(TetrominoShape.Square);
+        pieceBuilder = pieceBuilder.setLocation(new Vector2(6.5, -3));
+        
+        var greenGamePiece:GamePiece = pieceBuilder.create();        
+        addGamePiece(greenGamePiece);
         
         //the green block is a composite of 4
         var greenBodyUL:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
@@ -240,8 +251,6 @@ class PlayState extends FlxState
         physicsWorld.AddBody(greenBodyLL);
         
         //connect those green blocks with springs
-        var externalK:Float = 50.0;
-        var externalDamp:Float = 20.0;
         var spring:ExternalSpring;
         spring = new ExternalSpring(greenBodyUL, greenBodyUR, 1, 0, 0.0, externalK, externalDamp);
         blockSprings.push(spring);
@@ -262,6 +271,18 @@ class PlayState extends FlxState
         blockSprings.push(spring);
         spring = new ExternalSpring(greenBodyLL, greenBodyUL, 1, 2, 0.0, externalK, externalDamp);
         blockSprings.push(spring);
+    }
+    
+    private static var pieceCounter:Int = 0;
+    function addGamePiece(newGamePiece:GamePiece) 
+    {
+        for (i in 0...newGamePiece.Blocks.length){
+            physicsWorld.AddBody(newGamePiece.Blocks[i]);
+            newGamePiece.Blocks[i].GroupNumber = pieceCounter;
+        }
+        
+        gamePieces.push(newGamePiece);
+        pieceCounter++;
     }
     
     private function getBigSquareShape(size:Float):Array<Vector2>{
@@ -292,6 +313,9 @@ class PlayState extends FlxState
     private function PhysicsAccumulator(elapsed:Float){
         GravityAccumulator(elapsed);
         MoveAccumulator(elapsed);
+        for (i in 0...gamePieces.length){
+            gamePieces[i].GamePieceAccumulator(elapsed);
+        }
     }
         
     private function GravityAccumulator(elapsed:Float){

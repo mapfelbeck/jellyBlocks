@@ -2,7 +2,9 @@ package builders;
 import blocks.BlockConfig;
 import blocks.GameBlock;
 import builders.GameBlockBuilder;
+import constants.PhysicsDefaults;
 import enums.BlockType;
+import haxe.Constraints.Function;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
 
@@ -12,19 +14,21 @@ import jellyPhysics.math.Vector2;
  */
 class GameBlockBuilder
 {
-    var shape:ClosedShape;
-    var type:BlockType;
-    var mass:Float;
-    var angle:Float;
-    var position:Vector2;
-    var scale:Vector2;
-    var kinematic:Bool;
-    var shapeK:Float;
-    var shapeDamp:Float;
-    var edgeK:Float;
-    var edgeDamp:Float;
-    var pressure:Float;
+    var shapeBuilder:ShapeBuilder;
+    var material:Int = 0;
+    var type:BlockType = BlockType.Normal;
+    var mass:Float = PhysicsDefaults.Mass;
+    var angle:Float = PhysicsDefaults.Angle;
+    var position:Vector2 = new Vector2( 0, 0);
+    var scale:Vector2 = new Vector2( 1, 1);
+    var kinematic:Bool= false;
+    var shapeK:Float = PhysicsDefaults.ShapeSpringK;
+    var shapeDamp:Float= PhysicsDefaults.ShapeSpringDamp;
+    var edgeK:Float= PhysicsDefaults.EdgeSpringK;
+    var edgeDamp:Float= PhysicsDefaults.EdgeSpringK;
+    var pressure:Float = PhysicsDefaults.Pressure;
     var config:BlockConfig;
+    var collisionCallback:Function;
     
     public function new() 
     {
@@ -34,21 +38,34 @@ class GameBlockBuilder
         var finalBlock:GameBlock = null;
         switch(type){
             case BlockType.Normal:
-                finalBlock = new GameBlock(shape, mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
+                finalBlock = new GameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
             default:
         }
+        finalBlock.Material = material;
+        finalBlock.CollisionCallback = collisionCallback;
         return finalBlock;
     }
     
-    public function setShape(polygonShape:ClosedShape):GameBlockBuilder
+    public function setShapeBuilder(builder:ShapeBuilder):GameBlockBuilder
     {
-        shape = polygonShape;
+        shapeBuilder = builder;
         return this;
+    }
+    
+    public function getShapeBuilder():ShapeBuilder
+    {
+        return shapeBuilder;
     }
     
     public function setType(type:BlockType) :GameBlockBuilder
     {
         this.type = type;
+        return this;
+    }
+    
+    public function setMaterial(material:Int) :GameBlockBuilder
+    {
+        this.material = material;
         return this;
     }
     
@@ -115,6 +132,11 @@ class GameBlockBuilder
     public function setConfig(blockConfig:BlockConfig) :GameBlockBuilder
     {
         this.config = blockConfig;
+        return this;
+    }
+    
+    public function setCollisionCallback(callback:Function):GameBlockBuilder{
+        this.collisionCallback = callback;
         return this;
     }
 }

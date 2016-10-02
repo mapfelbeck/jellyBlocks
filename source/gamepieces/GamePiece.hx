@@ -12,7 +12,15 @@ import jellyPhysics.math.VectorTools;
 class GamePiece
 {
     private var blocks:Array<GameBlock>;
+    public var Blocks(get, set):Array<GameBlock>;
+    function get_Blocks():Array<GameBlock>{return blocks;}    
+    function set_Blocks(value:Array<GameBlock>):Array<GameBlock>{return blocks = value; }
+    
     private var attachSprings:Array<ExternalSpring>;
+    public var AttachSprings(get, set):Array<ExternalSpring>;
+    function get_AttachSprings():Array<ExternalSpring>{return attachSprings;}    
+    function set_AttachSprings(value:Array<ExternalSpring>):Array<ExternalSpring>{return attachSprings = value; }
+    
     private var isControlled:Bool;
     private var showColorPulse:Bool;
     private var pieceNumber:Int;
@@ -25,7 +33,10 @@ class GamePiece
     
     private var inFailLocation:Bool;
     private var remainingLifeTime:Float;
-    private var autoDampRate:Float;
+    private var autoDampRate:Float;    
+    public var AutoDampRate(get, set):Float;    
+    public function get_AutoDampRate():Float {return autoDampRate;}
+    public function set_AutoDampRate(value:Float):Float {return autoDampRate = value;}
     
     private var originalBlockCount:Int;
     private var inputScalar:Float;
@@ -114,13 +125,25 @@ class GamePiece
 
         for (i in 0...attachSprings.length)
         {
-            Force = VectorTools.CalculateSpringForce(
+            var spring:ExternalSpring = attachSprings[i];
+            var a:Body = spring.BodyA;
+            var pmA = a.PointMasses[spring.pointMassA];
+            var b:Body = spring.BodyB;
+            var pmB = b.PointMasses[spring.pointMassB];
+            
+            var force = VectorTools.CalculateSpringForce(pmA.Position, pmA.Velocity, pmB.Position, pmB.Velocity, spring.springLen, spring.springK, spring.damping);
+
+            pmA.Force.x += force.x;
+            pmA.Force.y += force.y;
+            pmB.Force.x -= force.x;
+            pmB.Force.y -= force.y;
+            /*Force = VectorTools.CalculateSpringForce(
                 attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Position, attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Velocity,
                 attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Position, attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Velocity,
                 attachSprings[i].damping, attachSprings[i].springK, attachSprings[i].damping);
 
             attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Force.add(Force);
-            attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Force.subtract(Force);
+            attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Force.subtract(Force);*/
         }
     }
     

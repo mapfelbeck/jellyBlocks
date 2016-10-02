@@ -1,6 +1,8 @@
 package;
+import builders.GameBlockBuilder;
 import builders.ShapeBuilder;
 import enums.ShapeType;
+import enums.BlockType;
 import jellyPhysics.Body;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
@@ -16,15 +18,17 @@ class GameGround
     private var height:Float;
     private var border:Float;
     private var position:Vector2;
+    private var builder:GameBlockBuilder;
     
     private var bodies:Array<Body>;
     public function new(border:Float, width:Float, height:Float, 
-                        position:Vector2) 
+                        position:Vector2, builder:GameBlockBuilder) 
     {
         this.width = width;
         this.height = height;
         this.border = border;
         this.position = position;
+        this.builder = builder;
         bodies = new Array<Body>();
     }
     
@@ -62,10 +66,13 @@ class GameGround
     
     function makeBody(width:Float, height:Float, relPosition:Vector2):Body
     {
-        var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).width(width).height(height);
+        var shapeBuilder: ShapeBuilder = builder.getShapeBuilder().type(ShapeType.Rectangle).width(width).height(height);
+        builder = builder.setPosition(relPosition).setType(BlockType.Normal);
+        
+        /*var shapeBuilder:ShapeBuilder = builder.get new ShapeBuilder().type(ShapeType.Rectangle).width(width).height(height);
         var bodyPosition:Vector2 = VectorTools.Add(relPosition, position);
         var shape:ClosedShape = shapeBuilder.create();
-        var body:Body = new Body(shape, Math.POSITIVE_INFINITY, bodyPosition, 0.0, new Vector2(1, 1), true);
-        return body;
+        var body:Body = new Body(shape, Math.POSITIVE_INFINITY, bodyPosition, 0.0, new Vector2(1, 1), true);*/
+        return builder.create();
     }    
 }
