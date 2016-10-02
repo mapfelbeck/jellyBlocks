@@ -65,7 +65,7 @@ class PlayState extends FlxState
         defaultMaterial.Friction = 0.3;
         defaultMaterial.Elasticity = 0.8;
         
-        blockSprings = new Array<ExternalSpring>();
+        //blockSprings = new Array<ExternalSpring>();
         gamePieces = new Array<GamePiece>();
         
         createWorld();
@@ -172,16 +172,19 @@ class PlayState extends FlxState
     private var ground:GameGround;
     function addBodiesToWorld() 
     {
+        //new up the builders
         var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
         var blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY);
         var pieceBuilder:GamePieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
-        
+     
+        //create static bodies for the container
         ground = new GameGround(2, 16, 20, new Vector2(0, 2), blockBuilder);
         var groundBodies:Array<Body> = ground.Assemble();
         for (i in 0...groundBodies.length){
             physicsWorld.AddBody(groundBodies[i]);
         }
         
+        //build the big red blob
         var mass:Float = 1.0;
         var angle:Float = 0.0;
         var shapeK:Float = 200;
@@ -194,6 +197,7 @@ class PlayState extends FlxState
         
         shapeBuilder = shapeBuilder.type(ShapeType.Polygon).size(1.0).facetCount(16);
         blockBuilder = blockBuilder.setPosition(new Vector2(0, 0));
+        blockBuilder = blockBuilder.setKinematic(false);
         blockBuilder = blockBuilder.setType(BlockType.Normal);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         blockBuilder = blockBuilder.setMass(mass);
@@ -209,12 +213,14 @@ class PlayState extends FlxState
         blobBody.Material = MATERIAL_BLOB;
         physicsWorld.AddBody(blobBody);
         
+        //build the yellow custom block
         shapeBuilder = shapeBuilder.type(ShapeType.Custom).size(1).vertexes(getBigSquareShape(1.0));
         blockBuilder.setPressure(0).setPosition(new Vector2( -6, 0));
         var springBody:GameBlock = blockBuilder.create();
         springBody.Material = MATERIAL_TYPE_YELLOW;
         physicsWorld.AddBody(springBody);
         
+        //build the green compound block
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
         
         var squarePiece:GamePiece = null;
@@ -229,6 +235,7 @@ class PlayState extends FlxState
         var greenGamePiece:GamePiece = pieceBuilder.create();        
         addGamePiece(greenGamePiece);
         
+        /*
         //the green block is a composite of 4
         var greenBodyUL:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
         greenBodyUL.Material = MATERIAL_TYPE_GREEN;
@@ -270,7 +277,7 @@ class PlayState extends FlxState
         spring = new ExternalSpring(greenBodyLL, greenBodyUL, 0, 3, 0.0, externalK, externalDamp);
         blockSprings.push(spring);
         spring = new ExternalSpring(greenBodyLL, greenBodyUL, 1, 2, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
+        blockSprings.push(spring);*/
     }
     
     private static var pieceCounter:Int = 0;
@@ -329,7 +336,7 @@ class PlayState extends FlxState
             }
         }
         
-        for (i in 0...blockSprings.length)
+        /*for (i in 0...blockSprings.length)
         {
             var spring:ExternalSpring = blockSprings[i];
             var a:Body = spring.BodyA;
@@ -343,7 +350,7 @@ class PlayState extends FlxState
             pmA.Force.y += force.y;
             pmB.Force.x -= force.x;
             pmB.Force.y -= force.y;
-        }
+        }*/
     }
         
     private function MoveAccumulator(elapsed:Float){
