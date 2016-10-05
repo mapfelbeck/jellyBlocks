@@ -4,6 +4,7 @@ import flixel.util.FlxColor;
 import jellyPhysics.Body;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
+import jellyPhysics.math.VectorTools;
 import jellyPhysics.PressureBody;
 
 /**
@@ -78,6 +79,7 @@ class GameBlock extends PressureBody
         CollisionCallback = CollideWith;
         CollisionList = new Array<GameBlock>();
         moveForce = new Vector2(0, 0);
+        rotateCenter = new Vector2(0, 0);
         rotateAmount = 0.0;
         lifeTime = 0.0;
         deleteRange = 80.0;
@@ -111,9 +113,11 @@ class GameBlock extends PressureBody
     override public function ResetExternalForces():Void 
     {
         super.ResetExternalForces();
-        moveForce = new Vector2(0.0, 0.0);
+        moveForce.x = 0;
+        moveForce.y = 0;
         rotateAmount = 0.0;
-        rotateCenter = new Vector2(0.0, 0.0);
+        rotateCenter.x = 0;
+        rotateCenter.y = 0;
     }
     
     override public function Update(elapsed:Float):Void 
@@ -159,5 +163,43 @@ class GameBlock extends PressureBody
     
     public function CollisionlessFrame():Void{
         
+    }
+    
+    override public function AccumulateExternalForces(elapsed:Float):Void 
+    {
+        super.AccumulateExternalForces(elapsed);
+        
+        if (!IsAsleep){
+            var nCenter:Vector2 = null;
+            var origin:Vector2 = null;
+            var rotationForce:Vector2 = new Vector2(0, 0);
+            
+            /*if(this.Label == "Blob"){
+                trace("rotateAmount: " + rotateAmount);
+                trace("PointMasses.length: " + PointMasses.length);                
+            }*/
+            
+            for (i in 0...PointMasses.length){
+                PointMasses[i].Force.add(moveForce);
+                
+                /*if(this.Label == "Blob"){
+                    trace("derp: " + rotateAmount);
+                }*/
+                if (rotateAmount != 0){
+                    //trace("burp: " + rotateAmount);
+                    
+                    nCenter = VectorTools.Add(PointMasses[i].Position, rotateCenter);
+                    origin = VectorTools.Subtract(PointMasses[i].Position, rotateCenter);
+                    //trace("nCenter: (" + nCenter.x + ", " + nCenter.y + ")");
+                    //trace("origin: (" + origin.x + ", " + origin.y + ")");
+
+                    rotationForce.x =
+                        origin.x * Math.cos(rotateAmount) - origin.y * Math.sin(rotateAmount);
+                    rotationForce.y =
+                        origin.x * Math.sin(rotateAmount) + origin.y * Math.cos(rotateAmount);
+                    PointMasses[i].Force.add(VectorTools.Multiply(rotationForce, rotateForce));
+                }
+            }
+        }
     }
 }

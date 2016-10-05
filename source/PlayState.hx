@@ -29,7 +29,10 @@ class PlayState extends FlxState
     private static var MATERIAL_TYPE_GREEN:Int = 2;
     private static var MATERIAL_BLOB:Int   = 3;
     
-    private var blobBody:PressureBody;
+    //private var blobBody:PressureBody;
+    private var blobPiece:GamePiece;
+    private var yellowPiece:GamePiece;
+    private var greenPiece:GamePiece;
     private var collideYellow:Bool = false;
     private var collideGreen:Bool = false;
     private var blockSprings:Array<ExternalSpring>;
@@ -191,7 +194,7 @@ class PlayState extends FlxState
         var shapeDamp:Float = 100;
         var edgeK:Float = 100;
         var edgeDamp:Float = 50;
-        var pressureAmount:Float = 50.0;
+        var pressureAmount:Float = 100.0;
         var externalK:Float = 50.0;
         var externalDamp:Float = 20.0;
         
@@ -207,77 +210,37 @@ class PlayState extends FlxState
         blockBuilder = blockBuilder.setEdgeDamp(edgeDamp);
         blockBuilder = blockBuilder.setPressure(pressureAmount);
         blockBuilder = blockBuilder.setConfig(new BlockConfig());
-        blobBody = blockBuilder.create();
-        blobBody.Label = "Blob";
-        blobBody.ShapeMatchingOn = false;
-        blobBody.Material = MATERIAL_BLOB;
-        physicsWorld.AddBody(blobBody);
+        blockBuilder = blockBuilder.setMaterial(MATERIAL_BLOB);
+        blockBuilder = blockBuilder.setLabel("Blob");
+        pieceBuilder.setPieceType(PieceType.Single);
+        blobPiece = pieceBuilder.create();
+        addGamePiece(blobPiece);
         
         //build the yellow custom block
         shapeBuilder = shapeBuilder.type(ShapeType.Custom).size(1).vertexes(getBigSquareShape(1.0));
-        blockBuilder.setPressure(0).setPosition(new Vector2( -6, 0));
-        var springBody:GameBlock = blockBuilder.create();
-        springBody.Material = MATERIAL_TYPE_YELLOW;
-        physicsWorld.AddBody(springBody);
+        blockBuilder.setPressure(0).setPosition(new Vector2( -6, 0)).setLabel(null);
+        blockBuilder = blockBuilder.setPressure(0).setMaterial(MATERIAL_TYPE_YELLOW);
+        pieceBuilder.setLocation(new Vector2( -6, 0));
+        yellowPiece = pieceBuilder.create();
+        addGamePiece(yellowPiece);
+        
+        //var springBody:GameBlock = blockBuilder.create();
+        //springBody.Material = MATERIAL_TYPE_YELLOW;
+        //physicsWorld.AddBody(springBody);
         
         //build the green compound block
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
         
-        var squarePiece:GamePiece = null;
         blockBuilder = blockBuilder.setType(BlockType.Normal).setMaterial(MATERIAL_TYPE_GREEN).setCollisionCallback(collisionCallbackGreen);
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
         pieceBuilder = pieceBuilder.setPieceType(PieceType.Tetromino);
         pieceBuilder = pieceBuilder.setAttachSpringK(externalK);
         pieceBuilder = pieceBuilder.setAttachSpringDamp(externalDamp);
         pieceBuilder = pieceBuilder.setTetrominoShape(TetrominoShape.Square);
-        pieceBuilder = pieceBuilder.setLocation(new Vector2(6.5, -3));
+        pieceBuilder = pieceBuilder.setLocation(new Vector2(5.5, -3));
         
-        var greenGamePiece:GamePiece = pieceBuilder.create();        
-        addGamePiece(greenGamePiece);
-        
-        /*
-        //the green block is a composite of 4
-        var greenBodyUL:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 6, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        greenBodyUL.Material = MATERIAL_TYPE_GREEN;
-        greenBodyUL.CollisionCallback = collisionCallbackGreen;
-        physicsWorld.AddBody(greenBodyUL);
-        
-        var greenBodyUR:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 7, 0), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        greenBodyUR.Material = MATERIAL_TYPE_GREEN;
-        greenBodyUR.CollisionCallback = collisionCallbackGreen;
-        physicsWorld.AddBody(greenBodyUR);
-        
-        var greenBodyLR:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 7, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        greenBodyLR.Material = MATERIAL_TYPE_GREEN;
-        greenBodyLR.CollisionCallback = collisionCallbackGreen;
-        physicsWorld.AddBody(greenBodyLR);
-        
-        var greenBodyLL:SpringBody = new SpringBody(shapeBuilder.create(), mass, new Vector2( 6, 1), 0, new Vector2(1, 1), false, shapeK, shapeDamp, edgeK, edgeDamp);
-        greenBodyLL.Material = MATERIAL_TYPE_GREEN;
-        greenBodyLL.CollisionCallback = collisionCallbackGreen;
-        physicsWorld.AddBody(greenBodyLL);
-        
-        //connect those green blocks with springs
-        var spring:ExternalSpring;
-        spring = new ExternalSpring(greenBodyUL, greenBodyUR, 1, 0, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
-        spring = new ExternalSpring(greenBodyUL, greenBodyUR, 2, 3, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
-        
-        spring = new ExternalSpring(greenBodyUR, greenBodyLR, 2, 1, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
-        spring = new ExternalSpring(greenBodyUR, greenBodyLR, 3, 0, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
-        
-        spring = new ExternalSpring(greenBodyLR, greenBodyLL, 3, 2, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
-        spring = new ExternalSpring(greenBodyLR, greenBodyLL, 0, 1, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
-        
-        spring = new ExternalSpring(greenBodyLL, greenBodyUL, 0, 3, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);
-        spring = new ExternalSpring(greenBodyLL, greenBodyUL, 1, 2, 0.0, externalK, externalDamp);
-        blockSprings.push(spring);*/
+        greenPiece = pieceBuilder.create();        
+        addGamePiece(greenPiece);
     }
     
     private static var pieceCounter:Int = 0;
@@ -335,22 +298,6 @@ class PlayState extends FlxState
                 body.AddGlobalForce(body.DerivedPos, gravity);
             }
         }
-        
-        /*for (i in 0...blockSprings.length)
-        {
-            var spring:ExternalSpring = blockSprings[i];
-            var a:Body = spring.BodyA;
-            var pmA = a.PointMasses[spring.pointMassA];
-            var b:Body = spring.BodyB;
-            var pmB = b.PointMasses[spring.pointMassB];
-            
-            var force = VectorTools.CalculateSpringForce(pmA.Position, pmA.Velocity, pmB.Position, pmB.Velocity, spring.springLen, spring.springK, spring.damping);
-
-            pmA.Force.x += force.x;
-            pmA.Force.y += force.y;
-            pmB.Force.x -= force.x;
-            pmB.Force.y -= force.y;
-        }*/
     }
         
     private function MoveAccumulator(elapsed:Float){
@@ -359,25 +306,15 @@ class PlayState extends FlxState
         
         if (blobMoveLeft)
         {
-            rotationAmount += -1;
+            rotationAmount += -8;
         }
         if (blobMoveRight)
         {
-            rotationAmount += 1;
+            rotationAmount += 8;
         }
         
-        if (rotationAmount != 0 && Math.abs(blobBody.DerivedOmega) < 2.0){
-            var blobCenter:Vector2 = blobBody.DerivedPos;
-            for (i in 0...blobBody.PointMasses.length){
-                var pmPosition:Vector2 = blobBody.PointMasses[i].Position;
-                var origin:Vector2 = VectorTools.Subtract(pmPosition, blobCenter);
-                var rotationForce:Vector2 = new Vector2(0, 0);
-                var torqueForce:Float = 3;
-                rotationForce.x = origin.x * Math.cos(rotationAmount) - origin.y * Math.sin(rotationAmount);
-                rotationForce.y = origin.x * Math.sin(rotationAmount) + origin.y * Math.cos(rotationAmount);
-                blobBody.PointMasses[i].Force.x += rotationForce.x * torqueForce;
-                blobBody.PointMasses[i].Force.y += rotationForce.y * torqueForce;
-            }
+        if (rotationAmount != 0 && Math.abs(blobPiece.GamePieceOmega()) < 6.0){
+            greenPiece.ApplyTorque(rotationAmount);
         }
     }
 }

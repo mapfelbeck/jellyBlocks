@@ -137,13 +137,6 @@ class GamePiece
             pmA.Force.y += force.y;
             pmB.Force.x -= force.x;
             pmB.Force.y -= force.y;
-            /*Force = VectorTools.CalculateSpringForce(
-                attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Position, attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Velocity,
-                attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Position, attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Velocity,
-                attachSprings[i].damping, attachSprings[i].springK, attachSprings[i].damping);
-
-            attachSprings[i].BodyA.GetPointMass(attachSprings[i].pointMassA).Force.add(Force);
-            attachSprings[i].BodyB.GetPointMass(attachSprings[i].pointMassB).Force.subtract(Force);*/
         }
     }
     
@@ -154,6 +147,16 @@ class GamePiece
         {
             position = blocks[i].DerivedPos;
             blocks[i].AddGlobalForce(position, force);
+        }
+    }
+    
+    public function ApplyTorque(torqueAmount:Float) 
+    {
+        for (i in 0...blocks.length)
+        {
+            blocks[i].rotateAmount = torqueAmount;
+            blocks[i].rotateForce = 9.8 * 1.25;
+            blocks[i].rotateCenter = GamePieceCenter();
         }
     }
     
@@ -181,6 +184,19 @@ class GamePiece
 
         rotation = rotation / blocks.length;
         return rotation;
+    }
+    
+    public function GamePieceOmega():Float
+    {
+        var omega:Float = 0;
+
+        for (i in 0...blocks.length)
+        {
+            omega += blocks[i].DerivedOmega;
+        }
+
+        omega = omega / blocks.length;
+        return omega;
     }
     
     private function RemoveBlockFromGamePiece(body:Body):Void

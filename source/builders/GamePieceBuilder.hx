@@ -87,6 +87,8 @@ class GamePieceBuilder
     public function create():GamePiece
     {
         switch(pieceType){
+            case PieceType.Single:
+                return buildPiece([new Vector2(0, 0)]);
             case PieceType.Tetromino:
                 return buildPiece(TetrominoPatterns.getPattern(tetrominoShape));
             case PieceType.Triomino:

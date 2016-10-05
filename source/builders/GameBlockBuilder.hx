@@ -27,6 +27,7 @@ class GameBlockBuilder
     var edgeK:Float= PhysicsDefaults.EdgeSpringK;
     var edgeDamp:Float= PhysicsDefaults.EdgeSpringK;
     var pressure:Float = PhysicsDefaults.Pressure;
+    var label:String = null;
     var config:BlockConfig;
     var collisionCallback:Function;
     
@@ -43,6 +44,9 @@ class GameBlockBuilder
         }
         finalBlock.Material = material;
         finalBlock.CollisionCallback = collisionCallback;
+        if (label != null){
+            finalBlock.Label = label;
+        }
         return finalBlock;
     }
     
@@ -71,6 +75,11 @@ class GameBlockBuilder
     
     public function setMass(mass:Float) :GameBlockBuilder
     {
+        if (mass == Math.POSITIVE_INFINITY){
+            this.kinematic = true;
+        }else{
+            this.kinematic = false;
+        }
         this.mass = mass;
         return this;
     }
@@ -137,6 +146,12 @@ class GameBlockBuilder
     
     public function setCollisionCallback(callback:Function):GameBlockBuilder{
         this.collisionCallback = callback;
+        return this;
+    }
+    
+    public function setLabel(string:String):GameBlockBuilder
+    {
+        this.label = string;
         return this;
     }
 }
