@@ -25,7 +25,7 @@ class GameBlockBuilder
     var shapeK:Float = PhysicsDefaults.ShapeSpringK;
     var shapeDamp:Float= PhysicsDefaults.ShapeSpringDamp;
     var edgeK:Float= PhysicsDefaults.EdgeSpringK;
-    var edgeDamp:Float= PhysicsDefaults.EdgeSpringK;
+    var edgeDamp:Float= PhysicsDefaults.EdgeSpringDamp;
     var pressure:Float = PhysicsDefaults.Pressure;
     var label:String = null;
     var config:BlockConfig;

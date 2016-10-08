@@ -13,6 +13,7 @@ import openfl.Lib;
 import openfl.display.*;
 import blocks.*;
 import enums.*;
+import constants.PhysicsDefaults;
 
 class PlayState extends FlxState
 {
@@ -27,10 +28,9 @@ class PlayState extends FlxState
     private static var MATERIAL_GROUND:Int = 0;
     private static var MATERIAL_TYPE_YELLOW:Int = 1;
     private static var MATERIAL_TYPE_GREEN:Int = 2;
-    private static var MATERIAL_BLOB:Int   = 3;
+    private static var MATERIAL_TYPE_RED:Int   = 3;
     
-    //private var blobBody:PressureBody;
-    private var blobPiece:GamePiece;
+    private var redPiece:GamePiece;
     private var yellowPiece:GamePiece;
     private var greenPiece:GamePiece;
     private var collideYellow:Bool = false;
@@ -40,8 +40,10 @@ class PlayState extends FlxState
     
     public var defaultMaterial:MaterialPair;
     
-    private var blobMoveLeft:Bool = false;
-    private var blobMoveRight:Bool = false;
+    private var pieceLeft:Bool = false;
+    private var pieceRight:Bool = false;
+    private var pieceCCW:Bool = false;
+    private var pieceCW:Bool = false;
     
     private var input:Input;
 	override public function create():Void
@@ -60,8 +62,10 @@ class PlayState extends FlxState
 		super.create();
         
         input = new Input();
-        input.AddInputCommand(FlxKey.LEFT, setBlobMovingLeft);
-        input.AddInputCommand(FlxKey.RIGHT, setBlobMovingRight);
+        input.AddInputCommand(FlxKey.A, pushPieceLeft);
+        input.AddInputCommand(FlxKey.D, pushPieceRight);
+        input.AddInputCommand(FlxKey.LEFT, rotatePieceCCW);
+        input.AddInputCommand(FlxKey.RIGHT, rotatePieceCW);
         
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -102,19 +106,19 @@ class PlayState extends FlxState
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
         render.SetMaterialDrawOptions(MATERIAL_TYPE_YELLOW, DrawDebugWorld.COLOR_YELLOW, true);
         render.SetMaterialDrawOptions(MATERIAL_TYPE_GREEN, DrawDebugWorld.COLOR_GREEN, true);
-        render.SetMaterialDrawOptions(MATERIAL_BLOB, DrawDebugWorld.COLOR_RED, true);
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_RED, DrawDebugWorld.COLOR_RED, true);
     }
         
     public function getMaterialMatrix():MaterialMatrix 
     {
         var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, 4);
         
-        materialMatrix.SetMaterialPairFilterCallback(MATERIAL_BLOB, MATERIAL_TYPE_YELLOW, collisionFilterYellow);
-        materialMatrix.SetMaterialPairFilterCallback(MATERIAL_BLOB, MATERIAL_TYPE_GREEN, collisionFilterGreen);
+        materialMatrix.SetMaterialPairFilterCallback(MATERIAL_TYPE_RED, MATERIAL_TYPE_YELLOW, collisionFilterYellow);
+        materialMatrix.SetMaterialPairFilterCallback(MATERIAL_TYPE_RED, MATERIAL_TYPE_GREEN, collisionFilterGreen);
         
         //default material friction is 0.3, pretty slippery
         //give the blob more friction, 0.75
-        materialMatrix.SetMaterialPairData(MATERIAL_GROUND, MATERIAL_BLOB, 0.75, 0.8);
+        materialMatrix.SetMaterialPairData(MATERIAL_GROUND, MATERIAL_TYPE_RED, 0.75, 0.8);
         
         return materialMatrix;
     }
@@ -148,16 +152,26 @@ class PlayState extends FlxState
         
         collideYellow = false;
         collideGreen = false;
-        blobMoveLeft = false;
-        blobMoveRight = false;
+        pieceCCW = false;
+        pieceCW = false;
+        pieceLeft = false;
+        pieceRight = false;
     }
     
-    private function setBlobMovingLeft(){
-        blobMoveLeft = true;
+    private function pushPieceLeft():Void{
+        pieceLeft = true;
     }
     
-    private function setBlobMovingRight(){
-        blobMoveRight = true;
+    private function pushPieceRight():Void{
+        pieceRight = true;
+    }
+    
+    private function rotatePieceCCW(){
+        pieceCCW = true;
+    }
+    
+    private function rotatePieceCW(){
+        pieceCW = true;
     }
     
     private function Draw():Void
@@ -187,46 +201,36 @@ class PlayState extends FlxState
             physicsWorld.AddBody(groundBodies[i]);
         }
         
-        //build the big red blob
-        var mass:Float = 1.0;
+        //build the game pieces
+        /*var mass:Float = 1.0;
         var angle:Float = 0.0;
-        var shapeK:Float = 200;
-        var shapeDamp:Float = 100;
-        var edgeK:Float = 100;
-        var edgeDamp:Float = 50;
-        var pressureAmount:Float = 100.0;
-        var externalK:Float = 50.0;
-        var externalDamp:Float = 20.0;
+        var shapeK:Float = 450;
+        var shapeDamp:Float = 15;
+        var edgeK:Float = 450;
+        var edgeDamp:Float = 15;
+        var pressureAmount:Float = 250.0;
+        var externalK:Float = 450.0;
+        var externalDamp:Float = 15.0;*/
         
-        shapeBuilder = shapeBuilder.type(ShapeType.Polygon).size(1.0).facetCount(16);
+        shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
         blockBuilder = blockBuilder.setPosition(new Vector2(0, 0));
+        blockBuilder = blockBuilder.setMass(PhysicsDefaults.Mass);
         blockBuilder = blockBuilder.setKinematic(false);
         blockBuilder = blockBuilder.setType(BlockType.Normal);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
-        blockBuilder = blockBuilder.setMass(mass);
-        blockBuilder = blockBuilder.setShapeK(shapeK);
-        blockBuilder = blockBuilder.setShapeDamp(shapeDamp);
-        blockBuilder = blockBuilder.setEdgeK(edgeK);
-        blockBuilder = blockBuilder.setEdgeDamp(edgeDamp);
-        blockBuilder = blockBuilder.setPressure(pressureAmount);
         blockBuilder = blockBuilder.setConfig(new BlockConfig());
-        blockBuilder = blockBuilder.setMaterial(MATERIAL_BLOB);
-        blockBuilder = blockBuilder.setLabel("Blob");
-        pieceBuilder.setPieceType(PieceType.Single);
-        blobPiece = pieceBuilder.create();
-        addGamePiece(blobPiece);
+        //blockBuilder = blockBuilder.setLabel("Lychee");
+        blockBuilder = blockBuilder.setMaterial(MATERIAL_TYPE_RED);
+        pieceBuilder.setPieceType(PieceType.Tetromino).setTetrominoShape(TetrominoShape.Square);
+        redPiece = pieceBuilder.create();
+        addGamePiece(redPiece);
         
         //build the yellow custom block
-        shapeBuilder = shapeBuilder.type(ShapeType.Custom).size(1).vertexes(getBigSquareShape(1.0));
         blockBuilder.setPressure(0).setPosition(new Vector2( -6, 0)).setLabel(null);
-        blockBuilder = blockBuilder.setPressure(0).setMaterial(MATERIAL_TYPE_YELLOW);
+        blockBuilder = blockBuilder.setMaterial(MATERIAL_TYPE_YELLOW);
         pieceBuilder.setLocation(new Vector2( -6, 0));
         yellowPiece = pieceBuilder.create();
         addGamePiece(yellowPiece);
-        
-        //var springBody:GameBlock = blockBuilder.create();
-        //springBody.Material = MATERIAL_TYPE_YELLOW;
-        //physicsWorld.AddBody(springBody);
         
         //build the green compound block
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
@@ -234,8 +238,8 @@ class PlayState extends FlxState
         blockBuilder = blockBuilder.setType(BlockType.Normal).setMaterial(MATERIAL_TYPE_GREEN).setCollisionCallback(collisionCallbackGreen);
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
         pieceBuilder = pieceBuilder.setPieceType(PieceType.Tetromino);
-        pieceBuilder = pieceBuilder.setAttachSpringK(externalK);
-        pieceBuilder = pieceBuilder.setAttachSpringDamp(externalDamp);
+        //pieceBuilder = pieceBuilder.setAttachSpringK(externalK);
+        //pieceBuilder = pieceBuilder.setAttachSpringDamp(externalDamp);
         pieceBuilder = pieceBuilder.setTetrominoShape(TetrominoShape.Square);
         pieceBuilder = pieceBuilder.setLocation(new Vector2(5.5, -3));
         
@@ -277,6 +281,7 @@ class PlayState extends FlxState
         var penetrationThreshhold:Float = 10.0;
         
         physicsWorld = new World(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
+        physicsWorld.SetBodyDamping(0.4);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
     }
         
@@ -303,17 +308,27 @@ class PlayState extends FlxState
     private function MoveAccumulator(elapsed:Float){
         
         var rotationAmount:Float = 0;
+        var pushAmount:Float = 0;
         
-        if (blobMoveLeft)
+        if (pieceCCW)
         {
             rotationAmount += -8;
         }
-        if (blobMoveRight)
+        if (pieceCW)
         {
             rotationAmount += 8;
         }
         
-        if (rotationAmount != 0 && Math.abs(blobPiece.GamePieceOmega()) < 6.0){
+        if (pieceLeft){
+            pushAmount -= 4;
+        }
+        if (pieceRight){
+            pushAmount += 4;
+        }
+        if (pushAmount != 0){
+            greenPiece.ApplyForce(new Vector2(pushAmount, 0));
+        }
+        if (rotationAmount != 0 && Math.abs(redPiece.GamePieceOmega()) < 6.0){
             greenPiece.ApplyTorque(rotationAmount);
         }
     }
