@@ -13,6 +13,7 @@ import openfl.Lib;
 import openfl.display.*;
 import blocks.*;
 import enums.*;
+import flixel.math.FlxRandom;
 import constants.PhysicsDefaults;
 
 class PlayState extends FlxState
@@ -29,6 +30,7 @@ class PlayState extends FlxState
     private static var MATERIAL_TYPE_YELLOW:Int = 1;
     private static var MATERIAL_TYPE_GREEN:Int = 2;
     private static var MATERIAL_TYPE_RED:Int   = 3;
+    private static var MATERIAL_TYPE_BLUE:Int   = 4;
     
     private var redPiece:GamePiece;
     private var yellowPiece:GamePiece;
@@ -44,6 +46,8 @@ class PlayState extends FlxState
     private var pieceRight:Bool = false;
     private var pieceCCW:Bool = false;
     private var pieceCW:Bool = false;
+    
+    private var random:FlxRandom;
     
     private var input:Input;
 	override public function create():Void
@@ -71,6 +75,8 @@ class PlayState extends FlxState
         defaultMaterial.Collide = true;
         defaultMaterial.Friction = 0.3;
         defaultMaterial.Elasticity = 0.8;
+        
+        random = new FlxRandom();
         
         //blockSprings = new Array<ExternalSpring>();
         gamePieces = new Array<GamePiece>();
@@ -107,11 +113,12 @@ class PlayState extends FlxState
         render.SetMaterialDrawOptions(MATERIAL_TYPE_YELLOW, DrawDebugWorld.COLOR_YELLOW, true);
         render.SetMaterialDrawOptions(MATERIAL_TYPE_GREEN, DrawDebugWorld.COLOR_GREEN, true);
         render.SetMaterialDrawOptions(MATERIAL_TYPE_RED, DrawDebugWorld.COLOR_RED, true);
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_BLUE, DrawDebugWorld.COLOR_BLUE, true);
     }
         
     public function getMaterialMatrix():MaterialMatrix 
     {
-        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, 4);
+        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, 5);
         
         materialMatrix.SetMaterialPairFilterCallback(MATERIAL_TYPE_RED, MATERIAL_TYPE_YELLOW, collisionFilterYellow);
         materialMatrix.SetMaterialPairFilterCallback(MATERIAL_TYPE_RED, MATERIAL_TYPE_GREEN, collisionFilterGreen);
@@ -251,6 +258,7 @@ class PlayState extends FlxState
     function addGamePiece(newGamePiece:GamePiece) 
     {
         for (i in 0...newGamePiece.Blocks.length){
+            newGamePiece.Blocks[i].Material = random.int(1, 4);
             physicsWorld.AddBody(newGamePiece.Blocks[i]);
             newGamePiece.Blocks[i].GroupNumber = pieceCounter;
         }
