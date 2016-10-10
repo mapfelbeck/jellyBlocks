@@ -110,12 +110,102 @@ class PlayState extends FlxState
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_YELLOW, DrawDebugWorld.COLOR_YELLOW, true);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_GREEN, DrawDebugWorld.COLOR_GREEN, true);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_RED, DrawDebugWorld.COLOR_RED, true);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_BLUE, DrawDebugWorld.COLOR_BLUE, true);
+        var colors:Array<Int> = makeColors(.8, .9, 4);
+        for (i in 0...colors.length){
+            //render.SetMaterialDrawOptions(i, DrawDebugWorld.COLOR_YELLOW, true);
+            trace("Color " + i + " is " + colors[i]);
+        }
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_YELLOW, colors[3], true);
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_GREEN, colors[1], true);
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_RED, colors[0], true);
+        render.SetMaterialDrawOptions(MATERIAL_TYPE_BLUE, colors[2], true);
     }
+    
+    private function makeColors(saturation:Float, value:Float, count:Int):Array<Int>
+    {
+        var iter:Float = 1.0 / count;
+        var colors:Array<Int> = new Array<Int>();
+        for (i in 0...count){
+            colors.push(HSVtoRGB(i * iter, saturation, value));
+        }
+        return colors;
+    }
+    
+    private function HSVtoRGB(h:Float, s:Float, v:Float):Int{
+        var r:Float = 0;
+        var g:Float = 0;
+        var b:Float = 0;
         
+        var i:Int = Math.floor(h * 6);
+        var f:Float = h * 6 - i;
+        var p:Float = v * (1 - s);
+        var q:Float = v * (1 - f * s);
+        var t:Float = v * (1 - (1 - f) * s);
+        
+        switch(i % 6){
+            case 0:
+                r = v;
+                g = t;
+                b = p;
+            case 1:
+                r = q;
+                g = v;
+                b = p;
+            case 2:
+                r = p;
+                g = v;
+                b = t;
+            case 3:
+                r = p;
+                g = q;
+                b = v;
+            case 4:
+                r = t;
+                g = p;
+                b = v;
+            case 5:
+                r = v;
+                g = p;
+                b = q;
+        }
+        
+        var rInt:Int = Std.int(r * 255.0);
+        var gInt:Int = Std.int(g * 255.0);
+        var bInt:Int = Std.int(b * 255.0);
+        
+        
+        return (rInt << 16) + (gInt << 8) + (bInt);
+    }
+/*
+ * Converts an HSV color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes h, s, and v are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ *
+ * @param   Number  h       The hue
+ * @param   Number  s       The saturation
+ * @param   Number  v       The value
+ * @return  Array           The RGB representation
+function hsvToRgb(h, s, v){
+    var r, g, b;
+
+    var i = Math.floor(h * 6);
+    var f = h * 6 - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+
+    switch(i % 6){
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+
+    return [r * 255, g * 255, b * 255];
+}*/
     public function getMaterialMatrix():MaterialMatrix 
     {
         var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, 5);
