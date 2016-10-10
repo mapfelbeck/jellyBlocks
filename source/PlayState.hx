@@ -27,16 +27,8 @@ class PlayState extends FlxState
 
     var physicsWorld:World;
     private static var MATERIAL_GROUND:Int = 0;
-    private static var MATERIAL_TYPE_YELLOW:Int = 1;
-    private static var MATERIAL_TYPE_GREEN:Int = 2;
-    private static var MATERIAL_TYPE_RED:Int   = 3;
-    private static var MATERIAL_TYPE_BLUE:Int   = 4;
     
-    private var redPiece:GamePiece;
-    private var yellowPiece:GamePiece;
-    private var greenPiece:GamePiece;
-    private var collideYellow:Bool = false;
-    private var collideGreen:Bool = false;
+    private var gamePiece:GamePiece;
     private var blockSprings:Array<ExternalSpring>;
     private var gamePieces:Array<GamePiece>;
     
@@ -44,12 +36,17 @@ class PlayState extends FlxState
     
     private var pieceLeft:Bool = false;
     private var pieceRight:Bool = false;
+    private var pieceUp:Bool = false;
+    private var pieceDown:Bool = false;
     private var pieceCCW:Bool = false;
     private var pieceCW:Bool = false;
     
     private var random:FlxRandom;
     
     private var input:Input;
+    
+    private var colorCount:Int = 6;
+    
 	override public function create():Void
 	{
         #if mobile
@@ -68,17 +65,18 @@ class PlayState extends FlxState
         input = new Input();
         input.AddInputCommand(FlxKey.A, pushPieceLeft);
         input.AddInputCommand(FlxKey.D, pushPieceRight);
+        input.AddInputCommand(FlxKey.W, pushPieceUp);
+        input.AddInputCommand(FlxKey.S, pushPieceDown);
         input.AddInputCommand(FlxKey.LEFT, rotatePieceCCW);
         input.AddInputCommand(FlxKey.RIGHT, rotatePieceCW);
         
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
-        defaultMaterial.Friction = 0.3;
+        defaultMaterial.Friction = 0.75;
         defaultMaterial.Elasticity = 0.8;
         
         random = new FlxRandom();
         
-        //blockSprings = new Array<ExternalSpring>();
         gamePieces = new Array<GamePiece>();
         
         createWorld();
@@ -110,15 +108,10 @@ class PlayState extends FlxState
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
-        var colors:Array<Int> = makeColors(.8, .9, 4);
-        for (i in 0...colors.length){
-            //render.SetMaterialDrawOptions(i, DrawDebugWorld.COLOR_YELLOW, true);
-            trace("Color " + i + " is " + colors[i]);
+        var colors:Array<Int> = makeColors(.8, .9, colorCount);
+        for (i in 1...colors.length + 1){
+            render.SetMaterialDrawOptions(i, colors[i-1], true);
         }
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_YELLOW, colors[3], true);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_GREEN, colors[1], true);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_RED, colors[0], true);
-        render.SetMaterialDrawOptions(MATERIAL_TYPE_BLUE, colors[2], true);
     }
     
     private function makeColors(saturation:Float, value:Float, count:Int):Array<Int>
@@ -176,65 +169,12 @@ class PlayState extends FlxState
         
         return (rInt << 16) + (gInt << 8) + (bInt);
     }
-/*
- * Converts an HSV color value to RGB. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
- * Assumes h, s, and v are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 255].
- *
- * @param   Number  h       The hue
- * @param   Number  s       The saturation
- * @param   Number  v       The value
- * @return  Array           The RGB representation
-function hsvToRgb(h, s, v){
-    var r, g, b;
-
-    var i = Math.floor(h * 6);
-    var f = h * 6 - i;
-    var p = v * (1 - s);
-    var q = v * (1 - f * s);
-    var t = v * (1 - (1 - f) * s);
-
-    switch(i % 6){
-        case 0: r = v, g = t, b = p; break;
-        case 1: r = q, g = v, b = p; break;
-        case 2: r = p, g = v, b = t; break;
-        case 3: r = p, g = q, b = v; break;
-        case 4: r = t, g = p, b = v; break;
-        case 5: r = v, g = p, b = q; break;
-    }
-
-    return [r * 255, g * 255, b * 255];
-}*/
+    
     public function getMaterialMatrix():MaterialMatrix 
     {
-        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, 5);
-        
-        materialMatrix.SetMaterialPairFilterCallback(MATERIAL_TYPE_RED, MATERIAL_TYPE_YELLOW, collisionFilterYellow);
-        materialMatrix.SetMaterialPairFilterCallback(MATERIAL_TYPE_RED, MATERIAL_TYPE_GREEN, collisionFilterGreen);
-        
-        //default material friction is 0.3, pretty slippery
-        //give the blob more friction, 0.75
-        materialMatrix.SetMaterialPairData(MATERIAL_GROUND, MATERIAL_TYPE_RED, 0.75, 0.8);
+        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, colorCount + 1);
         
         return materialMatrix;
-    }
-    
-    function collisionFilterYellow(bodyA:Body, bodyApm:Int, bodyB:Body, bodyBpmA:Int, bodyBpmB:Int, hitPoint:Vector2, relDot:Float):Bool
-    {
-        collideYellow = true;
-        return false;
-    }
-    
-    function collisionFilterGreen(bodyA:Body, bodyApm:Int, bodyB:Body, bodyBpmA:Int, bodyBpmB:Int, hitPoint:Vector2, relDot:Float):Bool
-    {
-        return false;
-    }
-    
-    function collisionCallbackGreen(otherBody:Body):Void{
-        if(otherBody.Label == "Blob"){
-            collideGreen = true;
-        }
     }
     
     override public function update(elapsed:Float):Void
@@ -247,12 +187,12 @@ function hsvToRgb(h, s, v){
 
         Draw();
         
-        collideYellow = false;
-        collideGreen = false;
         pieceCCW = false;
         pieceCW = false;
         pieceLeft = false;
         pieceRight = false;
+        pieceUp = false;
+        pieceDown = false;
     }
     
     private function pushPieceLeft():Void{
@@ -261,6 +201,14 @@ function hsvToRgb(h, s, v){
     
     private function pushPieceRight():Void{
         pieceRight = true;
+    }
+    
+    private function pushPieceUp():Void{
+        pieceUp = true;
+    }
+    
+    private function pushPieceDown():Void{
+        pieceDown = true;
     }
     
     private function rotatePieceCCW(){
@@ -290,24 +238,13 @@ function hsvToRgb(h, s, v){
         var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
         var blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY);
         var pieceBuilder:GamePieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
-     
+
         //create static bodies for the container
         ground = new GameGround(2, 16, 20, new Vector2(0, 2), blockBuilder);
         var groundBodies:Array<Body> = ground.Assemble();
         for (i in 0...groundBodies.length){
             physicsWorld.AddBody(groundBodies[i]);
         }
-        
-        //build the game pieces
-        /*var mass:Float = 1.0;
-        var angle:Float = 0.0;
-        var shapeK:Float = 450;
-        var shapeDamp:Float = 15;
-        var edgeK:Float = 450;
-        var edgeDamp:Float = 15;
-        var pressureAmount:Float = 250.0;
-        var externalK:Float = 450.0;
-        var externalDamp:Float = 15.0;*/
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
         blockBuilder = blockBuilder.setPosition(new Vector2(0, 0));
@@ -316,39 +253,34 @@ function hsvToRgb(h, s, v){
         blockBuilder = blockBuilder.setType(BlockType.Normal);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         blockBuilder = blockBuilder.setConfig(new BlockConfig());
-        //blockBuilder = blockBuilder.setLabel("Lychee");
-        blockBuilder = blockBuilder.setMaterial(MATERIAL_TYPE_RED);
         pieceBuilder.setPieceType(PieceType.Tetromino).setTetrominoShape(TetrominoShape.Square);
-        redPiece = pieceBuilder.create();
-        addGamePiece(redPiece);
+        gamePiece = pieceBuilder.create();
+        addGamePiece(gamePiece);
         
         //build the yellow custom block
-        blockBuilder.setPressure(0).setPosition(new Vector2( -6, 0)).setLabel(null);
-        blockBuilder = blockBuilder.setMaterial(MATERIAL_TYPE_YELLOW);
+        blockBuilder.setPosition(new Vector2( -6, 0)).setLabel(null);
         pieceBuilder.setLocation(new Vector2( -6, 0));
-        yellowPiece = pieceBuilder.create();
-        addGamePiece(yellowPiece);
+        gamePiece = pieceBuilder.create();
+        addGamePiece(gamePiece);
         
         //build the green compound block
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
         
-        blockBuilder = blockBuilder.setType(BlockType.Normal).setMaterial(MATERIAL_TYPE_GREEN).setCollisionCallback(collisionCallbackGreen);
+        blockBuilder = blockBuilder.setType(BlockType.Normal);
         shapeBuilder = shapeBuilder.type(ShapeType.Square);
         pieceBuilder = pieceBuilder.setPieceType(PieceType.Tetromino);
-        //pieceBuilder = pieceBuilder.setAttachSpringK(externalK);
-        //pieceBuilder = pieceBuilder.setAttachSpringDamp(externalDamp);
         pieceBuilder = pieceBuilder.setTetrominoShape(TetrominoShape.Square);
         pieceBuilder = pieceBuilder.setLocation(new Vector2(5.5, -3));
         
-        greenPiece = pieceBuilder.create();        
-        addGamePiece(greenPiece);
+        gamePiece = pieceBuilder.create();        
+        addGamePiece(gamePiece);
     }
     
     private static var pieceCounter:Int = 0;
     function addGamePiece(newGamePiece:GamePiece) 
     {
         for (i in 0...newGamePiece.Blocks.length){
-            newGamePiece.Blocks[i].Material = random.int(1, 4);
+            newGamePiece.Blocks[i].Material = random.int(1, colorCount);
             physicsWorld.AddBody(newGamePiece.Blocks[i]);
             newGamePiece.Blocks[i].GroupNumber = pieceCounter;
         }
@@ -406,28 +338,34 @@ function hsvToRgb(h, s, v){
     private function MoveAccumulator(elapsed:Float){
         
         var rotationAmount:Float = 0;
-        var pushAmount:Float = 0;
+        var pushAmount:Vector2 = new Vector2(0, 0);
         
         if (pieceCCW)
         {
-            rotationAmount += -8;
+            rotationAmount -= 1;
         }
         if (pieceCW)
         {
-            rotationAmount += 8;
+            rotationAmount += 1;
         }
         
         if (pieceLeft){
-            pushAmount -= 4;
+            pushAmount.x -= 4;
         }
         if (pieceRight){
-            pushAmount += 4;
+            pushAmount.x += 4;
         }
-        if (pushAmount != 0){
-            greenPiece.ApplyForce(new Vector2(pushAmount, 0));
+        if (pieceUp){
+            pushAmount.y -= 4;
         }
-        if (rotationAmount != 0 && Math.abs(redPiece.GamePieceOmega()) < 6.0){
-            greenPiece.ApplyTorque(rotationAmount);
+        if (pieceDown){
+            pushAmount.y += 4;
+        }
+        if (pushAmount.x != 0 || pushAmount.y !=0){
+            gamePiece.ApplyForce(pushAmount);
+        }
+        if (rotationAmount != 0 && Math.abs(gamePiece.GamePieceOmega()) < 6.0){
+            gamePiece.ApplyTorque(rotationAmount);
         }
     }
 }
