@@ -9,7 +9,9 @@ import jellyPhysics.math.Vector2;
  */
 class DampingGameBlock extends GameBlock
 {
-
+    public var timeTillDamping:Float;
+    public var dampingRate:Float;
+    public var dampingMax:Float;
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2, 
     angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool, 
     bodyShapeSpringK:Float, bodyShapeSpringDamp:Float, edgeSpringK:Float, 
@@ -21,10 +23,10 @@ class DampingGameBlock extends GameBlock
     override public function Update(elapsed:Float):Void 
     {
         super.Update(elapsed);
-        if (lifeTime > config.timeTillDamping)
+        if (lifeTime > timeTillDamping)
         {
-            var dampingStep:Float = elapsed * config.dampingRate;
-            VelocityDamping = Math.min(VelocityDamping + dampingStep, config.dampingMax);
+            var dampingStep:Float = elapsed * dampingRate;
+            VelocityDamping = Math.min(VelocityDamping + dampingStep, dampingMax);
         }
     }
 }

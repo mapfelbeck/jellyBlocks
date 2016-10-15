@@ -1,4 +1,5 @@
 package;
+import enums.PressType;
 import flixel.input.keyboard.FlxKey;
 import flixel.FlxG;
 import haxe.Constraints.Function;
@@ -9,27 +10,65 @@ import haxe.Constraints.Function;
  */
 class Input
 {
-    private var keys:Array<FlxKey>;
-    private var actionMap:Map<FlxKey, Array<Function>>;
+    private var downKeys:Array<FlxKey>;
+    private var pressedKeys:Array<FlxKey>;
+    private var upKeys:Array<FlxKey>;
+    private var actionDownMap:Map<FlxKey, Array<Function>>;
+    private var actionPressedMap:Map<FlxKey, Array<Function>>;
+    private var actionUpMap:Map<FlxKey, Array<Function>>;
     public function new() 
     {
-        keys = new Array<FlxKey>();
-        actionMap = new Map<FlxKey, Array<Function>>();
+        downKeys = new Array<FlxKey>();
+        pressedKeys = new Array<FlxKey>();
+        upKeys = new Array<FlxKey>();
+        actionDownMap = new Map<FlxKey, Array<Function>>();
+        actionPressedMap = new Map<FlxKey, Array<Function>>();
+        actionUpMap = new Map<FlxKey, Array<Function>>();
     }
     
     public function Update(elapsed:Float) 
     {
-        for (key in keys){
+        for (key in downKeys){
+            if (FlxG.keys.anyJustPressed([key])){
+                for (action in actionDownMap.get(key)){
+                    action();
+                }
+            }
+        }
+        for (key in pressedKeys){
             if (FlxG.keys.anyPressed([key])){
-                for (action in actionMap.get(key)){
+                for (action in actionPressedMap.get(key)){
+                    action();
+                }
+            }
+        }
+        for (key in upKeys){
+            if (FlxG.keys.anyJustReleased([key])){
+                for (action in actionUpMap.get(key)){
                     action();
                 }
             }
         }
     }
     
-    public function AddInputCommand(key:FlxKey, action:Function) 
-    {
+    public function AddInputCommand(key:FlxKey, action:Function, pressType:PressType) 
+    {/*
+    private var upKeys:Array<FlxKey>;
+    private var actionDownMap:Map<FlxKey, Array<Function>>;*/
+        var keys:Array<FlxKey> = null;
+        var actionMap:Map<FlxKey, Array<Function>> = null;
+        switch(pressType){
+            case PressType.Down:
+                keys = downKeys;
+                actionMap = actionDownMap;
+            case PressType.Pressed:
+                keys = pressedKeys;
+                actionMap = actionPressedMap;
+            case PressType.Up:
+                keys = upKeys;
+                actionMap = actionUpMap;
+        }
+        
         var actionArray:Array<Function> = null;
         if (actionMap.exists(key)){
             actionArray = actionMap.get(key);

@@ -1,6 +1,6 @@
 package builders;
 import blocks.BlockConfig;
-import blocks.GameBlock;
+import blocks.*;
 import builders.GameBlockBuilder;
 import constants.PhysicsDefaults;
 import enums.BlockType;
@@ -40,10 +40,17 @@ class GameBlockBuilder
         switch(type){
             case BlockType.Normal:
                 finalBlock = new GameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
+            case BlockType.Damping:
+                var block:DampingGameBlock = null;
+                block = new DampingGameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
+                block.timeTillDamping = 0.5;
+                block.dampingRate = 0.15;
+                block.dampingMax = 0.98;
+                finalBlock = block;
             default:
         }
         finalBlock.Material = material;
-        finalBlock.CollisionCallback = collisionCallback;
+        //finalBlock.CollisionCallback = collisionCallback;
         if (label != null){
             finalBlock.Label = label;
         }
@@ -144,10 +151,10 @@ class GameBlockBuilder
         return this;
     }
     
-    public function setCollisionCallback(callback:Function):GameBlockBuilder{
+    /*public function setCollisionCallback(callback:Function):GameBlockBuilder{
         this.collisionCallback = callback;
         return this;
-    }
+    }*/
     
     public function setLabel(string:String):GameBlockBuilder
     {

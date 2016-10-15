@@ -63,12 +63,14 @@ class PlayState extends FlxState
 		super.create();
         
         input = new Input();
-        input.AddInputCommand(FlxKey.A, pushPieceLeft);
-        input.AddInputCommand(FlxKey.D, pushPieceRight);
-        input.AddInputCommand(FlxKey.W, pushPieceUp);
-        input.AddInputCommand(FlxKey.S, pushPieceDown);
-        input.AddInputCommand(FlxKey.LEFT, rotatePieceCCW);
-        input.AddInputCommand(FlxKey.RIGHT, rotatePieceCW);
+        input.AddInputCommand(FlxKey.A, pushPieceLeft, PressType.Pressed);
+        input.AddInputCommand(FlxKey.D, pushPieceRight, PressType.Pressed);
+        input.AddInputCommand(FlxKey.W, pushPieceUp, PressType.Pressed);
+        input.AddInputCommand(FlxKey.S, pushPieceDown, PressType.Pressed);
+        input.AddInputCommand(FlxKey.LEFT, rotatePieceCCW, PressType.Pressed);
+        input.AddInputCommand(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
+        input.AddInputCommand(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
+        input.AddInputCommand(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
         
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -114,12 +116,13 @@ class PlayState extends FlxState
         }
     }
     
+    private static var colorAdjust:Float = 0.0;
     private function makeColors(saturation:Float, value:Float, count:Int):Array<Int>
     {
         var iter:Float = 1.0 / count;
         var colors:Array<Int> = new Array<Int>();
         for (i in 0...count){
-            colors.push(HSVtoRGB(i * iter, saturation, value));
+            colors.push(HSVtoRGB(((i * iter) + colorAdjust) % 1.0, saturation, value));
         }
         return colors;
     }
@@ -219,6 +222,16 @@ class PlayState extends FlxState
         pieceCW = true;
     }
     
+    private function adjustColorUp(){
+        colorAdjust = (colorAdjust + 0.05) % 1.0;
+        setupDrawParam(debugRender);
+    }
+    
+    private function adjustColorDown(){
+        colorAdjust = (colorAdjust + 0.95) % 1.0;
+        setupDrawParam(debugRender);
+    }
+    
     private function Draw():Void
     {
         debugRender.Draw();
@@ -247,39 +260,43 @@ class PlayState extends FlxState
         }
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
-        blockBuilder = blockBuilder.setPosition(new Vector2(0, 0));
         blockBuilder = blockBuilder.setMass(PhysicsDefaults.Mass);
         blockBuilder = blockBuilder.setKinematic(false);
-        blockBuilder = blockBuilder.setType(BlockType.Normal);
+        blockBuilder = blockBuilder.setType(BlockType.Damping);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         blockBuilder = blockBuilder.setConfig(new BlockConfig());
         pieceBuilder.setPieceType(PieceType.Tetromino).setTetrominoShape(TetrominoShape.Square);
-        gamePiece = pieceBuilder.create();
-        addGamePiece(gamePiece);
         
-        //build the yellow custom block
-        blockBuilder.setPosition(new Vector2( -6, 0)).setLabel(null);
-        pieceBuilder.setLocation(new Vector2( -6, 0));
-        gamePiece = pieceBuilder.create();
-        addGamePiece(gamePiece);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)));
+        /*addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, -4)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, -4)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, -4)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, -4)));
         
-        //build the green compound block
-        shapeBuilder = shapeBuilder.type(ShapeType.Square);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 0)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, 0)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, 0)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 0)));
         
-        blockBuilder = blockBuilder.setType(BlockType.Normal);
-        shapeBuilder = shapeBuilder.type(ShapeType.Square);
-        pieceBuilder = pieceBuilder.setPieceType(PieceType.Tetromino);
-        pieceBuilder = pieceBuilder.setTetrominoShape(TetrominoShape.Square);
-        pieceBuilder = pieceBuilder.setLocation(new Vector2(5.5, -3));
-        
-        gamePiece = pieceBuilder.create();        
-        addGamePiece(gamePiece);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 4)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, 4)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, 4)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 4)));*/
     }
     
-    private static var pieceCounter:Int = 0;
+    function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
+    {
+        pieceBuilder = pieceBuilder.setLocation(location);
+        return pieceBuilder.create();
+    }
+    
+    private static var pieceCounter:Int = 1;
+    //private static var colorCounter:Int = 0;
     function addGamePiece(newGamePiece:GamePiece) 
     {
         for (i in 0...newGamePiece.Blocks.length){
+            //newGamePiece.Blocks[i].Material = (colorCounter % colorCount)+1;
+            //colorCounter++;
             newGamePiece.Blocks[i].Material = random.int(1, colorCount);
             physicsWorld.AddBody(newGamePiece.Blocks[i]);
             newGamePiece.Blocks[i].GroupNumber = pieceCounter;
@@ -287,6 +304,7 @@ class PlayState extends FlxState
         
         gamePieces.push(newGamePiece);
         pieceCounter++;
+        gamePiece = newGamePiece;
     }
     
     private function getBigSquareShape(size:Float):Array<Vector2>{
