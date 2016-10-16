@@ -18,10 +18,10 @@ class DeflatingGameBlock extends DampingGameBlock
     override public function Update(elapsed:Float):Void 
     {
         super.Update(elapsed);
-        /*if (!popping && lifeTime > config.timeTillDamping && !IsAsleep)
+        if (!popping && lifeTime > config.timeTillDamping && !IsAsleep)
         {
             GasAmount = Math.max(
                 GasAmount - elapsed * GameConstants.GasPressure * config.deflateRate, 0);
-        }*/
+        }
     }
 }

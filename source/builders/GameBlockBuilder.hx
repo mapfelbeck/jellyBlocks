@@ -33,6 +33,18 @@ class GameBlockBuilder
     
     public function new() 
     {
+        config = new BlockConfig();
+        config.timeTillDamping = 0.5;
+        config.dampingRate = 0.15;
+        config.dampingMax = 0.98;
+        
+        config.deflateRate = .25;
+        config.timeTillDeflate = 5;
+        
+        config.timeTillFreeze = 2;
+        config.freezeWaitTimerLength = 0.5;
+        config.freezeDistortionThreshhold = 0.8;
+        config.freezeVelocityThreshhold = 0.08;
     }
     
     public function create():GameBlock{
@@ -41,12 +53,17 @@ class GameBlockBuilder
             case BlockType.Normal:
                 finalBlock = new GameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
             case BlockType.Damping:
-                var block:DampingGameBlock = null;
-                block = new DampingGameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
-                block.timeTillDamping = 0.5;
-                block.dampingRate = 0.15;
-                block.dampingMax = 0.98;
-                finalBlock = block;
+                var dampingBlock:DampingGameBlock = null;
+                dampingBlock = new DampingGameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
+                finalBlock = dampingBlock;
+            case BlockType.Deflating:
+                var deflatingBlock:DeflatingGameBlock = null;
+                deflatingBlock = new DeflatingGameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
+                finalBlock = deflatingBlock;
+            /*case BlockType.Freeze:
+                var freezingBlock:FreezingGameBlock = null;
+                freezingBlock = new FreezingGameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
+                finalBlock = freezingBlock;*/
             default:
         }
         finalBlock.Material = material;

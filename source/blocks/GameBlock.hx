@@ -43,7 +43,7 @@ class GameBlock extends PressureBody
     public function get_CollidedThisFrame(){ return collidedThisFrame;}
     public function set_CollidedThisFrame(value:Bool){ return collidedThisFrame = value;}
     
-    public var NormalColor:FlxColor = FlxColor.WHITE;
+    /*public var NormalColor:FlxColor = FlxColor.WHITE;
     private var blockColor:FlxColor;
     public var BlockColor(get, set):FlxColor;
     public function get_BlockColor(){
@@ -51,7 +51,7 @@ class GameBlock extends PressureBody
     }
     public function set_BlockColor(value:FlxColor){
         return blockColor = value;
-    }
+    }*/
     
     private var config:BlockConfig;
     private var collideTime:Float = 0.0;
@@ -101,7 +101,7 @@ class GameBlock extends PressureBody
         }
 //if (Std.is(body, SpringBody)){
         var other:GameBlock = Std.instance(otherBlock, GameBlock);
-        if (other != null && NormalColor == other.NormalColor)
+        if (other != null && Material == other.Material)
         {
             if (CollisionList.indexOf(other) == -1)
             {
@@ -138,7 +138,7 @@ class GameBlock extends PressureBody
         //if a block has collided with 2 or more others of it's color we know
         //that at least 3 of the same color are touching, so mark this block and
         //every block in it's collision list as collided so they inflate and pop
-        if (CollisionList.length >= 2 && Poppable)
+        if (CollisionList.length >= 2 && Poppable && !IsStatic)
         {
             popping = true;
             

@@ -187,6 +187,13 @@ class PlayState extends FlxState
         input.Update(elapsed);
         
         physicsWorld.Update(elapsed);
+        
+        for (i in 0...gamePieces.length){
+            gamePieces[i].Update(elapsed);
+            /*if (gamePieces[i].Blocks.length == 0){
+                gamePieces.remove(gamePieces[i]);
+            }*/
+        }
 
         Draw();
         
@@ -262,9 +269,8 @@ class PlayState extends FlxState
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
         blockBuilder = blockBuilder.setMass(PhysicsDefaults.Mass);
         blockBuilder = blockBuilder.setKinematic(false);
-        blockBuilder = blockBuilder.setType(BlockType.Damping);
+        blockBuilder = blockBuilder.setType(BlockType.Deflating);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
-        blockBuilder = blockBuilder.setConfig(new BlockConfig());
         pieceBuilder.setPieceType(PieceType.Tetromino).setTetrominoShape(TetrominoShape.Square);
         
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)));
