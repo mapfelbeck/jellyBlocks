@@ -99,7 +99,7 @@ class GameBlock extends PressureBody
         {
             collidedThisFrame = true;
         }
-//if (Std.is(body, SpringBody)){
+        
         var other:GameBlock = Std.instance(otherBlock, GameBlock);
         if (other != null && Material == other.Material)
         {

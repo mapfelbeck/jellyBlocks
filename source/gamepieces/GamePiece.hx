@@ -121,7 +121,7 @@ class GamePiece
     
     public function GamePieceAccumulator(elapsedTime:Float):Void
     {
-        var Force:Vector2 = new Vector2(0, 0);
+        var accumulatorForce:Vector2 = null;
 
         for (i in 0...attachSprings.length)
         {
@@ -131,12 +131,12 @@ class GamePiece
             var b:Body = spring.BodyB;
             var pmB = b.PointMasses[spring.pointMassB];
             
-            var force = VectorTools.CalculateSpringForce(pmA.Position, pmA.Velocity, pmB.Position, pmB.Velocity, spring.springLen, spring.springK, spring.damping);
+            accumulatorForce = VectorTools.CalculateSpringForce(pmA.Position, pmA.Velocity, pmB.Position, pmB.Velocity, spring.springLen, spring.springK, spring.damping);
 
-            pmA.Force.x += force.x;
-            pmA.Force.y += force.y;
-            pmB.Force.x -= force.x;
-            pmB.Force.y -= force.y;
+            pmA.Force.x += accumulatorForce.x;
+            pmA.Force.y += accumulatorForce.y;
+            pmB.Force.x -= accumulatorForce.x;
+            pmB.Force.y -= accumulatorForce.y;
         }
     }
     

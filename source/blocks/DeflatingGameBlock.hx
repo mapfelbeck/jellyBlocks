@@ -9,6 +9,8 @@ import jellyPhysics.math.Vector2;
  */
 class DeflatingGameBlock extends DampingGameBlock
 {
+    public var Deflated(get, null):Bool;    
+    function get_Deflated():Bool { return GasAmount <= 0; }
 
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2, angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool, bodyShapeSpringK:Float, bodyShapeSpringDamp:Float, edgeSpringK:Float, edgeSpringDamp:Float, gasPressure:Float, blockConfig:BlockConfig) 
     {

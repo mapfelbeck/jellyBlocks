@@ -71,6 +71,7 @@ class PlayState extends FlxState
         input.AddInputCommand(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
         input.AddInputCommand(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
         input.AddInputCommand(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
+        input.AddInputCommand(FlxKey.SPACE, spawnPiece, PressType.Down);
         
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -180,6 +181,7 @@ class PlayState extends FlxState
         return materialMatrix;
     }
     
+    private var removeList:Array<GamePiece> = new Array<GamePiece>();
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
@@ -190,9 +192,14 @@ class PlayState extends FlxState
         
         for (i in 0...gamePieces.length){
             gamePieces[i].Update(elapsed);
-            /*if (gamePieces[i].Blocks.length == 0){
-                gamePieces.remove(gamePieces[i]);
-            }*/
+            if (gamePieces[i].Blocks.length == 0){
+                removeList.push(gamePieces[i]);
+            }
+        }
+        
+        while (removeList.length > 0){
+            var piece:GamePiece = removeList.pop();
+            gamePieces.remove(piece);
         }
 
         Draw();
@@ -221,22 +228,28 @@ class PlayState extends FlxState
         pieceDown = true;
     }
     
-    private function rotatePieceCCW(){
+    private function rotatePieceCCW():Void{
         pieceCCW = true;
     }
     
-    private function rotatePieceCW(){
+    private function rotatePieceCW():Void{
         pieceCW = true;
     }
     
-    private function adjustColorUp(){
+    private function adjustColorUp():Void{
         colorAdjust = (colorAdjust + 0.05) % 1.0;
         setupDrawParam(debugRender);
     }
     
-    private function adjustColorDown(){
+    private function adjustColorDown():Void{
         colorAdjust = (colorAdjust + 0.95) % 1.0;
         setupDrawParam(debugRender);
+    }
+    
+    private function spawnPiece():Void{
+        if(null != pieceBuilder){
+            addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)));
+        }
     }
     
     private function Draw():Void
@@ -252,12 +265,15 @@ class PlayState extends FlxState
     }
     
     private var ground:GameGround;
+    private var shapeBuilder:ShapeBuilder = null;
+    private var blockBuilder:GameBlockBuilder = null;
+    private var pieceBuilder:GamePieceBuilder = null;
     function addBodiesToWorld() 
     {
         //new up the builders
-        var shapeBuilder:ShapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
-        var blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY);
-        var pieceBuilder:GamePieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
+        shapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
+        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY);
+        pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
 
         //create static bodies for the container
         ground = new GameGround(2, 16, 20, new Vector2(0, 2), blockBuilder);
@@ -269,11 +285,11 @@ class PlayState extends FlxState
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
         blockBuilder = blockBuilder.setMass(PhysicsDefaults.Mass);
         blockBuilder = blockBuilder.setKinematic(false);
-        blockBuilder = blockBuilder.setType(BlockType.Deflating);
+        blockBuilder = blockBuilder.setType(BlockType.Freeze);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         pieceBuilder.setPieceType(PieceType.Tetromino).setTetrominoShape(TetrominoShape.Square);
         
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 6)));
         /*addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, -4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, -4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, -4)));
@@ -348,7 +364,7 @@ class PlayState extends FlxState
     }
         
     private function GravityAccumulator(elapsed:Float){
-        var gravity:Vector2 = new Vector2(0, 0.5 * 9.8);
+        var gravity:Vector2 = new Vector2(0, 1.0 * 9.8);
 
         for(i in 0...physicsWorld.NumberBodies)
         {

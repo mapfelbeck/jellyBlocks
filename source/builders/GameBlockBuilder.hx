@@ -60,10 +60,10 @@ class GameBlockBuilder
                 var deflatingBlock:DeflatingGameBlock = null;
                 deflatingBlock = new DeflatingGameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
                 finalBlock = deflatingBlock;
-            /*case BlockType.Freeze:
+            case BlockType.Freeze:
                 var freezingBlock:FreezingGameBlock = null;
                 freezingBlock = new FreezingGameBlock(shapeBuilder.create(), mass, position, angle, scale, kinematic, shapeK, shapeDamp, edgeK, edgeDamp, pressure, config);
-                finalBlock = freezingBlock;*/
+                finalBlock = freezingBlock;
             default:
         }
         finalBlock.Material = material;

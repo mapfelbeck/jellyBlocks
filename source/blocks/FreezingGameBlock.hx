@@ -11,9 +11,9 @@ import jellyPhysics.math.VectorTools;
  */
 class FreezingGameBlock extends DeflatingGameBlock
 {
-    var freezeWaitTimer:Float;
+    private var FreezeWaitTimer:Float;
     
-    public var IsFrozen(get, null):Float;
+    public var IsFrozen(get, null):Bool;
     public function get_IsFrozen(){
         return GetPointMass(0).Mass == Math.POSITIVE_INFINITY;
     }
@@ -22,25 +22,25 @@ class FreezingGameBlock extends DeflatingGameBlock
     {
         super(bodyShape, massPerPoint, position, angleInRadians, bodyScale, isKinematic, bodyShapeSpringK, bodyShapeSpringDamp, edgeSpringK, edgeSpringDamp, gasPressure, blockConfig);
 		Freezeable = true;
-        freezeWaitTimer = 0.0;
+        FreezeWaitTimer = 0.0;
     }
     
     override public function Update(elapsed:Float):Void 
     {
         super.Update(elapsed);
 
-        if (!popping && Deflated && !IsAsleep && lifeTime > config.timeTillFreeze && freezeAble)
+        if (!popping && Deflated && !IsAsleep && lifeTime > config.timeTillFreeze && Freezeable)
         {
-            freezeWaitTimer += elapsed;
-            if (freezeWaitTimer > config.freezeWaitTimerLength)
+            FreezeWaitTimer += elapsed;
+            if (FreezeWaitTimer > config.freezeWaitTimerLength)
             {
-                if (CanFreeze())
+                if (!IsFrozen && CanFreeze())
                 {
                     FreezeBlock();
                 }
                 else
                 {
-                    freezeWaitTimer = 0f;
+                    FreezeWaitTimer = 0;
                 }
             }
         }
@@ -75,7 +75,7 @@ class FreezingGameBlock extends DeflatingGameBlock
         IsAsleep = true;
         for (i in 0...PointMasses.length)
         {
-            var mass:PointMass = getPointMass(i);
+            var mass:PointMass = PointMasses[i];
 
             ///Sub-Pixel Distance Hack
             ///In the freeze game type it's possile for pieces of the
@@ -88,7 +88,7 @@ class FreezingGameBlock extends DeflatingGameBlock
             pointMassDirectionFromDerived = VectorTools.Subtract(mass.Position, DerivedPos);
             pointMassDirectionFromDerived.normalize();
 
-            mass.Position=VectorTools.Add(mass.Position, VectorTools.Multiply( pointMassDirectionFromDerived, .1);
+            mass.Position=VectorTools.Add(mass.Position, VectorTools.Multiply( pointMassDirectionFromDerived, .1));
             ///End Hack
 
             mass.Mass = Math.POSITIVE_INFINITY;
@@ -103,21 +103,21 @@ class FreezingGameBlock extends DeflatingGameBlock
             result = false;
         }
         //can't freeze if the block is moving too fast
-        else if (DerivedVel.lengthSquared > config.freezeVelocityThreshhold)
+        else if (DerivedVel.lengthSquared() > config.freezeVelocityThreshhold)
         {
             result = false;
         }
         else
         {
             // this checks to see how distorted the block is, if the block is too
-            // smashed out of shape we wait an freeze it later
+            // smashed out of shape we wait and freeze it later
             // this keeps blocks from freezing in ugly, twisted shapes
             var accumulatedDistortion:Float = 0;
-            var distortion:Vector2 = = new Vector2(0, 0);
+            var distortion:Vector2 = new Vector2(0, 0);
             for (i in 0...PointMasses.length)
             {
-                distortion = VectorTools.Subtract( GetPointMass(i).Position, GlobalShape[i]);
-                accumulatedDistortion += distortion.Length();
+                distortion = VectorTools.Subtract( PointMasses[i].Position, GlobalShape[i]);
+                accumulatedDistortion += distortion.length();
             }
             if (accumulatedDistortion >= config.freezeDistortionThreshhold)
             {
@@ -135,15 +135,15 @@ class FreezingGameBlock extends DeflatingGameBlock
         {
             if (UnFreezeBlock())
             {
-                freezeWaitTimer -= config.freezeWaitTimerLength;
+                FreezeWaitTimer -= config.freezeWaitTimerLength;
             }
         }
     }
 
-    override public function UnFreezeFor(seconds:Float):Void
+    public function UnFreezeFor(seconds:Float):Void
     {
         UnFreezeBlock();
-        freezeWaitTimer -= seconds;
+        FreezeWaitTimer -= seconds;
     }
 
     override public function ResetExternalForces():Void
