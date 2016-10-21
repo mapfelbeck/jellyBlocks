@@ -150,7 +150,7 @@ class GameBlock extends PressureBody
 
         CollisionList = new Array<GameBlock>();
 
-        /*if (popping)
+        if (popping)
         {
             collideTime += elapsed;
             GasAmount += elapsed * GameConstants.GasPressure;
@@ -158,7 +158,7 @@ class GameBlock extends PressureBody
             {
                 DeleteThis = true;
             }
-        }*/
+        }
     }
     
     public function CollisionlessFrame():Void{

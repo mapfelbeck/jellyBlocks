@@ -210,14 +210,20 @@ class GamePiece
         blocks.remove(block);
     }
 
+    private var deleteSpringList:Array<ExternalSpring> = new Array<ExternalSpring>();
     private function RemoveSpringsAttachedTo(block: GameBlock):Void
     {
-        for (i in attachSprings.length...0)
+        for (i in 0...attachSprings.length)
         {
             if (attachSprings[i].BodyA == block || attachSprings[i].BodyB == block)
             {
-                attachSprings.remove(attachSprings[i]);
+                deleteSpringList.push(attachSprings[i]);
             }
+        }
+        
+        while (deleteSpringList.length > 0){
+            var spring:ExternalSpring = deleteSpringList.pop();
+            attachSprings.remove(spring);
         }
     }
 }

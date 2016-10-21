@@ -114,7 +114,6 @@ class GamePieceBuilder
         for (i in 0...shapeLocations.length){
             blockBuilder.setPosition(shapeLocations[i]);
             var gameBlock:GameBlock = blockBuilder.create();
-            gameBlock.Poppable = false;
             blocks.push(gameBlock);
         }
         

@@ -248,7 +248,7 @@ class PlayState extends FlxState
     
     private function spawnPiece():Void{
         if(null != pieceBuilder){
-            addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)));
+            addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)));
         }
     }
     
@@ -289,11 +289,11 @@ class PlayState extends FlxState
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         pieceBuilder.setPieceType(PieceType.Tetromino).setTetrominoShape(TetrominoShape.Square);
         
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 6)));
+        //addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)));
         /*addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, -4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, -4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, -4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, -4)));
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, -4)));*/
         
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 0)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, 0)));
@@ -303,7 +303,7 @@ class PlayState extends FlxState
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, 4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, 4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 4)));*/
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 4)));
     }
     
     function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
@@ -353,6 +353,7 @@ class PlayState extends FlxState
         physicsWorld = new World(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.SetBodyDamping(0.4);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
+        physicsWorld.PhysicsIter = 3;
     }
         
     private function PhysicsAccumulator(elapsed:Float){
@@ -380,26 +381,29 @@ class PlayState extends FlxState
         var rotationAmount:Float = 0;
         var pushAmount:Vector2 = new Vector2(0, 0);
         
+        var rotateForce:Float = 2;
+        var moveForce:Float = 8;
+        
         if (pieceCCW)
         {
-            rotationAmount -= 1;
+            rotationAmount -= rotateForce;
         }
         if (pieceCW)
         {
-            rotationAmount += 1;
+            rotationAmount += rotateForce;
         }
         
         if (pieceLeft){
-            pushAmount.x -= 4;
+            pushAmount.x -= moveForce;
         }
         if (pieceRight){
-            pushAmount.x += 4;
+            pushAmount.x += moveForce;
         }
         if (pieceUp){
-            pushAmount.y -= 4;
+            pushAmount.y -= moveForce;
         }
         if (pieceDown){
-            pushAmount.y += 4;
+            pushAmount.y += moveForce;
         }
         if (pushAmount.x != 0 || pushAmount.y !=0){
             gamePiece.ApplyForce(pushAmount);
