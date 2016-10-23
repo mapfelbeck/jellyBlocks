@@ -18,21 +18,30 @@ class FreezingGameBlock extends DeflatingGameBlock
         return GetPointMass(0).Mass == Math.POSITIVE_INFINITY;
     }
     
+    private var freezeVelocityThreshhold:Float;
+    private var timeTillFreeze:Float;
+    private var freezeWaitTimerLength:Float;
+    private var freezeDistortionThreshhold:Float;
+    
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2, angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool, bodyShapeSpringK:Float, bodyShapeSpringDamp:Float, edgeSpringK:Float, edgeSpringDamp:Float, gasPressure:Float, blockConfig:BlockConfig) 
     {
         super(bodyShape, massPerPoint, position, angleInRadians, bodyScale, isKinematic, bodyShapeSpringK, bodyShapeSpringDamp, edgeSpringK, edgeSpringDamp, gasPressure, blockConfig);
 		Freezeable = true;
         FreezeWaitTimer = 0.0;
+        freezeVelocityThreshhold = config.freezeVelocityThreshhold;
+        timeTillFreeze = config.timeTillFreeze;
+        freezeWaitTimerLength = config.freezeWaitTimerLength;
+        freezeDistortionThreshhold = config.freezeDistortionThreshhold;
     }
     
     override public function Update(elapsed:Float):Void 
     {
         super.Update(elapsed);
 
-        if (!popping && Deflated && !IsAsleep && lifeTime > config.timeTillFreeze && Freezeable)
+        if (!popping && Deflated && !IsAsleep && lifeTime > timeTillFreeze && Freezeable)
         {
             FreezeWaitTimer += elapsed;
-            if (FreezeWaitTimer > config.freezeWaitTimerLength)
+            if (FreezeWaitTimer > freezeWaitTimerLength)
             {
                 if (!IsFrozen && CanFreeze())
                 {
@@ -88,7 +97,7 @@ class FreezingGameBlock extends DeflatingGameBlock
             pointMassDirectionFromDerived = VectorTools.Subtract(mass.Position, DerivedPos);
             pointMassDirectionFromDerived.normalize();
 
-            mass.Position=VectorTools.Add(mass.Position, VectorTools.Multiply( pointMassDirectionFromDerived, .1));
+            mass.Position=VectorTools.Add(mass.Position, VectorTools.Multiply( pointMassDirectionFromDerived, .05));
             ///End Hack
 
             mass.Mass = Math.POSITIVE_INFINITY;
@@ -103,7 +112,7 @@ class FreezingGameBlock extends DeflatingGameBlock
             result = false;
         }
         //can't freeze if the block is moving too fast
-        else if (DerivedVel.lengthSquared() > config.freezeVelocityThreshhold)
+        else if (DerivedVel.lengthSquared() > freezeVelocityThreshhold)
         {
             result = false;
         }
@@ -119,7 +128,7 @@ class FreezingGameBlock extends DeflatingGameBlock
                 distortion = VectorTools.Subtract( PointMasses[i].Position, GlobalShape[i]);
                 accumulatedDistortion += distortion.length();
             }
-            if (accumulatedDistortion >= config.freezeDistortionThreshhold)
+            if (accumulatedDistortion >= freezeDistortionThreshhold)
             {
                 result = false;
             }
@@ -135,7 +144,7 @@ class FreezingGameBlock extends DeflatingGameBlock
         {
             if (UnFreezeBlock())
             {
-                FreezeWaitTimer -= config.freezeWaitTimerLength;
+                FreezeWaitTimer -= freezeWaitTimerLength;
             }
         }
     }

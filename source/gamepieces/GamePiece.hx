@@ -21,10 +21,15 @@ class GamePiece
     function get_AttachSprings():Array<ExternalSpring>{return attachSprings;}    
     function set_AttachSprings(value:Array<ExternalSpring>):Array<ExternalSpring>{return attachSprings = value; }
     
+    private var hasEverCollided:Bool;
+    public var HasEverCollided(get, null):Bool;
+    function get_HasEverCollided():Bool{
+        return hasEverCollided;
+    }
+    
     private var isControlled:Bool;
     private var showColorPulse:Bool;
     private var pieceNumber:Int;
-    private var hasEverCollided:Bool;
     private var collidedThisFrame:Bool;
     
     private var pushForceX:Float;

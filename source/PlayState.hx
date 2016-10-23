@@ -54,7 +54,7 @@ class PlayState extends FlxState
     //timer starts spawning pieces 2 seconds after game loads.
     private var spawnTimer:Float = 2.0;
     //new piece spawned this many seconds after controlled piece hits something
-    private var spawnWaitTime:Float = 3.0;
+    private var spawnWaitTime:Float = 1.0;
     
 	override public function create():Void
 	{
@@ -191,19 +191,27 @@ class PlayState extends FlxState
         return materialMatrix;
     }
     
+    private var timerTickingDown:Bool = true;
     private var spawnPieceFlag:Bool = false;
     private var removeList:Array<GamePiece> = new Array<GamePiece>();
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
         
-        spawnTimer -= elapsed;
-        if (spawnTimer <= 0){
-            spawnPieceFlag = true;
+        if (gamePiece != null && gamePiece.HasEverCollided){
+            timerTickingDown = true;
+        }
+        
+        if(timerTickingDown){
+            spawnTimer -= elapsed;        
+            if (spawnTimer <= 0){
+                spawnPieceFlag = true;
+            }
         }
         
         if (spawnPieceFlag && null != pieceBuilder){
             spawnPieceFlag = false;
+            timerTickingDown = false;
             spawnTimer = spawnWaitTime;
             addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)), true);
         }
@@ -464,7 +472,7 @@ class PlayState extends FlxState
     }
         
     private function GravityAccumulator(elapsed:Float){
-        var gravity:Vector2 = new Vector2(0, 1.0 * GameConstants.GravityConstant);
+        var gravity:Vector2 = new Vector2(0, 0.5 * GameConstants.GravityConstant);
 
         for(i in 0...physicsWorld.NumberBodies)
         {

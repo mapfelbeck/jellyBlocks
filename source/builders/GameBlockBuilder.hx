@@ -38,6 +38,7 @@ class GameBlockBuilder
         config.dampingRate = 0.15;
         config.dampingMax = 0.98;
         
+        config.deflates = true;
         config.deflateRate = .25;
         config.timeTillDeflate = 5;
         

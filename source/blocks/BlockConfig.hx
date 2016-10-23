@@ -16,6 +16,8 @@ class BlockConfig
     //max physics damping
     public var dampingMax:Float;
 
+    //does the block deflate
+    public var deflates:Bool;
     //time until deflating begins
     public var timeTillDeflate:Float;
     //how much pressure does a deflating block loose per second
