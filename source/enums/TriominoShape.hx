@@ -7,4 +7,5 @@ enum TriominoShape
 {
     Line;
     Corner;
+    Random;
 }
