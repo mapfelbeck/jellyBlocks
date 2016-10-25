@@ -4,8 +4,11 @@ import flixel.*;
 import builders.GameBlockBuilder;
 import builders.GamePieceBuilder;
 import builders.ShapeBuilder;
+import flixel.graphics.FlxGraphic;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.touch.FlxTouch;
+import flixel.math.FlxPoint;
+import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import jellyPhysics.*;
 import gamepieces.GamePiece;
@@ -34,6 +37,11 @@ class PlayState extends FlxState
     private var gamePieces:Array<GamePiece>;
     
     public var defaultMaterial:MaterialPair;
+    
+    private var leftButton:FlxButton;
+    private var rightButton:FlxButton;
+    private var cwButton:FlxButton;
+    private var ccwButton:FlxButton;
     
     private var pieceLeft:Bool = false;
     private var pieceRight:Bool = false;
@@ -98,7 +106,93 @@ class PlayState extends FlxState
         //draw surface needs stage
         debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT);
         setupDrawParam(debugRender);
+        
+        addButtons();
 	}
+    
+    function addButtons() 
+    {
+        var xSpacing:Float = 50;
+        var ySpacing:Float = 100;
+        
+        leftButton = new FlxButton(50, 50, null, null);
+        leftButton.onDown.callback = OnLeftDown;
+        leftButton.onUp.callback = OnLeftUp;
+        leftButton.onOut.callback = OnLeftUp;
+        var leftSprite:FlxSprite = new FlxSprite();
+        leftButton.loadGraphic("assets/images/LeftButton.png");
+        leftButton.setGraphicSize(160, 160);
+        leftButton.x = xSpacing;
+        leftButton.y = WINDOW_HEIGHT- (leftButton.graphic.height + ySpacing);
+        add(leftButton);
+        
+        rightButton = new FlxButton(50, 50, null, null);
+        rightButton.onDown.callback = OnRightDown;
+        rightButton.onUp.callback = OnRightUp;
+        rightButton.onOut.callback = OnRightUp;
+        rightButton.loadGraphic("assets/images/RightButton.png");
+        rightButton.setGraphicSize(160, 160);
+        rightButton.x = WINDOW_WIDTH - (rightButton.graphic.width + xSpacing);
+        rightButton.y = WINDOW_HEIGHT- (rightButton.graphic.height + ySpacing);
+        add(rightButton);
+        
+        ccwButton = new FlxButton(50, 50, null, null);
+        ccwButton.onDown.callback = OnCCWDown;
+        ccwButton.onUp.callback = OnCCWUp;
+        ccwButton.onOut.callback = OnCCWUp;
+        ccwButton.loadGraphic("assets/images/RotateCCWButton.png");
+        ccwButton.setGraphicSize(160, 160);
+        ccwButton.x = xSpacing;
+        ccwButton.y = ySpacing;
+        add(ccwButton);
+        
+        cwButton = new FlxButton(50, 50, null, null);
+        cwButton.onDown.callback = OnCWDown;
+        cwButton.onUp.callback = OnCWUp;
+        cwButton.onOut.callback = OnCWUp;
+        cwButton.loadGraphic("assets/images/RotateCWButton.png");
+        cwButton.setGraphicSize(160, 160);
+        cwButton.x = WINDOW_WIDTH - (ccwButton.graphic.width + xSpacing);
+        cwButton.y = ySpacing;
+        add(cwButton);
+    }
+    
+    private var leftHeld:Bool = false;
+    private var rightHeld:Bool = false;
+    private var ccwHeld:Bool = false;
+    private var cwHeld:Bool = false;
+    function OnLeftDown() 
+    {
+        leftHeld = true;
+    }
+    function OnLeftUp() 
+    {
+        leftHeld = false;
+    }
+    function OnRightDown() 
+    {
+        rightHeld = true;
+    }
+    function OnRightUp() 
+    {
+        rightHeld = false;
+    }
+    function OnCWDown() 
+    {
+        cwHeld = true;
+    }
+    function OnCWUp() 
+    {
+        cwHeld = false;
+    }
+    function OnCCWDown() 
+    {
+        ccwHeld = true;
+    }
+    function OnCCWUp() 
+    {
+        ccwHeld = false;
+    }
     
     private function createDrawSurface():Sprite
     {
@@ -216,7 +310,7 @@ class PlayState extends FlxState
             addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)), true);
         }
         
-        var touchLeft:Bool = false;
+        /*var touchLeft:Bool = false;
         var touchRight:Bool = false;
         for (touch in FlxG.touches.list)
         {
@@ -235,7 +329,7 @@ class PlayState extends FlxState
             pieceLeft = true;
         }else if (touchRight){
             pieceRight = true;
-        }
+        }*/
         
         input.Update(elapsed);
         
@@ -307,7 +401,7 @@ class PlayState extends FlxState
             if (!body.IsStatic){
                 var freezingBlock:FreezingGameBlock = Std.instance(body, FreezingGameBlock);
                 if (freezingBlock != null){
-                    freezingBlock.UnFreezeFor(2.0);
+                    freezingBlock.UnFreezeFor(5.0);
                 }
             }
         }
@@ -491,21 +585,21 @@ class PlayState extends FlxState
         var pushAmount:Vector2 = new Vector2(0, 0);
         
         var rotateForce:Float = 2;
-        var moveForce:Float = 8;
+        var moveForce:Float = 16;
         
-        if (pieceCCW)
+        if (pieceCCW || ccwHeld)
         {
             rotationAmount -= rotateForce;
         }
-        if (pieceCW)
+        if (pieceCW || cwHeld)
         {
             rotationAmount += rotateForce;
         }
         
-        if (pieceLeft){
+        if (pieceLeft || leftHeld){
             pushAmount.x -= moveForce;
         }
-        if (pieceRight){
+        if (pieceRight || rightHeld){
             pushAmount.x += moveForce;
         }
         if (pieceUp){
