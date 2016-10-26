@@ -57,7 +57,7 @@ class PlayState extends FlxState
     //How many unique colors are there
     private var uniqueColors:Int = 6;
     //How many of the same color can be in a game piece
-    private var colorCount:Int = 2;
+    private var maxSameColorPerPiece:Int = 2;
     
     //timer starts spawning pieces 2 seconds after game loads.
     private var spawnTimer:Float = 2.0;
@@ -101,13 +101,15 @@ class PlayState extends FlxState
         gamePieces = new Array<GamePiece>();
         
         createWorld();
-        addBodiesToWorld();
+        addInitialBodiesToWorld();
+        
+        setupConfigForSpawingBlocks();
         
         //draw surface needs stage
         debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT);
         setupDrawParam(debugRender);
         
-        addButtons();
+        //addButtons();
 	}
     
     function addButtons() 
@@ -419,15 +421,49 @@ class PlayState extends FlxState
         flxDrawSurface.y = overscan;
     }
     
+    function setupConfigForSpawingBlocks() 
+    {
+        var spawnConfig:BlockConfig = new BlockConfig();
+        spawnConfig.timeTillDamping = 0.5;
+        spawnConfig.dampingRate = 0.15;
+        spawnConfig.dampingMax = 0.98;
+        
+        spawnConfig.deflates = true;
+        spawnConfig.deflateRate = .25;
+        spawnConfig.timeTillDeflate = 5;
+        
+        spawnConfig.timeTillFreeze = 2;
+        spawnConfig.freezeWaitTimerLength = 0.5;
+        spawnConfig.freezeDistortionThreshhold = 0.8;
+        spawnConfig.freezeVelocityThreshhold = 0.08;
+        
+        blockBuilder = blockBuilder.setBlockConfig(spawnConfig).setPressure(PhysicsDefaults.SpawnedBlockPressure);
+        pieceBuilder.setTriominoShape(TriominoShape.Random);
+    }
+    
     private var ground:GameGround;
     private var shapeBuilder:ShapeBuilder = null;
     private var blockBuilder:GameBlockBuilder = null;
     private var pieceBuilder:GamePieceBuilder = null;
-    function addBodiesToWorld() 
+    function addInitialBodiesToWorld() 
     {
+        var initialConfig:BlockConfig = new BlockConfig();
+        initialConfig.timeTillDamping = 0.5;
+        initialConfig.dampingRate = 0.15;
+        initialConfig.dampingMax = 0.98;
+        
+        initialConfig.deflates = true;
+        initialConfig.deflateRate = .25;
+        initialConfig.timeTillDeflate = 5;
+        
+        initialConfig.timeTillFreeze = 2;
+        initialConfig.freezeWaitTimerLength = 0.5;
+        initialConfig.freezeDistortionThreshhold = 0.8;
+        initialConfig.freezeVelocityThreshhold = 0.08;
+        
         //new up the builders
         shapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
-        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY);
+        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure);
         pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
 
         //create static bodies for the container
@@ -439,20 +475,26 @@ class PlayState extends FlxState
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
         blockBuilder = blockBuilder.setMass(PhysicsDefaults.Mass);
+        blockBuilder = blockBuilder.setBlockConfig(initialConfig);
         blockBuilder = blockBuilder.setKinematic(false);
         blockBuilder = blockBuilder.setType(BlockType.Freeze);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
-        pieceBuilder.setPieceType(PieceType.Triomino).setTriominoShape(TriominoShape.Random);
+        pieceBuilder.setPieceType(PieceType.Triomino).setTriominoShape(TriominoShape.Corner);
+
+        pieceBuilder.setRotation(Math.PI);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6+.5, 6)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-3+.5, 6)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0+.5, 6)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(3+.5, 6)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6+.5, 6)), false);
         
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 4)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 4)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 4)), false);
+        pieceBuilder.setRotation(0);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 8)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-3, 8)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 8)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(3, 8)), false);
+        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 8)), false);
         
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 0)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 0)), false);
-        
-        //addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)));
         /*addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, -4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, -4)));
         addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, -4)));
@@ -480,7 +522,7 @@ class PlayState extends FlxState
     {
         var colors:Array<Int> = null;
         if(controlled){
-            colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, colorCount);
+            colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, maxSameColorPerPiece);
         }else{
             colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
         }
@@ -499,7 +541,7 @@ class PlayState extends FlxState
     }
     
     private static var primes:Array<Int> = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
-    function randomPieceColors(count:Int, howManyColors:Int, maxSamePerBlock:Int) 
+    function randomPieceColors(count:Int, howManyColors:Int, maxSameColor:Int) 
     {
         var blockColors:Array<Int> = new Array<Int>();
         var blockId:Int = 1;
@@ -510,7 +552,7 @@ class PlayState extends FlxState
             do{
                 color = random.int(0, howManyColors - 1);
                 potentialBlockId = blockId * primes[color];
-                checkNumber = Std.int(Math.pow(primes[color], maxSamePerBlock + 1));
+                checkNumber = Std.int(Math.pow(primes[color], maxSameColor + 1));
             }while (potentialBlockId % checkNumber == 0);
             
             blockColors.push(color + 1);

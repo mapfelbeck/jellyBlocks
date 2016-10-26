@@ -26,26 +26,13 @@ class GameBlockBuilder
     var shapeDamp:Float= PhysicsDefaults.ShapeSpringDamp;
     var edgeK:Float= PhysicsDefaults.EdgeSpringK;
     var edgeDamp:Float= PhysicsDefaults.EdgeSpringDamp;
-    var pressure:Float = PhysicsDefaults.Pressure;
+    var pressure:Float = PhysicsDefaults.InitialBlockPressure;
     var label:String = null;
     var config:BlockConfig;
     var collisionCallback:Function;
     
     public function new() 
     {
-        config = new BlockConfig();
-        config.timeTillDamping = 0.5;
-        config.dampingRate = 0.15;
-        config.dampingMax = 0.98;
-        
-        config.deflates = true;
-        config.deflateRate = .25;
-        config.timeTillDeflate = 5;
-        
-        config.timeTillFreeze = 2;
-        config.freezeWaitTimerLength = 0.5;
-        config.freezeDistortionThreshhold = 0.8;
-        config.freezeVelocityThreshhold = 0.08;
     }
     
     public function create():GameBlock{
@@ -84,6 +71,12 @@ class GameBlockBuilder
     public function getShapeBuilder():ShapeBuilder
     {
         return shapeBuilder;
+    }
+    
+    public function setBlockConfig(blockConfig:BlockConfig):GameBlockBuilder
+    {
+        config = blockConfig;
+        return this;
     }
     
     public function setType(type:BlockType) :GameBlockBuilder

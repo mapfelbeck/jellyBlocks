@@ -22,6 +22,7 @@ class GamePieceBuilder
     var externalDamp:Float = PhysicsDefaults.ExternalSpringDamp;
     var externalK:Float = PhysicsDefaults.ExternalSpringK;
     var location:Vector2 = new Vector2(0, 0);
+    var rotation:Float = 0;
     
     public function new(){
     }
@@ -84,6 +85,11 @@ class GamePieceBuilder
         return this;
     }
     
+    public function setRotation(rotation:Float):GamePieceBuilder{
+        this.rotation = rotation;
+        return this;
+    }
+    
     public function create():GamePiece
     {
         switch(pieceType){
@@ -117,7 +123,6 @@ class GamePieceBuilder
             blocks.push(gameBlock);
         }
         
-        
         for (i in 0...blocks.length){
             for (j in i+1...blocks.length){
                 AttachBlocks(blocks[i], blocks[j], springs);
@@ -127,10 +132,43 @@ class GamePieceBuilder
         gamePiece = new GamePiece(blocks, springs, 9.8);
         gamePiece.AutoDampRate = 0.25;
         
+        if(rotation != 0){
+            rotatePiece(gamePiece, rotation);
+        }
+        
         return gamePiece;
     }
     
-    function AttachBlocks(BlockA:GameBlock, BlockB:GameBlock, springs:Array<ExternalSpring>) 
+    function rotatePiece(piece:GamePiece, rotationAmount:Float) 
+    {
+        var s:Float = Math.sin(rotationAmount);
+        var c:Float = Math.cos(rotationAmount);
+        var center:Vector2 = piece.GamePieceCenter();
+        
+        for (i in 0...piece.Blocks.length){
+            for (j in 0...piece.Blocks[i].PointMasses.length){
+                /*var p:Vector2 = piece.Blocks[i].PointMasses[j].Position;
+                p.x -= center.x;
+                p.y -= center.y;
+                
+                var xNew:Float = p.x * c - p.y * s;
+                var yNew:Float = p.x * s - p.y * c;
+                
+                piece.Blocks[i].PointMasses[j].Position.x = xNew + center.x;
+                piece.Blocks[i].PointMasses[j].Position.y = yNew + center.y;*/
+                
+                var p:Vector2 = piece.Blocks[i].PointMasses[j].Position;
+                
+                var xNew:Float = c * (p.x - center.x) - s * (p.y - center.y);
+                var yNew:Float = s * (p.x - center.x) + c * (p.y - center.y);
+                
+                piece.Blocks[i].PointMasses[j].Position.x = xNew + center.x;
+                piece.Blocks[i].PointMasses[j].Position.y = yNew + center.y;
+            }
+        }
+    }
+    
+    private function AttachBlocks(BlockA:GameBlock, BlockB:GameBlock, springs:Array<ExternalSpring>) 
     {
         var numberPMA:Int = BlockA.PointMasses.length;
         var numberPMB:Int = BlockB.PointMasses.length;
