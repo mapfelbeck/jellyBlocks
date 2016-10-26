@@ -109,13 +109,14 @@ class PlayState extends FlxState
         debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT);
         setupDrawParam(debugRender);
         
-        //addButtons();
+        addButtons();
 	}
     
     function addButtons() 
     {
-        var xSpacing:Float = 50;
+        var xSpacing:Float = 60;
         var ySpacing:Float = 100;
+        var buttonSize:Int = 200;
         
         leftButton = new FlxButton(50, 50, null, null);
         leftButton.onDown.callback = OnLeftDown;
@@ -123,7 +124,7 @@ class PlayState extends FlxState
         leftButton.onOut.callback = OnLeftUp;
         var leftSprite:FlxSprite = new FlxSprite();
         leftButton.loadGraphic("assets/images/LeftButton.png");
-        leftButton.setGraphicSize(160, 160);
+        leftButton.setGraphicSize(buttonSize, buttonSize);
         leftButton.x = xSpacing;
         leftButton.y = WINDOW_HEIGHT- (leftButton.graphic.height + ySpacing);
         add(leftButton);
@@ -133,7 +134,7 @@ class PlayState extends FlxState
         rightButton.onUp.callback = OnRightUp;
         rightButton.onOut.callback = OnRightUp;
         rightButton.loadGraphic("assets/images/RightButton.png");
-        rightButton.setGraphicSize(160, 160);
+        rightButton.setGraphicSize(buttonSize, buttonSize);
         rightButton.x = WINDOW_WIDTH - (rightButton.graphic.width + xSpacing);
         rightButton.y = WINDOW_HEIGHT- (rightButton.graphic.height + ySpacing);
         add(rightButton);
@@ -143,7 +144,7 @@ class PlayState extends FlxState
         ccwButton.onUp.callback = OnCCWUp;
         ccwButton.onOut.callback = OnCCWUp;
         ccwButton.loadGraphic("assets/images/RotateCCWButton.png");
-        ccwButton.setGraphicSize(160, 160);
+        ccwButton.setGraphicSize(buttonSize, buttonSize);
         ccwButton.x = xSpacing;
         ccwButton.y = ySpacing;
         add(ccwButton);
@@ -153,7 +154,7 @@ class PlayState extends FlxState
         cwButton.onUp.callback = OnCWUp;
         cwButton.onOut.callback = OnCWUp;
         cwButton.loadGraphic("assets/images/RotateCWButton.png");
-        cwButton.setGraphicSize(160, 160);
+        cwButton.setGraphicSize(buttonSize, buttonSize);
         cwButton.x = WINDOW_WIDTH - (ccwButton.graphic.width + xSpacing);
         cwButton.y = ySpacing;
         add(cwButton);
@@ -449,7 +450,7 @@ class PlayState extends FlxState
     {
         var initialConfig:BlockConfig = new BlockConfig();
         initialConfig.timeTillDamping = 0.5;
-        initialConfig.dampingRate = 0.15;
+        initialConfig.dampingRate = 0.75;
         initialConfig.dampingMax = 0.98;
         
         initialConfig.deflates = true;
@@ -524,7 +525,8 @@ class PlayState extends FlxState
         if(controlled){
             colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, maxSameColorPerPiece);
         }else{
-            colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
+            //colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
+            colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, 1);
         }
         for (i in 0...newGamePiece.Blocks.length){
             newGamePiece.Blocks[i].Material = colors[i];
@@ -618,7 +620,7 @@ class PlayState extends FlxState
             }
         }
     }
-        
+    
     private function MoveAccumulator(elapsed:Float){
         if (gamePiece == null){
             return;
@@ -638,6 +640,10 @@ class PlayState extends FlxState
             rotationAmount += rotateForce;
         }
         
+        if (rotationAmount == 0){
+            rotationAmount = -clampValue(gamePiece.RotationSpeed, -1, 1);
+        }
+
         if (pieceLeft || leftHeld){
             pushAmount.x -= moveForce;
         }
@@ -656,5 +662,16 @@ class PlayState extends FlxState
         if (rotationAmount != 0 && Math.abs(gamePiece.GamePieceOmega()) < 6.0){
             gamePiece.ApplyTorque(rotationAmount);
         }
+    }
+    
+    function clampValue(value:Float, low:Float, high:Float) 
+    {
+        var result:Float = value;
+        if (result < low){
+            result = low;
+        }else if (result > high){
+            result = high;
+        }
+       return result; 
     }
 }

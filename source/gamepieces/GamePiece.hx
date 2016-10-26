@@ -47,7 +47,9 @@ class GamePiece
     private var inputScalar:Float;
     
     private var rotationLastFrame:Float;
-    private var rotationSpeed:Float;
+    private var rotationSpeed:Float = 0;
+    public var RotationSpeed(get, null):Float;    
+    public function get_RotationSpeed():Float{return rotationSpeed;}
     
     public function new(theBlocks:Array<GameBlock>, theSprings:Array<ExternalSpring>,
             gravityScalar:Float) 
