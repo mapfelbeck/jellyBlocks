@@ -470,8 +470,8 @@ class PlayState extends FlxState
         //create static bodies for the container
         ground = new GameGround(2, 16, 20, new Vector2(0, 2), blockBuilder);
         var groundBodies:Array<Body> = ground.Assemble();
-        for (i in 0...groundBodies.length){
-            physicsWorld.AddBody(groundBodies[i]);
+        for (j in 0...groundBodies.length){
+            physicsWorld.AddBody(groundBodies[j]);
         }
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
@@ -482,34 +482,31 @@ class PlayState extends FlxState
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         pieceBuilder.setPieceType(PieceType.Triomino).setTriominoShape(TriominoShape.Corner);
 
-        pieceBuilder.setRotation(Math.PI);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6+.5, 6)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-3+.5, 6)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0+.5, 6)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(3+.5, 6)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6+.5, 6)), false);
+        var rowCount:Int = 4;
+        var colCount:Int = 5;
         
-        pieceBuilder.setRotation(0);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 8)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-3, 8)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 8)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(3, 8)), false);
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 8)), false);
+        var rowStart:Float = 2;
+        var rowInc:Float = 2;
         
-        /*addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, -4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, -4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, -4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, -4)));
+        var colStart:Float = -6;
+        var colInc:Float = 3;
+        var colOffset:Float = 0.5;
         
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 0)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, 0)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, 0)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 0)));
-        
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-6, 4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(-2, 4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(2, 4)));
-        addGamePiece(createGamePiece(pieceBuilder, new Vector2(6, 4)));*/
+        for (j in 0...rowCount){
+            //trace("j: " + j + ", j%2: " + (j % 2));
+            var colBase:Float = colStart;
+            if (j % 2 == 0){
+                pieceBuilder.setRotation(Math.PI);
+                colBase += colOffset;
+            }else{
+                pieceBuilder.setRotation(0);
+            }
+            var rowLoc:Float = rowStart + rowInc * j;
+            for (k in 0...colCount){
+                var colLoc:Float = colBase+colInc * k;
+                addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false);
+            }
+        }
     }
     
     function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
@@ -525,8 +522,8 @@ class PlayState extends FlxState
         if(controlled){
             colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, maxSameColorPerPiece);
         }else{
-            //colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
-            colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, 1);
+            colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
+            //colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, 1);
         }
         for (i in 0...newGamePiece.Blocks.length){
             newGamePiece.Blocks[i].Material = colors[i];
