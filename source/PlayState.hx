@@ -482,10 +482,10 @@ class PlayState extends FlxState
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         pieceBuilder.setPieceType(PieceType.Triomino).setTriominoShape(TriominoShape.Corner);
 
-        var rowCount:Int = 4;
+        var rowCount:Int = 6;
         var colCount:Int = 5;
         
-        var rowStart:Float = 2;
+        var rowStart:Float = -2;
         var rowInc:Float = 2;
         
         var colStart:Float = -6;
@@ -592,7 +592,7 @@ class PlayState extends FlxState
         
         var penetrationThreshhold:Float = 10.0;
         
-        physicsWorld = new World(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
+        physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.SetBodyDamping(0.4);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
         physicsWorld.PhysicsIter = 3;
