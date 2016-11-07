@@ -100,9 +100,9 @@ class GameBlock extends PressureBody
             collidedThisFrame = true;
         }
         
-        var other:GameBlock = Std.instance(otherBlock, GameBlock);
-        if (other != null && Material == other.Material)
+        if (Material == otherBlock.Material)
         {
+            var other:GameBlock = Std.instance(otherBlock, GameBlock);
             if (CollisionList.indexOf(other) == -1)
             {
                 CollisionList.push(other);
@@ -173,20 +173,11 @@ class GameBlock extends PressureBody
             var nCenter:Vector2 = null;
             var origin:Vector2 = null;
             var rotationForce:Vector2 = new Vector2(0, 0);
-            
-            /*if(this.Label == "Blob"){
-                trace("rotateAmount: " + rotateAmount);
-                trace("PointMasses.length: " + PointMasses.length);                
-            }*/
-            
+
             for (i in 0...PointMasses.length){
                 PointMasses[i].Force.add(moveForce);
                 
-                /*if(this.Label == "Blob"){
-                    trace("derp: " + rotateAmount);
-                }*/
                 if (rotateAmount != 0){
-                    //trace("burp: " + rotateAmount);
                     
                     nCenter = VectorTools.Add(PointMasses[i].Position, rotateCenter);
                     origin = VectorTools.Subtract(PointMasses[i].Position, rotateCenter);

@@ -20,8 +20,8 @@ class JellyBlocksWorld extends World
         super(worldMaterialCount, worldMaterialPairs, worldDefaultMaterialPair, worldPenetrationThreshhold, worldBounds);
     }
     
-    /*override public function getBodyCollider(penetrationThreshhold:Float):ColliderBase
+    override public function getBodyCollider(penetrationThreshhold:Float):ColliderBase
     {
-        return new collider.QuadTreeCollider(penetrationThreshhold);
-    }*/
+        return new QuadTreeCollider(penetrationThreshhold);
+    }
 }

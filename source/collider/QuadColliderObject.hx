@@ -10,14 +10,9 @@ import jellyPhysics.Body;
 class QuadColliderObject extends FlxObject
 {
     public var body:Body;
-    public function new(body:Body) 
-    {
-        var x = body.BoundingBox.X;
-        var y = body.BoundingBox.Y;
-        var h = body.BoundingBox.Width;
-        var w = body.BoundingBox.Height;
-        super(x,y,w,h);
-        //super(body.BoundingBox.X, body.BoundingBox.Y, body.BoundingBox.Width, body.BoundingBox.Height);
+    public function new(x:Float,y:Float,h:Float,w:Float,body:Body) 
+    {        
+        super(x, y, w, h);
         this.body = body;
     }   
 }

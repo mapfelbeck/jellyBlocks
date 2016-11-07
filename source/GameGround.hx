@@ -33,25 +33,51 @@ class GameGround
     }
     
     public function Assemble():Array<Body>{
-        /*var groundBody:Body = new Body(getSquareShape(2), Math.POSITIVE_INFINITY, new Vector2(0, 9), 0, new Vector2(18, 1), false);
-        groundBody.IsStatic = true;
-        groundBody.Material = MATERIAL_GROUND;
-        physicsWorld.AddBody(groundBody);*/
-        //public StaticBodyConfig(float theWidth, float theHeight, Vector2 theLocation
+        
+        var count:Int = 0;
+        var tempSize:Float = 0;
+        var smallBlocks:Bool = true;
         
         //lower left
         bodies.push(makeBody(border, border, new Vector2( -(border + width) / 2, (border + height) / 2)));        
+        
         //lower middle
-        bodies.push(makeBody(width, border, new Vector2(0, (border + height) / 2)));
+        if(smallBlocks){
+            count = Std.int( width / border);
+            tempSize = width / count;
+            for (i in 0...count){
+                bodies.push(makeBody(tempSize, border, new Vector2(i * (tempSize) - (width / 2) + (border/2), (border + height) / 2)));
+            }
+        }else{
+            bodies.push(makeBody(width, border, new Vector2(0, (border + height) / 2)));
+        }
+        
         //lower right
         bodies.push(makeBody(border, border, new Vector2((border + width) / 2, (border + height) / 2)));
         
         //middle left
-        bodies.push(makeBody(border, height, new Vector2(-(border + width) / 2, 0)));
+        if(smallBlocks){
+            count = Std.int( height / border);
+            tempSize = height / count;
+            for (i in 0...count){
+                bodies.push(makeBody(border, tempSize, new Vector2( -(border + width) / 2, (i*tempSize-(height/2))+(tempSize/2))));
+            }
+        }else{
+            bodies.push(makeBody(border, height, new Vector2( -(border + width) / 2, 0)));
+        }
+        
         //middle
         //bodies.push(makeBody(width, height, new Vector2(0 ,0 )));
         //middle right
-        bodies.push(makeBody(border, height, new Vector2((border + width) / 2, 0)));
+        if(smallBlocks){
+            count = Std.int( height / border);
+            tempSize = height / count;
+            for (i in 0...count){
+                bodies.push(makeBody(border, tempSize, new Vector2( (border + width) / 2, (i*tempSize-(height/2))+(tempSize/2))));
+            }
+        }else{
+            bodies.push(makeBody(border, height, new Vector2((border + width) / 2, 0)));
+        }
 
         //upper left
         bodies.push(makeBody(border, border, new Vector2(-(border + width) / 2, -(border + height) / 2)));

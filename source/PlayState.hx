@@ -214,7 +214,7 @@ class PlayState extends FlxState
     
     public function setupDrawParam(render:DrawDebugWorld):Void
     {
-        render.DrawingAABB = false;
+        render.DrawingAABB = true;
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
@@ -482,7 +482,7 @@ class PlayState extends FlxState
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
         pieceBuilder.setPieceType(PieceType.Triomino).setTriominoShape(TriominoShape.Corner);
 
-        var rowCount:Int = 6;
+        var rowCount:Int = 2;
         var colCount:Int = 5;
         
         var rowStart:Float = -2;
@@ -595,7 +595,7 @@ class PlayState extends FlxState
         physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.SetBodyDamping(0.4);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
-        physicsWorld.PhysicsIter = 3;
+        physicsWorld.PhysicsIter = 2;
     }
         
     private function PhysicsAccumulator(elapsed:Float){

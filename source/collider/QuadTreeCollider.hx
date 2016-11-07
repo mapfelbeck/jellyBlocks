@@ -16,6 +16,7 @@ import jellyPhysics.ColliderBase;
 class QuadTreeCollider implements ColliderBase
 {
     private var bodies:Array<Body>;
+    private var collisions:Array<BodyCollisionInfo>;
     
     private var penetrationThreshold:Float;    
     public var PenetrationThreshold(get, null):Float;
@@ -34,33 +35,40 @@ class QuadTreeCollider implements ColliderBase
         bodies = new Array<Body>();
     }
     
+    private static var collideCount:Int = 0;
     private function testTree():Void{
+        collideCount = 0;
         var tree:FlxQuadTree;
         FlxQuadTree.divisions = 4;
-        tree = FlxQuadTree.recycle(-10, -10, 1000, 1000);
-        var group:FlxGroup = new FlxGroup();
-        var object1:FlxObject = new FlxObject(0, 0, 40, 40);
-        object1.ID = 1;
-        var object2:FlxObject = new FlxObject(20, 20, 40, 40);
-        object2.ID = 2;
-        var object3:FlxObject = new FlxObject(60, 60, 40, 40);
-        object3.ID = 3;
-        var object4:FlxObject = new FlxObject(100, 100, 40, 40);
-        object4.ID = 4;
-        var object5:FlxObject = new FlxObject(10, 10, 60, 60);
-        object5.ID = 5;
-        tree.load(object1, null, NotifyCallback, ProcessCallback);
-        tree.load(object2, null, NotifyCallback, ProcessCallback);
-        tree.load(object3, null, NotifyCallback, ProcessCallback);
-        tree.load(object4, null, NotifyCallback, ProcessCallback);
-        tree.load(object5, null, NotifyCallback, ProcessCallback);      
+        tree = FlxQuadTree.recycle(-1000, -1000, 2000, 2000);
+        for (i in 0...50){
+            var object:FlxObject = new FlxObject(-1000 + 10*i, 0/*-1000 + 10*i*/, 11, 11);
+            object.ID = i;  
+            tree.load(object, null, NotifyCallback, ProcessCallback);
+        }    
         var collisions:Bool = tree.execute();
-        trace("Saw collisions: " + collisions);
+        trace("Collide count: " + collideCount);
+    }
+    
+    private function testBigLittle():Void{
+        collideCount = 0;
+        var tree:FlxQuadTree;
+        FlxQuadTree.divisions = 4;
+        tree = FlxQuadTree.recycle(-1000, -1000, 2000, 2000);
+        var bigObject:FlxObject = new FlxObject(-1000, 0, 2000, 20);
+        bigObject.ID = 1;
+        tree.load(bigObject, null, NotifyCallback, null);
+        var littleObject:FlxObject = new FlxObject(0, 10, 20, 20);
+        littleObject.ID = 2;
+        tree.load(littleObject, null, NotifyCallback, null);
+        var collisions:Bool = tree.execute();
+        trace("Collide count: " + collideCount);
     }
     
     private function NotifyCallback(object1:FlxObject,object2:FlxObject):Void 
     {
-        trace("object " + object1.ID + " collided with object " + object2.ID);
+        collideCount++;
+        //trace("object " + object1.ID + " collided with object " + object2.ID);
     }
     
     private function ProcessCallback(object1:FlxObject,object2:FlxObject):Bool 
@@ -68,39 +76,80 @@ class QuadTreeCollider implements ColliderBase
         return true;
     }
     
-    private function testTreeNew():Void{
+    private function testTreeAABB():Void{
         var tree:FlxQuadTree;
         FlxQuadTree.divisions = 6;
-        tree = FlxQuadTree.recycle( -21, -21, 21, 21);
+        tree = FlxQuadTree.recycle( -21, -21, 42, 42);
         
         for (i in 0...bodies.length){
             var body:Body = bodies[i];
-            var treeObject = new FlxObject(body.BoundingBox.X, body.BoundingBox.Y, body.BoundingBox.Width, body.BoundingBox.Height);
+            if (!Math.isFinite(body.BoundingBox.X) || !Math.isFinite(body.BoundingBox.Y) || !Math.isFinite(body.BoundingBox.Width) || !Math.isFinite(body.BoundingBox.Height)){
+                trace("wat??");
+            }
+            var x:Float = body.BoundingBox.X;
+            var y:Float = body.BoundingBox.Y;
+            var w:Float = body.BoundingBox.Width;
+            var h:Float = body.BoundingBox.Height;
+
+            //var treeObject = new FlxObject(x - w * 0.05, y - h * 0.05, w * 1.1, h * 1.1);
+            var treeObject = new FlxObject(x, y, w, h);
+            treeObject.ID = body.BodyNumber;
             tree.load(treeObject, null, NotifyCallback, ProcessCallback);
             //var treeObject = new QuadColliderObject(bodies[i]);
             //tree.load(treeObject, null, NotifyCallback2, ProcessCallback2);
         }
         var collisions:Bool = tree.execute();
-        trace("Saw collisions: " + collisions);
+        if (collisions){
+            trace("Collide count: " + collideCount);
+            collideCount = 0;
+        }
+        //trace("Saw collisions: " + collisions);
         tree.destroy();
         tree = null;
     }
     
-    private function NotifyCallback2(object1:FlxObject,object2:FlxObject):Void 
+    function testAABB() 
     {
-        var c1:QuadColliderObject = cast object1;
-        var c2:QuadColliderObject = cast object2;
-        trace("object " + c1.body.Label + "("+c1.body.DerivedPos.x+","+c1.body.DerivedPos.y+") collided with object " + c2.body.Label+"("+c2.body.DerivedPos.x+","+c2.body.DerivedPos.y+")");
-    }
-    
-    private function ProcessCallback2(object1:FlxObject,object2:FlxObject):Bool 
-    {
-        return true;
-        /*var colliderObject1:QuadColliderObject = cast object1;
-        var colliderObject2:QuadColliderObject = cast object2;
-        var body1:Body = colliderObject1.body;
-        var body2:Body = colliderObject2.body;
-        return !((body1.IsStatic && body2.IsStatic) || (body1.IsAsleep && body2.IsStatic)||(body1.IsStatic && body2.IsAsleep));*/
+        var intersectCount:Int = 0;
+        var treeCount:Int = 0;
+        for (i in 0...bodies.length){
+            for (j in i+1...bodies.length){
+                var bodyA:Body = bodies[i];
+                var bodyB:Body = bodies[j];
+                if ((!bodyA.IsStatic && !bodyB.IsStatic) && bodyA.BoundingBox.Intersects(bodyB.BoundingBox)){
+                    var xA:Float = bodyA.BoundingBox.X;
+                    var yA:Float = bodyA.BoundingBox.Y;
+                    var wA:Float = bodyA.BoundingBox.Width;
+                    var hA:Float = bodyA.BoundingBox.Height;
+                    
+                    var xB:Float = bodyB.BoundingBox.X;
+                    var yB:Float = bodyB.BoundingBox.Y;
+                    var wB:Float = bodyB.BoundingBox.Width;
+                    var hB:Float = bodyB.BoundingBox.Height;
+                    
+                    var tree:FlxQuadTree;
+                    FlxQuadTree.divisions = 6;
+                    tree = FlxQuadTree.recycle( -21, -21, 21, 21);
+                    var treeObjectA = new FlxObject(xA, -yA, wA, hA);
+                    treeObjectA.ID = bodyA.BodyNumber;
+                    tree.load(treeObjectA, null, NotifyCallback, ProcessCallback);
+                    var treeObjectB = new FlxObject(xB, -yB, wB, hB);
+                    treeObjectB.ID = bodyB.BodyNumber;
+                    tree.load(treeObjectB, null, NotifyCallback, ProcessCallback);
+                    var collisions:Bool = tree.execute();
+                    if (collisions){
+                        //trace("Collide count: " + collideCount);
+                        treeCount += collideCount;
+                        collideCount = 0;
+                    }
+                    tree.destroy();
+                    tree = null;
+                    intersectCount++;
+                }
+            }
+        }
+        trace("Intersect count: " + intersectCount);
+        trace("treeCount count: " + treeCount);
     }
     
     public function GetBody(index:Int):Body 
@@ -135,8 +184,10 @@ class QuadTreeCollider implements ColliderBase
     
     private function AddCollisionCallback(object1:FlxObject,object2:FlxObject):Void 
     {
-        var b1:Body = bodies[object1.ID];
-        var b2:Body = bodies[object2.ID];
+        var colliderObject1:QuadColliderObject = cast object1;
+        var colliderObject2:QuadColliderObject = cast object2;
+        var b1:Body = colliderObject1.body;
+        var b2:Body = colliderObject2.body;
         
         var aCollide:Array<BodyCollisionInfo> = Body.BodyCollide(b1, b2, penetrationThreshold);
         collisions = collisions.concat(aCollide);
@@ -147,42 +198,47 @@ class QuadTreeCollider implements ColliderBase
     
     private function FilterCallback(object1:FlxObject,object2:FlxObject):Bool 
     {
-        return true;
-        /*var colliderObject1:QuadColliderObject = cast object1;
+        var colliderObject1:QuadColliderObject = cast object1;
         var colliderObject2:QuadColliderObject = cast object2;
         var body1:Body = colliderObject1.body;
         var body2:Body = colliderObject2.body;
-        return !((body1.IsStatic && body2.IsStatic) || (body1.IsAsleep && body2.IsStatic)||(body1.IsStatic && body2.IsAsleep));*/
+        if ((body1.IsStatic && body2.IsStatic)||(body1.IsAsleep && body2.IsStatic)||(body1.IsStatic && body2.IsAsleep)){
+            return false;
+        }
+        return body1.BoundingBox.Intersects(body2.BoundingBox);
     }
     
-    private var collisions:Array<BodyCollisionInfo>;
     public function BuildCollisions():Array<BodyCollisionInfo> 
     {
         collisions = new Array<BodyCollisionInfo>();
         var tree:FlxQuadTree;
-        FlxQuadTree.divisions = 6;
-        tree = FlxQuadTree.recycle( -21, -21, 21, 21);
+        FlxQuadTree.divisions = 8;
+        tree = FlxQuadTree.recycle( -21, -21, 42, 42);
         
         for (i in 0...bodies.length){
             var body:Body = bodies[i];
-            FlxG.collide(
-            var treeObject = new FlxObject(body.BoundingBox.X, body.BoundingBox.Y, body.BoundingBox.Width, body.BoundingBox.Height);
+            var x:Float = body.BoundingBox.X;
+            var y:Float = body.BoundingBox.Y;
+            var w:Float = body.BoundingBox.Width;
+            var h:Float = body.BoundingBox.Height;
+
+            //var treeObject = new FlxObject(x - w * 0.05, y - h * 0.05, w * 1.1, h * 1.1);
+            var treeObject = new QuadColliderObject(x - w * 0.05, y - h * 0.05, w * 1.1, h * 1.1,
+                                                    body);
             treeObject.ID = body.BodyNumber;
-            tree.load(treeObject, null, AddCollisionCallback, ProcessCallback);
-            //var treeObject = new QuadColliderObject(bodies[i]);
-            //tree.load(treeObject, null, NotifyCallback2, ProcessCallback2);
+            tree.load(treeObject, null, AddCollisionCallback, FilterCallback);
         }
         var collide:Bool = tree.execute();
-        trace("Saw collisions: " + collide);
+        //trace("Saw collisions: " + collide);
         tree.destroy();
         tree = null;
-        
+
         return collisions;
     }
     
+    /*private static var count:Int = 0;
     public function BuildCollisions():Array<BodyCollisionInfo> 
     {
-        //testTreeNew();
         var collisions:Array<BodyCollisionInfo> = new Array<BodyCollisionInfo>();
         
         for (i in 0...bodies.length){
@@ -198,25 +254,11 @@ class QuadTreeCollider implements ColliderBase
                 }
                 
                 var aCollide:Array<BodyCollisionInfo> = Body.BodyCollide(bodyA, bodyB, penetrationThreshold);
-                for (i in 0...aCollide.length){
-                    var info:BodyCollisionInfo = aCollide[i];
-                    if (info == null || info.BodyA == null || info.BodyB == null || info.BodyAPointMass ==-1 || info.BodyBPointMassA ==-1 || info.BodyBPointMassB ==-1){
-                        trace("what the hell broke?");
-                    }
-                }
                 collisions = collisions.concat(aCollide);
-                var bCollide:Array<BodyCollisionInfo> = Body.BodyCollide(bodyB, bodyA, penetrationThreshold);       
-                for (i in 0...bCollide.length){
-                    var info:BodyCollisionInfo = bCollide[i];
-                    if (info == null || info.BodyA == null || info.BodyB == null || info.BodyAPointMass ==-1 || info.BodyBPointMassA ==-1 || info.BodyBPointMassB ==-1){
-                        trace("what the hell broke?");
-                    }
-                }
+                var bCollide:Array<BodyCollisionInfo> = Body.BodyCollide(bodyB, bodyA, penetrationThreshold);
                 collisions = collisions.concat(bCollide);
-                //collisions = collisions.concat(Body.BodyCollide(bodyA, bodyB, penetrationThreshold));
-                //collisions = collisions.concat(Body.BodyCollide(bodyB, bodyA, penetrationThreshold));
             }
         }
         return collisions;
-    }
+    }*/
 }
