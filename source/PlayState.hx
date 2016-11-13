@@ -462,6 +462,8 @@ class PlayState extends FlxState
         initialConfig.freezeDistortionThreshhold = 0.8;
         initialConfig.freezeVelocityThreshhold = 0.08;
         
+        initialConfig.scale = 1.5;
+        
         //new up the builders
         shapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
         blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure);
@@ -475,6 +477,7 @@ class PlayState extends FlxState
         }
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
+        blockBuilder = blockBuilder.setScale(new Vector2(initialConfig.scale, initialConfig.scale));
         blockBuilder = blockBuilder.setMass(PhysicsDefaults.Mass);
         blockBuilder = blockBuilder.setBlockConfig(initialConfig);
         blockBuilder = blockBuilder.setKinematic(false);
@@ -483,7 +486,7 @@ class PlayState extends FlxState
         pieceBuilder.setPieceType(PieceType.Triomino).setTriominoShape(TriominoShape.Corner);
 
         var rowCount:Int = 2;
-        var colCount:Int = 5;
+        var colCount:Int = 3;
         
         var rowStart:Float = -2;
         var rowInc:Float = 2;
@@ -501,9 +504,9 @@ class PlayState extends FlxState
             }else{
                 pieceBuilder.setRotation(0);
             }
-            var rowLoc:Float = rowStart + rowInc * j;
+            var rowLoc:Float = rowStart + (rowInc * initialConfig.scale) * j;
             for (k in 0...colCount){
-                var colLoc:Float = colBase+colInc * k;
+                var colLoc:Float = colBase+(colInc * initialConfig.scale) * k;
                 addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false);
             }
         }
@@ -522,8 +525,8 @@ class PlayState extends FlxState
         if(controlled){
             colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, maxSameColorPerPiece);
         }else{
-            colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
-            //colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, 1);
+            //colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
+            colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, 1);
         }
         for (i in 0...newGamePiece.Blocks.length){
             newGamePiece.Blocks[i].Material = colors[i];

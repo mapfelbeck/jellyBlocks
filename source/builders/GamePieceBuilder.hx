@@ -23,6 +23,7 @@ class GamePieceBuilder
     var externalK:Float = PhysicsDefaults.ExternalSpringK;
     var location:Vector2 = new Vector2(0, 0);
     var rotation:Float = 0;
+    var scale:Float = 1.0;
     
     public function new(){
     }
@@ -112,8 +113,9 @@ class GamePieceBuilder
         //var shapes:Array<ClosedShape> = new Array<ClosedShape>();
         var springs:Array<ExternalSpring> = new Array<ExternalSpring>();
         
+        scale = blockBuilder.getScale().x;
         for (i in 0...blockPattern.length){
-            var offsetPattern:Vector2 = VectorTools.Multiply(blockPattern[i], 1.0);
+            var offsetPattern:Vector2 = VectorTools.Multiply(blockPattern[i], scale);
             shapeLocations.push(offsetPattern.add(location));
         }
         
@@ -147,16 +149,6 @@ class GamePieceBuilder
         
         for (i in 0...piece.Blocks.length){
             for (j in 0...piece.Blocks[i].PointMasses.length){
-                /*var p:Vector2 = piece.Blocks[i].PointMasses[j].Position;
-                p.x -= center.x;
-                p.y -= center.y;
-                
-                var xNew:Float = p.x * c - p.y * s;
-                var yNew:Float = p.x * s - p.y * c;
-                
-                piece.Blocks[i].PointMasses[j].Position.x = xNew + center.x;
-                piece.Blocks[i].PointMasses[j].Position.y = yNew + center.y;*/
-                
                 var p:Vector2 = piece.Blocks[i].PointMasses[j].Position;
                 
                 var xNew:Float = c * (p.x - center.x) - s * (p.y - center.y);
@@ -179,7 +171,7 @@ class GamePieceBuilder
         var blockACenter:Vector2 = BlockA.DerivedPos;
         var blockBCenter:Vector2 = BlockB.DerivedPos;
         
-        if (VectorTools.Distance(blockACenter, blockBCenter) > 1.0 + .01)
+        if (VectorTools.Distance(blockACenter, blockBCenter) > scale + .01)
         {
             return;
         }
@@ -193,7 +185,7 @@ class GamePieceBuilder
                 var dist:Vector2 = VectorTools.Subtract(pmA.Position, BlockB.PointMasses[j].Position);
                 var absolute:Float = dist.length();
 
-                if (absolute < 0.001)
+                if (absolute < 0.1)
                 {
                     spring = new ExternalSpring(BlockA, BlockB, i, j,
                         0, externalK, externalDamp);

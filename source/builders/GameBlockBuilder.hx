@@ -120,6 +120,10 @@ class GameBlockBuilder
         return this;
     }
     
+    public function getScale():Vector2{
+        return scale;
+    }
+    
     public function setKinematic(kinematic:Bool) :GameBlockBuilder
     {
         this.kinematic = kinematic;

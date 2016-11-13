@@ -31,4 +31,6 @@ class BlockConfig
     public var freezeVelocityThreshhold:Float;
     //don't freeze if the block is distroted by more than this
     public var freezeDistortionThreshhold:Float;
+    
+    public var scale:Float;
 }
