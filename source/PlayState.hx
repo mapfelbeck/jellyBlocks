@@ -114,9 +114,9 @@ class PlayState extends FlxState
         debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         setupDrawParam(debugRender);
         
-        if(true){
-            addButtons();
-        }
+        #if (html5 || mobile)
+        addButtons();
+        #end
 	}
     
     function addButtons() 
