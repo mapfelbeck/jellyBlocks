@@ -71,15 +71,15 @@ class PlayState extends FlxState
         WINDOW_HEIGHT = Std.int(Lib.current.stage.height);
         //WINDOW_WIDTH = Lib.application.window.width;
         //WINDOW_HEIGHT = Lib.application.window.height;
-        #else
+        #else*/
         WINDOW_WIDTH = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
         WINDOW_HEIGHT = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
-        #end*/
+        //#end
         
         //WINDOW_WIDTH = Std.int(Lib.current.stage.width);
         //WINDOW_HEIGHT = Std.int(Lib.current.stage.height);
-        WINDOW_WIDTH = 450;
-        WINDOW_HEIGHT = 600;
+        //WINDOW_WIDTH = 450;
+        //WINDOW_HEIGHT = 600;
         trace("Window width: " + WINDOW_WIDTH);
         trace("Window height: " + WINDOW_HEIGHT);
 		super.create();
@@ -220,7 +220,7 @@ class PlayState extends FlxState
     
     public function setupDrawParam(render:DrawDebugWorld):Void
     {
-        render.DrawingBounds = false;
+        render.DrawingBounds = true;
         render.DrawingAABB = false;
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
@@ -607,7 +607,7 @@ class PlayState extends FlxState
         physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.SetBodyDamping(0.4);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
-        physicsWorld.PhysicsIter = 4;
+        physicsWorld.PhysicsIter = 2;
     }
         
     private function PhysicsAccumulator(elapsed:Float){

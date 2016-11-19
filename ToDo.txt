@@ -1,10 +1,5 @@
 ToDo:
-    Does VectorTools.isCCW even need to be fixed? Unit test is currently commented out.
-    Ensure callback on collision works.
-
-Test screens:
-    1. Unit Test world
-    2. Static, scaled amd rotated bodies, No gravity or mouse control
-    3. Basic gravity sandbox with spring and pressure bodies
-    4. Material collision filtering with custom draw options
-    5. Custom control and collision callbacks
+    Make good touch screen controls.
+    Figure out how to keep the physics sim from blowing up when intersections are too deep.
+    Improve physics sim speed.
+    Replace debug rendering with textured render.

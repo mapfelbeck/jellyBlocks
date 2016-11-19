@@ -14,15 +14,15 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
     
     <!-- create size vars in project file -->
-    <!--<set name="windowWidth" value="800" />
+    <set name="windowWidth" value="450" />
     <set name="windowHeight" value="600" />-->
     <!-- make above var visible to compiler/show up as constants -->
-    <!--<haxedef name="windowWidth" value="${windowWidth}" />
-    <haxedef name="windowHeight" value="${windowHeight}" />-->
+    <haxedef name="windowWidth" value="${windowWidth}" />
+    <haxedef name="windowHeight" value="${windowHeight}" />
     
 	<!--These window settings apply to all targets-->
-	<!--<window width="${windowWidth}" height="${windowHeight}" fps="60" background="#FFF8E7" hardware="true" vsync="true" />-->
-    <window fps="60" background="#FFF8E7" hardware="true" vsync="true"  width="450" height="600" />
+	<window width="${windowWidth}" height="${windowHeight}" fps="60" background="#FFF8E7" hardware="true" vsync="true" />
+    <!--<window fps="60" background="#FFF8E7" hardware="true" vsync="true"  width="450" height="600" />-->
     
     
 	<!--HTML5-specific-->
