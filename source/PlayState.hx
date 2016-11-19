@@ -114,56 +114,54 @@ class PlayState extends FlxState
         debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         setupDrawParam(debugRender);
         
-        if(false){
+        if(true){
             addButtons();
         }
 	}
     
     function addButtons() 
     {
-        var xSpacing:Float = 60;
-        var ySpacing:Float = 100;
-        var buttonSize:Int = 200;
+        var buttonSize:Int = 100;
         
-        leftButton = new FlxButton(50, 50, null, null);
+        var turnButtonVert:Float = 0.5;
+        var dirButtonVert:Float = 0.8;
+        var leftButtonHoriz:Float = 0.02;
+        var rightButtonHoriz:Float = 0.8;
+        
+        leftButton = new FlxButton(buttonSize, buttonSize, null, null);
         leftButton.onDown.callback = OnLeftDown;
         leftButton.onUp.callback = OnLeftUp;
         leftButton.onOut.callback = OnLeftUp;
-        var leftSprite:FlxSprite = new FlxSprite();
-        leftButton.loadGraphic("assets/images/LeftButton.png");
-        leftButton.setGraphicSize(buttonSize, buttonSize);
-        leftButton.x = xSpacing;
-        leftButton.y = WINDOW_HEIGHT- (leftButton.graphic.height + ySpacing);
+        leftButton.loadGraphic("assets/images/LeftSprite.png", true, 80, 80);
+        leftButton.x = WINDOW_WIDTH * leftButtonHoriz;
+        leftButton.y = WINDOW_HEIGHT * dirButtonVert;
         add(leftButton);
         
-        rightButton = new FlxButton(50, 50, null, null);
+        rightButton = new FlxButton(buttonSize, buttonSize, null, null);
         rightButton.onDown.callback = OnRightDown;
         rightButton.onUp.callback = OnRightUp;
         rightButton.onOut.callback = OnRightUp;
-        rightButton.loadGraphic("assets/images/RightButton.png");
-        rightButton.setGraphicSize(buttonSize, buttonSize);
-        rightButton.x = WINDOW_WIDTH - (rightButton.graphic.width + xSpacing);
-        rightButton.y = WINDOW_HEIGHT- (rightButton.graphic.height + ySpacing);
+        rightButton.loadGraphic("assets/images/RightSprite.png", true, 80, 80);
+        rightButton.x = WINDOW_WIDTH * rightButtonHoriz;
+        rightButton.y = WINDOW_HEIGHT * dirButtonVert;
         add(rightButton);
         
-        ccwButton = new FlxButton(50, 50, null, null);
+        ccwButton = new FlxButton(buttonSize, buttonSize, null, null);
         ccwButton.onDown.callback = OnCCWDown;
         ccwButton.onUp.callback = OnCCWUp;
         ccwButton.onOut.callback = OnCCWUp;
-        ccwButton.loadGraphic("assets/images/RotateCCWButton.png");
-        ccwButton.setGraphicSize(buttonSize, buttonSize);
-        ccwButton.x = xSpacing;
-        ccwButton.y = ySpacing;
+        ccwButton.loadGraphic("assets/images/RotateCCWSprite.png", true, 80, 80);
+        ccwButton.x = WINDOW_WIDTH * leftButtonHoriz;
+        ccwButton.y = WINDOW_HEIGHT * turnButtonVert;
         add(ccwButton);
         
-        cwButton = new FlxButton(50, 50, null, null);
+        cwButton = new FlxButton(buttonSize, buttonSize, null, null);
         cwButton.onDown.callback = OnCWDown;
         cwButton.onUp.callback = OnCWUp;
         cwButton.onOut.callback = OnCWUp;
-        cwButton.loadGraphic("assets/images/RotateCWButton.png");
-        cwButton.setGraphicSize(buttonSize, buttonSize);
-        cwButton.x = WINDOW_WIDTH - (ccwButton.graphic.width + xSpacing);
-        cwButton.y = ySpacing;
+        cwButton.loadGraphic("assets/images/RotateCWSprite.png", true, 80, 80);
+        cwButton.x = WINDOW_WIDTH * rightButtonHoriz;
+        cwButton.y = WINDOW_HEIGHT * turnButtonVert;
         add(cwButton);
     }
     
@@ -220,11 +218,11 @@ class PlayState extends FlxState
     
     public function setupDrawParam(render:DrawDebugWorld):Void
     {
-        render.DrawingBounds = true;
+        render.DrawingBounds = false;
         render.DrawingAABB = false;
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
-        render.DrawingLabels = true;
+        render.DrawingLabels = false;
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, uniqueColors);
         for (i in 1...colors.length + 1){
@@ -432,7 +430,7 @@ class PlayState extends FlxState
     {
         var spawnConfig:BlockConfig = new BlockConfig();
         spawnConfig.timeTillDamping = 0.5;
-        spawnConfig.dampingRate = 0.50;
+        spawnConfig.dampingRate = 0.60;
         spawnConfig.dampingInc = 0.10;
         spawnConfig.dampingMax = 0.90;
         
