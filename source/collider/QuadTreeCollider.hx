@@ -110,6 +110,7 @@ class QuadTreeCollider implements ColliderBase
     
     function testAABB() 
     {
+        FlxQuadTree.divisions = 4;
         var intersectCount:Int = 0;
         var treeCount:Int = 0;
         for (i in 0...bodies.length){
@@ -128,7 +129,6 @@ class QuadTreeCollider implements ColliderBase
                     var hB:Float = bodyB.BoundingBox.Height;
                     
                     var tree:FlxQuadTree;
-                    FlxQuadTree.divisions = 6;
                     tree = FlxQuadTree.recycle( -21, -21, 21, 21);
                     var treeObjectA = new FlxObject(xA, -yA, wA, hA);
                     treeObjectA.ID = bodyA.BodyNumber;
@@ -212,7 +212,7 @@ class QuadTreeCollider implements ColliderBase
     {
         collisions = new Array<BodyCollisionInfo>();
         var tree:FlxQuadTree;
-        FlxQuadTree.divisions = 8;
+        FlxQuadTree.divisions = 4;
         tree = FlxQuadTree.recycle( -21, -21, 42, 42);
         
         for (i in 0...bodies.length){

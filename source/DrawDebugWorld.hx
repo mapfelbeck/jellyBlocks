@@ -16,17 +16,20 @@ class DrawDebugWorld
     public var drawLookup:Map<Int,DebugDrawBodyOption>;
     public var drawGlobalBodyDefault:DebugDrawBodyOption;
     public var drawPhysicsBodyDefault:DebugDrawBodyOption;
-    public var renderSize:Vector2;
-    public var backgroundColor:Int;
+    public var backgroundSize:Vector2;
     
     private var renderTarget:Sprite;
     private var graphics:Graphics;
     private var world:World;
+    private var worldBounds:AABB;
     
     private var labels:Array<TextField>;
     
     public var offset:Vector2 = new Vector2(0, 0);
-    public var scale:Vector2 = new Vector2(20.0, 20.0);
+    public var scale:Vector2 = new Vector2(10.0, 10.0);
+    public var width:Int = 0;
+    public var height:Int = 0;
+    public var overscan:Int = 0;
     
     public static var COLOR_BLACK:Int = 0x000000;
     public static var COLOR_WHITE:Int = 0xFFFFFF;
@@ -38,6 +41,7 @@ class DrawDebugWorld
     public static var COLOR_YELLOW:Int = 0xFFFF00;
     public static var COLOR_AQUA:Int = 0x00FFFF;
     
+    public var ColorOfBounds:Int = COLOR_PURPLE;
     public var ColorOfText:Int = COLOR_GREY;
     public var ColorOfAABB:Int = COLOR_GREY;
     public var ColorOfBackground:Int = COLOR_BLACK;
@@ -50,6 +54,7 @@ class DrawDebugWorld
     public var SizeOfVert:Float = 4;
     
     public var DrawingBackground:Bool = true;
+    public var DrawingBounds:Bool = false;
     public var DrawingLabels:Bool = true;
     public var DrawingAABB:Bool = false;
     public var DrawingGlobalVerts:Bool = false;
@@ -58,7 +63,7 @@ class DrawDebugWorld
     public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;
     
-    public function new(sprite:Sprite, physicsWorld:World, width:Int, height:Int) 
+    public function new(sprite:Sprite, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
         drawLookup = new Map<Int,DebugDrawBodyOption>();
         drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
@@ -67,27 +72,32 @@ class DrawDebugWorld
         renderTarget = sprite;
         graphics = renderTarget.graphics;
         world = physicsWorld;
-        backgroundColor = ColorOfBackground;
-        renderSize = new Vector2(width - (2 * sprite.x), height - (2 * sprite.y));
-        offset.x = renderSize.x / 2;
-        offset.y = renderSize.y / 2;
+        
+        setRenderAndOffset(width, height, overscan);
         
         if (DrawingLabels){
             createTextLabels(world.NumberBodies);
         }
+    }
+    
+    private var worldWidth:Float;
+    private var worldHeight:Float;
+    private function setRenderAndOffset(width:Int, height:Int, overscan:Int):Void{
+        worldBounds = world.WorldBounds;
+        worldWidth = worldBounds.LR.x - worldBounds.UL.x;
+        worldHeight = worldBounds.LR.y - worldBounds.UL.y;
+        this.overscan = overscan;
+        this.width = width;
+        this.height = height;
+        backgroundSize = new Vector2(width - (2 * overscan), height - (2 * overscan));
+        offset.x = width / 2;
+        offset.y = height / 2;
         
-        //renderTarget.stage.stage3Ds[0].addEventListener( Event.CONTEXT3D_CREATE, initStage3D );
-        //renderTarget.stage.stage3Ds[0].requestContext3D();
+        var hScale:Float = backgroundSize.x / worldWidth;
+        var wScale:Float = backgroundSize.y / worldHeight;
+        scale.x = Math.min(hScale, wScale);
+        scale.y = Math.min(hScale, wScale);
     }
-    
-    /*private var context3D:Context3D;
-    private function initStage3D(e:Event):Void{
-        trace("initState3D");
-    }
-    
-    private function initStage3DError(e:Event):Void{
-        trace("initStage3DError");
-    }*/
     
     function createTextLabels(count:Int) 
     {
@@ -114,9 +124,13 @@ class DrawDebugWorld
         graphics.clear();
         
         if(DrawingBackground){
-            graphics.beginFill(backgroundColor);
-            graphics.drawRect(0, 0, renderSize.x, renderSize.y);
+            graphics.beginFill(ColorOfBackground);
+            graphics.drawRect(overscan, overscan, backgroundSize.x, backgroundSize.y);
             graphics.endFill();
+        }
+        
+        if(DrawingBounds){
+            DrawPhysicsBounds();
         }
         
         if (DrawingLabels){
@@ -232,6 +246,17 @@ class DrawDebugWorld
             drawOpts = drawPhysicsBodyDefault;
         }
         return drawOpts;
+    }
+    
+    function DrawPhysicsBounds() 
+    {
+        graphics.lineStyle(2, ColorOfBounds);
+        //upper left and lower right
+        //var ul:Vector2 = worldToLocal(new Vector2( -2, -2));
+        //var lr:Vector2 = worldToLocal(new Vector2(2, 2));
+        var ul:Vector2 = worldToLocal(worldBounds.UL);
+        var lr:Vector2 = worldToLocal(worldBounds.LR);
+        graphics.drawRect(ul.x, ul.y, lr.x - ul.x, lr.y - ul.y);
     }
     
     function drawGlobalBody(shape:Array<Vector2>) 

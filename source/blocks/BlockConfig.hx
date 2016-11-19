@@ -9,10 +9,12 @@ class BlockConfig
     public function new(){
     }
     
-    //time before effect begins
+    //time before damping starts to increase
     public var timeTillDamping:Float;
-    //damping rate
+    //initial damping rate
     public var dampingRate:Float;
+    //how much does damping increase per second
+    public var dampingInc:Float;
     //max physics damping
     public var dampingMax:Float;
 

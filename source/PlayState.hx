@@ -25,7 +25,7 @@ class PlayState extends FlxState
     var debugRender:DrawDebugWorld;
     var debugDrawSurface:Sprite;
     var flxDrawSurface:FlxSprite;
-    var overscan:Int = 0;
+    var overscan:Int = 10;
     var WINDOW_WIDTH:Int;
     var WINDOW_HEIGHT:Int;
 
@@ -66,7 +66,7 @@ class PlayState extends FlxState
     
 	override public function create():Void
 	{
-        #if mobile
+        /*#if mobile
         WINDOW_WIDTH = Std.int(Lib.current.stage.width);
         WINDOW_HEIGHT = Std.int(Lib.current.stage.height);
         //WINDOW_WIDTH = Lib.application.window.width;
@@ -74,7 +74,12 @@ class PlayState extends FlxState
         #else
         WINDOW_WIDTH = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
         WINDOW_HEIGHT = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
-        #end
+        #end*/
+        
+        //WINDOW_WIDTH = Std.int(Lib.current.stage.width);
+        //WINDOW_HEIGHT = Std.int(Lib.current.stage.height);
+        WINDOW_WIDTH = 450;
+        WINDOW_HEIGHT = 600;
         trace("Window width: " + WINDOW_WIDTH);
         trace("Window height: " + WINDOW_HEIGHT);
 		super.create();
@@ -106,10 +111,12 @@ class PlayState extends FlxState
         setupConfigForSpawingBlocks();
         
         //draw surface needs stage
-        debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT);
+        debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         setupDrawParam(debugRender);
         
-        addButtons();
+        if(false){
+            addButtons();
+        }
 	}
     
     function addButtons() 
@@ -202,10 +209,9 @@ class PlayState extends FlxState
         flxDrawSurface = new FlxSprite().makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
         add(flxDrawSurface);
         
-        overscan = 20;
         debugDrawSurface = new Sprite();
-        debugDrawSurface.x = overscan;
-        debugDrawSurface.y = overscan;
+        debugDrawSurface.x = 0;
+        debugDrawSurface.y = 0;
         
         debugDrawSurface.cacheAsBitmap = true;
         
@@ -214,9 +220,11 @@ class PlayState extends FlxState
     
     public function setupDrawParam(render:DrawDebugWorld):Void
     {
-        render.DrawingAABB = true;
+        render.DrawingBounds = false;
+        render.DrawingAABB = false;
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
+        render.DrawingLabels = true;
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, uniqueColors);
         for (i in 1...colors.length + 1){
@@ -349,8 +357,6 @@ class PlayState extends FlxState
             var piece:GamePiece = removeList.pop();
             gamePieces.remove(piece);
         }
-
-        Draw();
         
         pieceCCW = false;
         pieceCW = false;
@@ -410,24 +416,25 @@ class PlayState extends FlxState
         }
     }
     
-    private function Draw():Void
+    override public function draw():Void 
     {
+        super.draw();
+        
         debugRender.Draw();
         
         var pixels:BitmapData = flxDrawSurface.pixels;
         pixels.fillRect(pixels.rect, FlxColor.TRANSPARENT);
         pixels.draw(debugDrawSurface);
         flxDrawSurface.pixels = pixels;
-        flxDrawSurface.x = overscan;
-        flxDrawSurface.y = overscan;
     }
     
     function setupConfigForSpawingBlocks() 
     {
         var spawnConfig:BlockConfig = new BlockConfig();
         spawnConfig.timeTillDamping = 0.5;
-        spawnConfig.dampingRate = 0.15;
-        spawnConfig.dampingMax = 0.98;
+        spawnConfig.dampingRate = 0.50;
+        spawnConfig.dampingInc = 0.10;
+        spawnConfig.dampingMax = 0.90;
         
         spawnConfig.deflates = true;
         spawnConfig.deflateRate = .25;
@@ -450,8 +457,9 @@ class PlayState extends FlxState
     {
         var initialConfig:BlockConfig = new BlockConfig();
         initialConfig.timeTillDamping = 0.5;
-        initialConfig.dampingRate = 0.75;
-        initialConfig.dampingMax = 0.98;
+        initialConfig.dampingRate = 0.25;
+        initialConfig.dampingInc = 0.15;
+        initialConfig.dampingMax = 0.90;
         
         initialConfig.deflates = true;
         initialConfig.deflateRate = .25;
@@ -470,7 +478,7 @@ class PlayState extends FlxState
         pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
 
         //create static bodies for the container
-        ground = new GameGround(2, 16, 20, new Vector2(0, 2), blockBuilder);
+        ground = new GameGround(2, 16, 20, new Vector2(0, 12), blockBuilder);
         var groundBodies:Array<Body> = ground.Assemble();
         for (j in 0...groundBodies.length){
             physicsWorld.AddBody(groundBodies[j]);
@@ -591,14 +599,15 @@ class PlayState extends FlxState
     {
         var matrix:MaterialMatrix = getMaterialMatrix();
         
-        var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
+        //var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
+        var bounds:AABB = new AABB(new Vector2( -12, -14), new Vector2( 12, 14));
         
-        var penetrationThreshhold:Float = 10.0;
+        var penetrationThreshhold:Float = 1.0;
         
         physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.SetBodyDamping(0.4);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
-        physicsWorld.PhysicsIter = 2;
+        physicsWorld.PhysicsIter = 4;
     }
         
     private function PhysicsAccumulator(elapsed:Float){

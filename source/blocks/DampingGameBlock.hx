@@ -12,6 +12,7 @@ class DampingGameBlock extends GameBlock
     private var timeTillDamping:Float;
     private var dampingRate:Float;
     private var dampingMax:Float;
+    private var dampingInc:Float;
 
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2, 
     angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool, 
@@ -22,6 +23,8 @@ class DampingGameBlock extends GameBlock
         dampingMax = config.dampingMax;
         dampingRate = config.dampingRate;
         timeTillDamping = config.timeTillDamping;
+        dampingInc = config.dampingInc;
+        VelocityDamping = dampingRate;
     }
     
     override public function Update(elapsed:Float):Void 
@@ -29,8 +32,10 @@ class DampingGameBlock extends GameBlock
         super.Update(elapsed);
         if (lifeTime > timeTillDamping)
         {
-            var dampingStep:Float = elapsed * dampingRate;
+            var dampingStep:Float = dampingInc * elapsed * dampingRate;
             VelocityDamping = Math.min(VelocityDamping + dampingStep, dampingMax);
+        }else{
+            VelocityDamping = dampingRate;
         }
     }
 }
