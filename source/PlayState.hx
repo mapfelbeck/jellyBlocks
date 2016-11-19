@@ -121,7 +121,10 @@ class PlayState extends FlxState
     
     function addButtons() 
     {
-        var buttonSize:Int = 100;
+        //ratio of screen width
+        var buttonSize:Float = 0.25;
+        var spriteSize:Int = 80;
+        var buttonScale:Float = (WINDOW_WIDTH * buttonSize) / spriteSize;
         
         var turnButtonVert:Float = 0.5;
         var dirButtonVert:Float = 0.8;
@@ -132,7 +135,8 @@ class PlayState extends FlxState
         leftButton.onDown.callback = OnLeftDown;
         leftButton.onUp.callback = OnLeftUp;
         leftButton.onOut.callback = OnLeftUp;
-        leftButton.loadGraphic("assets/images/LeftSprite.png", true, 80, 80);
+        leftButton.loadGraphic("assets/images/LeftSprite.png", true, spriteSize, spriteSize);
+        leftButton.scale.set(buttonScale, buttonScale);
         leftButton.x = WINDOW_WIDTH * leftButtonHoriz;
         leftButton.y = WINDOW_HEIGHT * dirButtonVert;
         add(leftButton);
@@ -141,7 +145,8 @@ class PlayState extends FlxState
         rightButton.onDown.callback = OnRightDown;
         rightButton.onUp.callback = OnRightUp;
         rightButton.onOut.callback = OnRightUp;
-        rightButton.loadGraphic("assets/images/RightSprite.png", true, 80, 80);
+        rightButton.loadGraphic("assets/images/RightSprite.png", true, spriteSize, spriteSize);
+        rightButton.scale.set(buttonScale, buttonScale);
         rightButton.x = WINDOW_WIDTH * rightButtonHoriz;
         rightButton.y = WINDOW_HEIGHT * dirButtonVert;
         add(rightButton);
@@ -150,7 +155,8 @@ class PlayState extends FlxState
         ccwButton.onDown.callback = OnCCWDown;
         ccwButton.onUp.callback = OnCCWUp;
         ccwButton.onOut.callback = OnCCWUp;
-        ccwButton.loadGraphic("assets/images/RotateCCWSprite.png", true, 80, 80);
+        ccwButton.loadGraphic("assets/images/RotateCCWSprite.png", true, spriteSize, spriteSize);
+        ccwButton.scale.set(buttonScale, buttonScale);
         ccwButton.x = WINDOW_WIDTH * leftButtonHoriz;
         ccwButton.y = WINDOW_HEIGHT * turnButtonVert;
         add(ccwButton);
@@ -159,7 +165,8 @@ class PlayState extends FlxState
         cwButton.onDown.callback = OnCWDown;
         cwButton.onUp.callback = OnCWUp;
         cwButton.onOut.callback = OnCWUp;
-        cwButton.loadGraphic("assets/images/RotateCWSprite.png", true, 80, 80);
+        cwButton.loadGraphic("assets/images/RotateCWSprite.png", true, spriteSize, spriteSize);
+        cwButton.scale.set(buttonScale, buttonScale);
         cwButton.x = WINDOW_WIDTH * rightButtonHoriz;
         cwButton.y = WINDOW_HEIGHT * turnButtonVert;
         add(cwButton);
