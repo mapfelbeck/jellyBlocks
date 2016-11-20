@@ -1,5 +1,7 @@
 ToDo:
-    Make good touch screen controls.
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
+    Improve match-3 collision detection.
     Improve physics sim speed.
     Replace debug rendering with textured render.
+    Improve touch screen controls.
+    Fix frozen blocks in mid air bug.

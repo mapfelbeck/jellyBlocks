@@ -11,6 +11,7 @@ import flixel.math.FlxPoint;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import jellyPhysics.*;
+import flash.events.*;
 import gamepieces.GamePiece;
 import jellyPhysics.math.*;
 import openfl.Lib;
@@ -60,9 +61,13 @@ class PlayState extends FlxState
     private var maxSameColorPerPiece:Int = 2;
     
     //timer starts spawning pieces 2 seconds after game loads.
-    private var spawnTimer:Float = 2.0;
+    private var firstSpawnTimer:Float = 2.0;
     //new piece spawned this many seconds after controlled piece hits something
-    private var spawnWaitTime:Float = 1.0;
+    private var spawnAfterCollidionTime:Float = 1.0;
+    //don't spaw pieces at less than this interval
+    private var minLifeTime:Float = 3.0;
+    //spawn pieces at at least this interval
+    private var maxLifeTime:Float = 7.0;
     
 	override public function create():Void
 	{
@@ -76,13 +81,19 @@ class PlayState extends FlxState
         WINDOW_HEIGHT = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
         //#end
         
-        //WINDOW_WIDTH = Std.int(Lib.current.stage.width);
-        //WINDOW_HEIGHT = Std.int(Lib.current.stage.height);
-        //WINDOW_WIDTH = 450;
-        //WINDOW_HEIGHT = 600;
         trace("Window width: " + WINDOW_WIDTH);
         trace("Window height: " + WINDOW_HEIGHT);
 		super.create();
+        
+        //wrong in HTML5 and Flash
+        var stageWidth:Int = Std.int(Lib.current.stage.width);
+        var stageHeight:Int = Std.int(Lib.current.stage.height);
+        trace("Window size going by stage: [" + stageWidth + ", " + stageHeight + "]");
+        
+        //right in HTML5 and Flash
+        var appWidth:Int = Lib.application.window.width;
+        var appHeight:Int = Lib.application.window.height;
+        trace("Window size going by app window: [" + appWidth + ", " + appHeight + "]");
         
         input = new Input();
         input.AddInputCommand(FlxKey.A, pushPieceLeft, PressType.Pressed);
@@ -95,7 +106,7 @@ class PlayState extends FlxState
         input.AddInputCommand(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
         input.AddInputCommand(FlxKey.SPACE, spawnPiece, PressType.Down);
         input.AddInputCommand(FlxKey.F, unfreeze, PressType.Down);
-        
+
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
         defaultMaterial.Friction = 0.75;
@@ -118,6 +129,12 @@ class PlayState extends FlxState
         addButtons();
         #end
 	}
+    
+    /*override public function onResize(Width:Int, Height:Int):Void 
+    {
+        super.onResize(Width, Height);
+        trace("resize event [" + Width + ", " + Height + "]");
+    }*/
     
     function addButtons() 
     {
@@ -313,39 +330,22 @@ class PlayState extends FlxState
         }
         
         if(timerTickingDown){
-            spawnTimer -= elapsed;        
-            if (spawnTimer <= 0){
+            firstSpawnTimer -= elapsed;
+            if (firstSpawnTimer <= 0 && (gamePiece == null || gamePiece.LifeTime >= minLifeTime)){
                 spawnPieceFlag = true;
             }
+        }
+        
+        if (gamePiece != null && gamePiece.LifeTime >= maxLifeTime){
+            spawnPieceFlag = true;
         }
         
         if (spawnPieceFlag && null != pieceBuilder){
             spawnPieceFlag = false;
             timerTickingDown = false;
-            spawnTimer = spawnWaitTime;
+            firstSpawnTimer = spawnAfterCollidionTime;
             addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)), true);
         }
-        
-        /*var touchLeft:Bool = false;
-        var touchRight:Bool = false;
-        for (touch in FlxG.touches.list)
-        {
-            if (touch.pressed) {
-                if (touch.getPosition().x <= 350){
-                    touchLeft = true;
-                }else if (touch.getPosition().x >= 450){
-                    touchRight = true;
-                }
-            }
-        }
-        
-        if (touchLeft && touchRight){
-            pieceCW = true;
-        }else if (touchLeft){
-            pieceLeft = true;
-        }else if (touchRight){
-            pieceRight = true;
-        }*/
         
         input.Update(elapsed);
         

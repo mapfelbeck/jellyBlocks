@@ -37,7 +37,9 @@ class GamePiece
     private var torqueForce:Float;
     
     private var inFailLocation:Bool;
-    private var remainingLifeTime:Float;
+    private var lifeTime:Float;
+    public var LifeTime(get, null):Float; 
+    public function get_LifeTime():Float {return lifeTime;}
     private var autoDampRate:Float;    
     public var AutoDampRate(get, set):Float;    
     public function get_AutoDampRate():Float {return autoDampRate;}
@@ -78,7 +80,8 @@ class GamePiece
     }
     
     public function Update(elapsedTime:Float):Void
-    {        
+    {
+        lifeTime += elapsedTime;
         var rotationThisFrame:Float = GamePieceRotation();
 
         if (rotationLastFrame == 999.0)
