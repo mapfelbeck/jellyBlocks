@@ -43,8 +43,10 @@ class GameConstants
     public static inline var MaxGravityIncrease:Float = 1.5;
     public static inline var MaxFrictionDecrease:Float = .4;
 
-    //max number of the same color allowed in a game piece
-    public static inline var MaxColorPerPiece:Int = 1;
+    //How many unique colors are there
+    public static var UniqueColors:Int = 6;
+    //How many of the same color can be in a game piece
+    public static var MaxSameColorPerPiece:Int = 2;
 
     //how long a block inflates before popping
     public static inline var BlockCollideTime:Float = 1;

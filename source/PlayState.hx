@@ -30,12 +30,10 @@ class PlayState extends FlxState
     var WINDOW_WIDTH:Int;
     var WINDOW_HEIGHT:Int;
 
-    var physicsWorld:World;
+    var physicsWorld:JellyBlocksWorld;
     private static var MATERIAL_GROUND:Int = 0;
     
     private var gamePiece:GamePiece;
-    private var blockSprings:Array<ExternalSpring>;
-    private var gamePieces:Array<GamePiece>;
     
     public var defaultMaterial:MaterialPair;
     
@@ -54,11 +52,6 @@ class PlayState extends FlxState
     private var random:FlxRandom;
     
     private var input:Input;
-    
-    //How many unique colors are there
-    private var uniqueColors:Int = 6;
-    //How many of the same color can be in a game piece
-    private var maxSameColorPerPiece:Int = 2;
     
     //timer starts spawning pieces 2 seconds after game loads.
     private var firstSpawnTimer:Float = 2.0;
@@ -81,10 +74,11 @@ class PlayState extends FlxState
         WINDOW_HEIGHT = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
         //#end
         
-        trace("Window width: " + WINDOW_WIDTH);
-        trace("Window height: " + WINDOW_HEIGHT);
+        //trace("Window width: " + WINDOW_WIDTH);
+        //trace("Window height: " + WINDOW_HEIGHT);
 		super.create();
         
+        /*
         //wrong in HTML5 and Flash
         var stageWidth:Int = Std.int(Lib.current.stage.width);
         var stageHeight:Int = Std.int(Lib.current.stage.height);
@@ -94,6 +88,7 @@ class PlayState extends FlxState
         var appWidth:Int = Lib.application.window.width;
         var appHeight:Int = Lib.application.window.height;
         trace("Window size going by app window: [" + appWidth + ", " + appHeight + "]");
+        */
         
         input = new Input();
         input.AddInputCommand(FlxKey.A, pushPieceLeft, PressType.Pressed);
@@ -113,9 +108,7 @@ class PlayState extends FlxState
         defaultMaterial.Elasticity = 0.8;
         
         random = new FlxRandom();
-        
-        gamePieces = new Array<GamePiece>();
-        
+
         createWorld();
         addInitialBodiesToWorld();
         
@@ -248,7 +241,7 @@ class PlayState extends FlxState
         render.DrawingPointMasses = false;
         render.DrawingLabels = false;
         render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
-        var colors:Array<Int> = makeColors(.8, .9, uniqueColors);
+        var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
         for (i in 1...colors.length + 1){
             render.SetMaterialDrawOptions(i, colors[i-1], true);
         }
@@ -313,14 +306,13 @@ class PlayState extends FlxState
     
     public function getMaterialMatrix():MaterialMatrix 
     {
-        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, uniqueColors + 1);
+        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, GameConstants.UniqueColors + 1);
         
         return materialMatrix;
     }
     
     private var timerTickingDown:Bool = true;
     private var spawnPieceFlag:Bool = false;
-    private var removeList:Array<GamePiece> = new Array<GamePiece>();
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
@@ -350,18 +342,6 @@ class PlayState extends FlxState
         input.Update(elapsed);
         
         physicsWorld.Update(elapsed);
-        
-        for (i in 0...gamePieces.length){
-            gamePieces[i].Update(elapsed);
-            if (gamePieces[i].Blocks.length == 0){
-                removeList.push(gamePieces[i]);
-            }
-        }
-        
-        while (removeList.length > 0){
-            var piece:GamePiece = removeList.pop();
-            gamePieces.remove(piece);
-        }
         
         pieceCCW = false;
         pieceCW = false;
@@ -484,10 +464,7 @@ class PlayState extends FlxState
 
         //create static bodies for the container
         ground = new GameGround(2, 16, 20, new Vector2(0, 12), blockBuilder);
-        var groundBodies:Array<Body> = ground.Assemble();
-        for (j in 0...groundBodies.length){
-            physicsWorld.AddBody(groundBodies[j]);
-        }
+        physicsWorld.addGround(ground);
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
         blockBuilder = blockBuilder.setScale(new Vector2(initialConfig.scale, initialConfig.scale));
@@ -531,60 +508,13 @@ class PlayState extends FlxState
         return pieceBuilder.create();
     }
     
-    private static var pieceCounter:Int = 1;
     function addGamePiece(newGamePiece:GamePiece, controlled:Bool) 
     {
-        var colors:Array<Int> = null;
-        if(controlled){
-            colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, maxSameColorPerPiece);
-        }else{
-            //colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
-            colors = randomPieceColors(newGamePiece.Blocks.length, uniqueColors, 1);
-        }
-        for (i in 0...newGamePiece.Blocks.length){
-            newGamePiece.Blocks[i].Material = colors[i];
-            physicsWorld.AddBody(newGamePiece.Blocks[i]);
-            newGamePiece.Blocks[i].GroupNumber = pieceCounter;
-        }
-        
-        gamePieces.push(newGamePiece);
-        pieceCounter++;
+        physicsWorld.addGamePiece(newGamePiece, controlled);
         
         if(controlled){
             gamePiece = newGamePiece;
         }
-    }
-    
-    private static var primes:Array<Int> = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
-    function randomPieceColors(count:Int, howManyColors:Int, maxSameColor:Int) 
-    {
-        var blockColors:Array<Int> = new Array<Int>();
-        var blockId:Int = 1;
-        for (i in 0...count){
-            var color:Int = 1;
-            var potentialBlockId:Int = 1;
-            var checkNumber:Int = 1;
-            do{
-                color = random.int(0, howManyColors - 1);
-                potentialBlockId = blockId * primes[color];
-                checkNumber = Std.int(Math.pow(primes[color], maxSameColor + 1));
-            }while (potentialBlockId % checkNumber == 0);
-            
-            blockColors.push(color + 1);
-            blockId = potentialBlockId;
-        }
-        return blockColors;
-    }
-    
-    private static var colorCounter = 0;
-    function linearPieceColors(count:Int, howManyColors:Int) 
-    {
-        var blockColors:Array<Int> = new Array<Int>();
-        for (i in 0...count){
-            blockColors.push(colorCounter + 1);
-            colorCounter = (colorCounter + 1) % howManyColors;
-        }
-        return blockColors;
     }
     
     private function getBigSquareShape(size:Float):Array<Vector2>{
@@ -614,25 +544,9 @@ class PlayState extends FlxState
         physicsWorld.externalAccumulator = PhysicsAccumulator;
         physicsWorld.PhysicsIter = 2;
     }
-        
-    private function PhysicsAccumulator(elapsed:Float){
-        GravityAccumulator(elapsed);
-        MoveAccumulator(elapsed);
-        for (i in 0...gamePieces.length){
-            gamePieces[i].GamePieceAccumulator(elapsed);
-        }
-    }
-        
-    private function GravityAccumulator(elapsed:Float){
-        var gravity:Vector2 = new Vector2(0, 0.5 * GameConstants.GravityConstant);
 
-        for(i in 0...physicsWorld.NumberBodies)
-        {
-            var body:Body = physicsWorld.GetBody(i);
-            if (!body.IsStatic){
-                body.AddGlobalForce(body.DerivedPos, gravity);
-            }
-        }
+    private function PhysicsAccumulator(elapsed:Float){
+        MoveAccumulator(elapsed);
     }
     
     private function MoveAccumulator(elapsed:Float){

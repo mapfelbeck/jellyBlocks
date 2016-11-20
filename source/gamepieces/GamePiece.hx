@@ -37,7 +37,7 @@ class GamePiece
     private var torqueForce:Float;
     
     private var inFailLocation:Bool;
-    private var lifeTime:Float;
+    private var lifeTime:Float = 0;
     public var LifeTime(get, null):Float; 
     public function get_LifeTime():Float {return lifeTime;}
     private var autoDampRate:Float;    
