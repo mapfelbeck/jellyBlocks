@@ -132,7 +132,6 @@ class GamePieceBuilder
         }
         
         gamePiece = new GamePiece(blocks, springs, 9.8);
-        gamePiece.AutoDampRate = 0.25;
         
         if(rotation != 0){
             rotatePiece(gamePiece, rotation);

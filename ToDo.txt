@@ -5,3 +5,8 @@ ToDo:
     Replace debug rendering with textured render.
     Improve touch screen controls.
     Fix frozen blocks in mid air bug.
+    Pause Menu
+    Sound FX
+    Background graphics
+    Block graphics
+    

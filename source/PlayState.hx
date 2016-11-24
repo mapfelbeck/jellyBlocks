@@ -534,7 +534,6 @@ class PlayState extends FlxState
     {
         var matrix:MaterialMatrix = getMaterialMatrix();
         
-        //var bounds:AABB = new AABB(new Vector2( -20, -20), new Vector2( 20, 20));
         var bounds:AABB = new AABB(new Vector2( -12, -14), new Vector2( 12, 14));
         
         var penetrationThreshhold:Float = 1.0;
@@ -568,7 +567,10 @@ class PlayState extends FlxState
             rotationAmount += rotateForce;
         }
         
-        if (rotationAmount == 0){
+        //If no player input then counteract the game pieces rotation
+        //makes piece much easier to control. Length check is here so
+        //the piece doesn't go wonky when one of the pieces pops.
+        if (rotationAmount == 0 && gamePiece.Blocks.length == 3){
             rotationAmount = -clampValue(gamePiece.RotationSpeed, -1, 1);
         }
 

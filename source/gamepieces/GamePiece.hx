@@ -40,10 +40,6 @@ class GamePiece
     private var lifeTime:Float = 0;
     public var LifeTime(get, null):Float; 
     public function get_LifeTime():Float {return lifeTime;}
-    private var autoDampRate:Float;    
-    public var AutoDampRate(get, set):Float;    
-    public function get_AutoDampRate():Float {return autoDampRate;}
-    public function set_AutoDampRate(value:Float):Float {return autoDampRate = value;}
     
     private var originalBlockCount:Int;
     private var inputScalar:Float;
