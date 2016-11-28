@@ -20,8 +20,9 @@ import blocks.*;
 import enums.*;
 import flixel.math.FlxRandom;
 import constants.PhysicsDefaults;
+import flixel.addons.ui.FlxUIState;
 
-class PlayState extends FlxState
+class PlayState extends FlxUIState
 {
     var debugRender:DrawDebugWorld;
     var debugDrawSurface:Sprite;
@@ -64,6 +65,8 @@ class PlayState extends FlxState
     
 	override public function create():Void
 	{
+		_xml_id = "play_state";
+        
         /*#if mobile
         WINDOW_WIDTH = Std.int(Lib.current.stage.width);
         WINDOW_HEIGHT = Std.int(Lib.current.stage.height);
@@ -123,6 +126,28 @@ class PlayState extends FlxState
         #end
 	}
     
+	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
+	{
+        //trace("PlayState.getEvent(" + name+")");
+		var str:String = "";
+		
+		switch (name)
+		{
+			case "finish_load":
+                trace("Loaded!");
+			case "click_button":
+                trace("Button click.");
+				if (params != null && params.length > 0)
+				{
+                    trace("click param: " + Std.string(params[0]));
+					/*switch (Std.string(params[0]))
+					{
+						case "pause": FlxG.switchState(new PauseMenu());
+					}*/
+				}
+		}
+	}
+    
     /*override public function onResize(Width:Int, Height:Int):Void 
     {
         super.onResize(Width, Height);
@@ -134,6 +159,7 @@ class PlayState extends FlxState
         //ratio of screen width
         var buttonSize:Float = 0.25;
         var spriteSize:Int = 80;
+        var buttonTrans:Float = 0.8;
         var buttonScale:Float = (WINDOW_WIDTH * buttonSize) / spriteSize;
         
         var turnButtonVert:Float = 0.5;
@@ -146,6 +172,7 @@ class PlayState extends FlxState
         leftButton.onUp.callback = OnLeftUp;
         leftButton.onOut.callback = OnLeftUp;
         leftButton.loadGraphic("assets/images/LeftSprite.png", true, spriteSize, spriteSize);
+        leftButton.alpha = buttonTrans;
         leftButton.scale.set(buttonScale, buttonScale);
         leftButton.x = WINDOW_WIDTH * leftButtonHoriz;
         leftButton.y = WINDOW_HEIGHT * dirButtonVert;
@@ -156,6 +183,7 @@ class PlayState extends FlxState
         rightButton.onUp.callback = OnRightUp;
         rightButton.onOut.callback = OnRightUp;
         rightButton.loadGraphic("assets/images/RightSprite.png", true, spriteSize, spriteSize);
+        rightButton.alpha = buttonTrans;
         rightButton.scale.set(buttonScale, buttonScale);
         rightButton.x = WINDOW_WIDTH * rightButtonHoriz;
         rightButton.y = WINDOW_HEIGHT * dirButtonVert;
@@ -166,6 +194,7 @@ class PlayState extends FlxState
         ccwButton.onUp.callback = OnCCWUp;
         ccwButton.onOut.callback = OnCCWUp;
         ccwButton.loadGraphic("assets/images/RotateCCWSprite.png", true, spriteSize, spriteSize);
+        ccwButton.alpha = buttonTrans;
         ccwButton.scale.set(buttonScale, buttonScale);
         ccwButton.x = WINDOW_WIDTH * leftButtonHoriz;
         ccwButton.y = WINDOW_HEIGHT * turnButtonVert;
@@ -176,6 +205,7 @@ class PlayState extends FlxState
         cwButton.onUp.callback = OnCWUp;
         cwButton.onOut.callback = OnCWUp;
         cwButton.loadGraphic("assets/images/RotateCWSprite.png", true, spriteSize, spriteSize);
+        cwButton.alpha = buttonTrans;
         cwButton.scale.set(buttonScale, buttonScale);
         cwButton.x = WINDOW_WIDTH * rightButtonHoriz;
         cwButton.y = WINDOW_HEIGHT * turnButtonVert;
@@ -235,6 +265,7 @@ class PlayState extends FlxState
     
     public function setupDrawParam(render:DrawDebugWorld):Void
     {
+        render.DrawingBackground = false;
         render.DrawingBounds = false;
         render.DrawingAABB = false;
         render.DrawingGlobalBody = false;
@@ -247,7 +278,7 @@ class PlayState extends FlxState
         }
     }
     
-    private static var colorAdjust:Float = 0.0;
+    private static var colorAdjust:Float = 0.1;
     private function makeColors(saturation:Float, value:Float, count:Int):Array<Int>
     {
         var iter:Float = 1.0 / count;

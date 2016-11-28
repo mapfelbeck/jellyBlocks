@@ -6,8 +6,9 @@ import flixel.FlxState;
 import flixel.text.FlxText;
 import flixel.ui.FlxButton;
 import flixel.math.FlxMath;
+import flixel.addons.ui.FlxUIState;
 
-class MenuState extends FlxState
+class MenuState extends FlxUIState
 {
 	override public function create():Void
 	{
@@ -22,4 +23,9 @@ class MenuState extends FlxState
         trace("Jumping straight to game state.");
         FlxG.switchState(new PlayState());
 	}
+    
+	/*public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
+	{
+        trace("MenuState.getEvent(" + name+")");
+	}*/
 }
