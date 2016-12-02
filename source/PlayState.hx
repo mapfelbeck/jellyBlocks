@@ -66,6 +66,8 @@ class PlayState extends FlxUIState
 	override public function create():Void
 	{
 		_xml_id = "play_state";
+        persistentDraw = false;
+        persistentUpdate = false;
         
         /*#if mobile
         WINDOW_WIDTH = Std.int(Lib.current.stage.width);
@@ -140,10 +142,11 @@ class PlayState extends FlxUIState
 				if (params != null && params.length > 0)
 				{
                     trace("click param: " + Std.string(params[0]));
-					/*switch (Std.string(params[0]))
+					switch (Std.string(params[0]))
 					{
-						case "pause": FlxG.switchState(new PauseMenu());
-					}*/
+						//case "pause": FlxG.switchState(new PauseMenu());
+                        case "pause": openSubState(new PauseMenu());
+					}
 				}
 		}
 	}
