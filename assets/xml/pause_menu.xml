@@ -1,18 +1,26 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
-	<!--<chrome id="back" src="ui/chrome/dark_grey" slice9="4,4,8,8" x="25" y="25" width="400" height="200">		
+	<chrome id="background" src="ui/popup_background" x="0" y="0" width="90%" height="35%">
 		<anchor x="center" x-flush="center" y="center" y-flush="center"/>
-	</chrome>-->
+	</chrome>
 	<!--<sprite id="black" x="0" y="0" width="100%" height="100%" color="0x88000000"/>-->
-	<sprite id="background" src="ui/popup_background" center_x="true" center_y="true" group="title">
+	<!--<sprite id="background" src="ui/popup_background" center_x="true" center_y="true" group="title">
 		<scale width="90%"/>
-	</sprite>
+	</sprite>-->
     
-	<button id="close_btn" center_x="false" x="390" y="10" group="top" width="48" height="48">
-		<text use_def="sans14c"/>
+	<button id="close_btn" x="-8" y="5" group="top" width="48" height="48">
+        <anchor x="background.right" y="background.top" x-flush="right" />
 		<graphic id="all" image="ui/close_button" slice9="24,24,48,48">
 			<scale_src scale="screen.height/1200"/>
 		</graphic>
 		<param type="string" value="close"/>
 	</button>
+    
+	<!--<button id="close_btn" center_x="false" x="390" y="10" group="top" width="48" height="48">
+		<text use_def="sans14c"/>
+		<graphic id="all" image="ui/close_button" slice9="24,24,48,48">
+			<scale_src scale="screen.height/1200"/>
+		</graphic>
+		<param type="string" value="close"/>
+	</button>-->
 </data>
