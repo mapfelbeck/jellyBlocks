@@ -127,10 +127,10 @@ class PlayState extends FlxUIState
         addButtons();
         #end
 	}
-    
+
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
 	{
-        //trace("PlayState.getEvent(" + name+")");
+        trace("PlayState.getEvent(" + name+")");
 		var str:String = "";
 		
 		switch (name)
@@ -148,6 +148,8 @@ class PlayState extends FlxUIState
                         case "pause": openSubState(new PauseMenu());
 					}
 				}
+                case "RELOAD":
+                    FlxG.resetState();
 		}
 	}
     

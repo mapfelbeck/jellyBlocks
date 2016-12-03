@@ -35,7 +35,11 @@ class PauseMenu extends FlxUIPopup
                     trace("click param: " + Std.string(params[0]));
 					switch (Std.string(params[0]))
 					{
-                        case "close": close();
+                        case "close": 
+                            close();
+                        case "restart":
+                            castParent().getEvent("RELOAD", this, null);
+                            close();
 					}
 				}
 		}
