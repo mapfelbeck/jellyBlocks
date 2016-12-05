@@ -64,6 +64,8 @@ class DrawDebugWorld extends BaseDrawWorld
         graphics = renderTarget.graphics;
         world = physicsWorld;
         
+        setupDrawParam();
+        
         setRenderAndOffset(width, height, overscan);
         
         if (DrawingLabels){
@@ -283,5 +285,21 @@ class DrawDebugWorld extends BaseDrawWorld
                 
         graphics.drawRect((box.UL.x * scale.x) + offset.x, (box.UL.y * scale.y) + offset.y, 
                                  box.Width * scale.x, box.Height * scale.y);
+    }
+    
+    public override function setupDrawParam():Void
+    {
+        super.setupDrawParam();
+        this.DrawingBackground = false;
+        this.DrawingBounds = false;
+        this.DrawingAABB = false;
+        this.DrawingGlobalBody = false;
+        this.DrawingPointMasses = false;
+        this.DrawingLabels = false;
+        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
+        var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
+        for (i in 1...colors.length + 1){
+            this.SetMaterialDrawOptions(i, colors[i-1], true);
+        }
     }
 }

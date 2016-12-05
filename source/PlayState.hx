@@ -32,7 +32,6 @@ class PlayState extends FlxUIState
     var WINDOW_HEIGHT:Int;
 
     var physicsWorld:JellyBlocksWorld;
-    private static var MATERIAL_GROUND:Int = 0;
     
     private var gamePiece:GamePiece;
     
@@ -121,8 +120,6 @@ class PlayState extends FlxUIState
         
         //draw surface needs stage
         render = Std.instance(setupDebugRender(), DrawDebugWorld);
-        
-        setupDrawParam(render);
         
         #if (html5 || mobile)
         addButtons();
@@ -275,78 +272,6 @@ class PlayState extends FlxUIState
         return debugDrawSurface;
     }
     
-    public function setupDrawParam(render:DrawDebugWorld):Void
-    {
-        render.DrawingBackground = false;
-        render.DrawingBounds = false;
-        render.DrawingAABB = false;
-        render.DrawingGlobalBody = false;
-        render.DrawingPointMasses = false;
-        render.DrawingLabels = false;
-        render.SetMaterialDrawOptions(MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
-        var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
-        for (i in 1...colors.length + 1){
-            render.SetMaterialDrawOptions(i, colors[i-1], true);
-        }
-    }
-    
-    private static var colorAdjust:Float = 0.1;
-    private function makeColors(saturation:Float, value:Float, count:Int):Array<Int>
-    {
-        var iter:Float = 1.0 / count;
-        var colors:Array<Int> = new Array<Int>();
-        for (i in 0...count){
-            colors.push(HSVtoRGB(((i * iter) + colorAdjust) % 1.0, saturation, value));
-        }
-        return colors;
-    }
-    
-    private function HSVtoRGB(h:Float, s:Float, v:Float):Int{
-        var r:Float = 0;
-        var g:Float = 0;
-        var b:Float = 0;
-        
-        var i:Int = Math.floor(h * 6);
-        var f:Float = h * 6 - i;
-        var p:Float = v * (1 - s);
-        var q:Float = v * (1 - f * s);
-        var t:Float = v * (1 - (1 - f) * s);
-        
-        switch(i % 6){
-            case 0:
-                r = v;
-                g = t;
-                b = p;
-            case 1:
-                r = q;
-                g = v;
-                b = p;
-            case 2:
-                r = p;
-                g = v;
-                b = t;
-            case 3:
-                r = p;
-                g = q;
-                b = v;
-            case 4:
-                r = t;
-                g = p;
-                b = v;
-            case 5:
-                r = v;
-                g = p;
-                b = q;
-        }
-        
-        var rInt:Int = Std.int(r * 255.0);
-        var gInt:Int = Std.int(g * 255.0);
-        var bInt:Int = Std.int(b * 255.0);
-        
-        
-        return (rInt << 16) + (gInt << 8) + (bInt);
-    }
-    
     public function getMaterialMatrix():MaterialMatrix 
     {
         var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, GameConstants.UniqueColors + 1);
@@ -419,13 +344,11 @@ class PlayState extends FlxUIState
     }
     
     private function adjustColorUp():Void{
-        colorAdjust = (colorAdjust + 0.05) % 1.0;
-        setupDrawParam(render);
+        render.rotateColorUp();
     }
     
     private function adjustColorDown():Void{
-        colorAdjust = (colorAdjust + 0.95) % 1.0;
-        setupDrawParam(render);
+        render.rotateColorDown();
     }
     
     private function spawnPiece():Void{
