@@ -11,7 +11,7 @@ import openfl.text.TextField;
  * ...
  * @author Michael Apfelbeck
  */
-class DrawDebugWorld
+class DrawDebugWorld extends BaseDrawWorld
 {
     public var drawLookup:Map<Int,DebugDrawBodyOption>;
     public var drawGlobalBodyDefault:DebugDrawBodyOption;
@@ -31,25 +31,15 @@ class DrawDebugWorld
     public var height:Int = 0;
     public var overscan:Int = 0;
     
-    public static var COLOR_BLACK:Int = 0x000000;
-    public static var COLOR_WHITE:Int = 0xFFFFFF;
-    public static var COLOR_GREY:Int = 0x7F7F7F;
-    public static var COLOR_RED:Int = 0xFF0000;
-    public static var COLOR_GREEN:Int = 0x00FF00;
-    public static var COLOR_BLUE:Int = 0x0000FF;
-    public static var COLOR_PURPLE:Int = 0xFF00FF;
-    public static var COLOR_YELLOW:Int = 0xFFFF00;
-    public static var COLOR_AQUA:Int = 0x00FFFF;
-    
-    public var ColorOfBounds:Int = COLOR_PURPLE;
-    public var ColorOfText:Int = COLOR_GREY;
-    public var ColorOfAABB:Int = COLOR_GREY;
-    public var ColorOfBackground:Int = COLOR_BLACK;
-    public var ColorOfGlobalVerts:Int = COLOR_YELLOW;
-    public var ColorOfGlobalBody:Int = COLOR_YELLOW;
-    public var ColorOfPhysicsBody:Int = COLOR_WHITE;
-    public var ColorOfInternalSprings:Int = COLOR_RED;
-    public var ColorOfPointMasses:Int = COLOR_BLUE;
+    public var ColorOfBounds:Int = BaseDrawWorld.COLOR_PURPLE;
+    public var ColorOfText:Int = BaseDrawWorld.COLOR_GREY;
+    public var ColorOfAABB:Int = BaseDrawWorld.COLOR_GREY;
+    public var ColorOfBackground:Int = BaseDrawWorld.COLOR_BLACK;
+    public var ColorOfGlobalVerts:Int = BaseDrawWorld.COLOR_YELLOW;
+    public var ColorOfGlobalBody:Int = BaseDrawWorld.COLOR_YELLOW;
+    public var ColorOfPhysicsBody:Int = BaseDrawWorld.COLOR_WHITE;
+    public var ColorOfInternalSprings:Int = BaseDrawWorld.COLOR_RED;
+    public var ColorOfPointMasses:Int = BaseDrawWorld.COLOR_BLUE;
     
     public var SizeOfVert:Float = 4;
     
@@ -65,6 +55,7 @@ class DrawDebugWorld
     
     public function new(sprite:Sprite, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
+        super();
         drawLookup = new Map<Int,DebugDrawBodyOption>();
         drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
         drawPhysicsBodyDefault = new DebugDrawBodyOption(0, ColorOfPhysicsBody, false);

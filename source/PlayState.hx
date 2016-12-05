@@ -24,7 +24,7 @@ import flixel.addons.ui.FlxUIState;
 
 class PlayState extends FlxUIState
 {
-    var debugRender:DrawDebugWorld;
+    var render:DrawDebugWorld;
     var debugDrawSurface:Sprite;
     var flxDrawSurface:FlxSprite;
     var overscan:Int = 10;
@@ -120,13 +120,20 @@ class PlayState extends FlxUIState
         setupConfigForSpawingBlocks();
         
         //draw surface needs stage
-        debugRender = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
-        setupDrawParam(debugRender);
+        render = Std.instance(setupDebugRender(), DrawDebugWorld);
+        
+        setupDrawParam(render);
         
         #if (html5 || mobile)
         addButtons();
         #end
 	}
+    
+    function setupDebugRender() : BaseDrawWorld
+    {
+        var debugRender:BaseDrawWorld = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        return debugRender;
+    }
 
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
 	{
@@ -276,7 +283,7 @@ class PlayState extends FlxUIState
         render.DrawingGlobalBody = false;
         render.DrawingPointMasses = false;
         render.DrawingLabels = false;
-        render.SetMaterialDrawOptions(MATERIAL_GROUND, DrawDebugWorld.COLOR_WHITE, false);
+        render.SetMaterialDrawOptions(MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
         for (i in 1...colors.length + 1){
             render.SetMaterialDrawOptions(i, colors[i-1], true);
@@ -413,12 +420,12 @@ class PlayState extends FlxUIState
     
     private function adjustColorUp():Void{
         colorAdjust = (colorAdjust + 0.05) % 1.0;
-        setupDrawParam(debugRender);
+        setupDrawParam(render);
     }
     
     private function adjustColorDown():Void{
         colorAdjust = (colorAdjust + 0.95) % 1.0;
-        setupDrawParam(debugRender);
+        setupDrawParam(render);
     }
     
     private function spawnPiece():Void{
@@ -441,7 +448,7 @@ class PlayState extends FlxUIState
     {
         super.draw();
         
-        debugRender.Draw();
+        render.Draw();
         
         var pixels:BitmapData = flxDrawSurface.pixels;
         pixels.fillRect(pixels.rect, FlxColor.TRANSPARENT);
