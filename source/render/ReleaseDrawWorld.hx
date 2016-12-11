@@ -1,20 +1,27 @@
-package;
+package render;
 import jellyPhysics.*;
+import flixel.FlxSprite;
+import flixel.FlxState;
+import flixel.math.FlxPoint;
 import jellyPhysics.World;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import openfl.events.*;
 import openfl.text.TextField;
+import render.DebugDrawBodyOption;
 
 /**
  * ...
- * @author Michael Apfelbeck
+ * @author 
  */
-class DrawDebugWorld extends BaseDrawWorld
+class ReleaseDrawWorld extends BaseDrawWorld
 {
-    public var drawLookup:Map<Int,DebugDrawBodyOption>;
-    public var drawGlobalBodyDefault:DebugDrawBodyOption;
-    public var drawPhysicsBodyDefault:DebugDrawBodyOption;
+    private static var groundAssetPath:String = "assets/images/gameArena.png";
+    private static var groundAssetImage:FlxSprite;
+    private var parentState:FlxState;
+    public var drawLookup:Map<Int,render.DebugDrawBodyOption>;
+    public var drawGlobalBodyDefault:render.DebugDrawBodyOption;
+    public var drawPhysicsBodyDefault:render.DebugDrawBodyOption;
     public var backgroundSize:Vector2;
     
     private var renderTarget:Sprite;
@@ -30,15 +37,15 @@ class DrawDebugWorld extends BaseDrawWorld
     public var height:Int = 0;
     public var overscan:Int = 0;
     
-    public var ColorOfBounds:Int = BaseDrawWorld.COLOR_PURPLE;
-    public var ColorOfText:Int = BaseDrawWorld.COLOR_GREY;
-    public var ColorOfAABB:Int = BaseDrawWorld.COLOR_GREY;
-    public var ColorOfBackground:Int = BaseDrawWorld.COLOR_BLACK;
-    public var ColorOfGlobalVerts:Int = BaseDrawWorld.COLOR_YELLOW;
-    public var ColorOfGlobalBody:Int = BaseDrawWorld.COLOR_YELLOW;
-    public var ColorOfPhysicsBody:Int = BaseDrawWorld.COLOR_WHITE;
-    public var ColorOfInternalSprings:Int = BaseDrawWorld.COLOR_RED;
-    public var ColorOfPointMasses:Int = BaseDrawWorld.COLOR_BLUE;
+    public var ColorOfBounds:Int = render.BaseDrawWorld.COLOR_PURPLE;
+    public var ColorOfText:Int = render.BaseDrawWorld.COLOR_GREY;
+    public var ColorOfAABB:Int = render.BaseDrawWorld.COLOR_GREY;
+    public var ColorOfBackground:Int = render.BaseDrawWorld.COLOR_BLACK;
+    public var ColorOfGlobalVerts:Int = render.BaseDrawWorld.COLOR_YELLOW;
+    public var ColorOfGlobalBody:Int = render.BaseDrawWorld.COLOR_YELLOW;
+    public var ColorOfPhysicsBody:Int = render.BaseDrawWorld.COLOR_WHITE;
+    public var ColorOfInternalSprings:Int = render.BaseDrawWorld.COLOR_RED;
+    public var ColorOfPointMasses:Int = render.BaseDrawWorld.COLOR_BLUE;
     
     public var SizeOfVert:Float = 4;
     
@@ -52,13 +59,14 @@ class DrawDebugWorld extends BaseDrawWorld
     public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;
     
-    public function new(sprite:Sprite, physicsWorld:World, width:Int, height:Int, overscan:Int) 
+    public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
         super();
-        drawLookup = new Map<Int,DebugDrawBodyOption>();
-        drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
-        drawPhysicsBodyDefault = new DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
+        drawLookup = new Map<Int,render.DebugDrawBodyOption>();
+        drawGlobalBodyDefault = new render.DebugDrawBodyOption(0, ColorOfGlobalBody, false);
+        drawPhysicsBodyDefault = new render.DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
     
+        this.parentState = parentState;
         renderTarget = sprite;
         graphics = renderTarget.graphics;
         world = physicsWorld;
@@ -70,6 +78,9 @@ class DrawDebugWorld extends BaseDrawWorld
         if (DrawingLabels){
             createTextLabels(world.NumberBodies);
         }
+        
+        groundAssetImage = new FlxSprite(50, 50, groundAssetPath);
+        parentState.add(groundAssetImage);
     }
     
     private var worldWidth:Float;
@@ -111,7 +122,7 @@ class DrawDebugWorld extends BaseDrawWorld
         }
     }
     
-    public function Draw():Void
+    public override function Draw():Void
     {
         graphics.clear();
         
@@ -133,6 +144,9 @@ class DrawDebugWorld extends BaseDrawWorld
         
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
+            /*if (body.IsStatic){
+                continue;
+            }*/
             if (DrawingLabels){
                 //graphics.lineStyle(0, ColorOfText);
                 var labelText:TextField = labels[i];
@@ -174,7 +188,7 @@ class DrawDebugWorld extends BaseDrawWorld
             drawLookup[material].Color = color;
             drawLookup[material].IsSolid = isSolid;
         }else{
-            var newOption:DebugDrawBodyOption = new DebugDrawBodyOption(material, color, isSolid);
+            var newOption:render.DebugDrawBodyOption = new render.DebugDrawBodyOption(material, color, isSolid);
             drawLookup.set(material, newOption);
         }
     }
@@ -230,8 +244,8 @@ class DrawDebugWorld extends BaseDrawWorld
         drawBody(shape, getDrawOptions(body));
     }
     
-    private function getDrawOptions(body:Body):DebugDrawBodyOption{
-        var drawOpts:DebugDrawBodyOption;
+    private function getDrawOptions(body:Body):render.DebugDrawBodyOption{
+        var drawOpts:render.DebugDrawBodyOption;
         if (drawLookup.exists(body.Material)){
             drawOpts = drawLookup.get(body.Material);
         }else{
@@ -256,7 +270,7 @@ class DrawDebugWorld extends BaseDrawWorld
         drawBody(shape, drawGlobalBodyDefault);
     }
     
-    function drawBody(shape:Array<Vector2>, opts:DebugDrawBodyOption) 
+    function drawBody(shape:Array<Vector2>, opts:render.DebugDrawBodyOption) 
     {
         graphics.lineStyle(0, opts.Color);
         var start:Vector2 = shape[0];
@@ -295,7 +309,7 @@ class DrawDebugWorld extends BaseDrawWorld
         this.DrawingGlobalBody = false;
         this.DrawingPointMasses = false;
         this.DrawingLabels = false;
-        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
+        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, render.BaseDrawWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
         for (i in 1...colors.length + 1){
             this.SetMaterialDrawOptions(i, colors[i-1], true);

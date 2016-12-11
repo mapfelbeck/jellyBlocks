@@ -17,10 +17,11 @@ import gamepieces.GamePiece;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
+import render.*;
 
 class PlayState extends FlxUIState
 {
-    var render:DrawDebugWorld;
+    var render:BaseDrawWorld;
     var debugDrawSurface:Sprite;
     var flxDrawSurface:FlxSprite;
     var overscan:Int = 10;
@@ -114,17 +115,28 @@ class PlayState extends FlxUIState
         
         setupConfigForSpawingBlocks();
         
-        //draw surface needs stage
-        render = Std.instance(setupDebugRender(), DrawDebugWorld);
+        var release:Bool = false;
+        if (release){
+            render = setupReleaseRender();
+        }else{
+            render = setupDebugRender();
+        }
+        render.setGameGround(ground);
         
         #if (html5 || mobile)
         addButtons();
         #end
 	}
     
+    function setupReleaseRender() : BaseDrawWorld
+    {
+        var debugRender:BaseDrawWorld = new ReleaseDrawWorld(createDrawSurface(), this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        return debugRender;
+    }
+    
     function setupDebugRender() : BaseDrawWorld
     {
-        var debugRender:BaseDrawWorld = new DrawDebugWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        var debugRender:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         return debugRender;
     }
 
@@ -381,7 +393,7 @@ class PlayState extends FlxUIState
         spawnConfig.timeTillDamping = 0.5;
         spawnConfig.dampingRate = 0.60;
         spawnConfig.dampingInc = 0.10;
-        spawnConfig.dampingMax = 0.90;
+        spawnConfig.dampingMax = 0.85;
         
         spawnConfig.deflates = true;
         spawnConfig.deflateRate = .25;
@@ -406,7 +418,7 @@ class PlayState extends FlxUIState
         initialConfig.timeTillDamping = 0.5;
         initialConfig.dampingRate = 0.25;
         initialConfig.dampingInc = 0.15;
-        initialConfig.dampingMax = 0.90;
+        initialConfig.dampingMax = 0.85;
         
         initialConfig.deflates = true;
         initialConfig.deflateRate = .25;

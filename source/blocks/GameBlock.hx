@@ -42,17 +42,7 @@ class GameBlock extends PressureBody
     public var CollidedThisFrame(get, set):Bool;
     public function get_CollidedThisFrame(){ return collidedThisFrame;}
     public function set_CollidedThisFrame(value:Bool){ return collidedThisFrame = value;}
-    
-    /*public var NormalColor:FlxColor = FlxColor.WHITE;
-    private var blockColor:FlxColor;
-    public var BlockColor(get, set):FlxColor;
-    public function get_BlockColor(){
-        return blockColor;
-    }
-    public function set_BlockColor(value:FlxColor){
-        return blockColor = value;
-    }*/
-    
+   
     private var config:BlockConfig;
     private var collideTime:Float = 0.0;
 

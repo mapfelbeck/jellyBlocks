@@ -1,4 +1,4 @@
-package;
+package render;
 
 /**
  * ...
@@ -17,13 +17,21 @@ class BaseDrawWorld
     public static var COLOR_PURPLE:Int = 0xFF00FF;
     public static var COLOR_YELLOW:Int = 0xFFFF00;
     public static var COLOR_AQUA:Int = 0x00FFFF;
+    
+    private var ground:GameGround;
 
     public function new(){
         
     }
     
+    public function Draw(){}
+    
     public function setupDrawParam(){
         
+    }
+    
+    public function setGameGround(ground:GameGround){
+        this.ground = ground;
     }
     
     public function rotateColorUp() 
