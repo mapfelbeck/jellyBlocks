@@ -1,7 +1,7 @@
 package;
 import enums.PressType;
-import flixel.input.keyboard.FlxKey;
 import flixel.FlxG;
+import flixel.input.keyboard.FlxKey;
 import haxe.Constraints.Function;
 
 /**

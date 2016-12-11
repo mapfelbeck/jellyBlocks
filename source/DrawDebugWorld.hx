@@ -1,10 +1,9 @@
 package;
 import jellyPhysics.*;
+import jellyPhysics.World;
 import jellyPhysics.math.*;
-import openfl.display3D.Context3D;
 import openfl.display.*;
 import openfl.events.*;
-import jellyPhysics.World;
 import openfl.text.TextField;
 
 /**

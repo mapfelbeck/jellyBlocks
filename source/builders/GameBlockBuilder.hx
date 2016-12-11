@@ -1,11 +1,10 @@
 package builders;
-import blocks.BlockConfig;
 import blocks.*;
+import blocks.BlockConfig;
 import builders.GameBlockBuilder;
 import constants.PhysicsDefaults;
 import enums.BlockType;
 import haxe.Constraints.Function;
-import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
 
 /**

@@ -1,16 +1,15 @@
 package builders;
-import builders.ShapeBuilder;
-import enums.PieceType;
-import enums.*;
-import gamepieces.GamePiece;
 import blocks.GameBlock;
-import patterns.*;
+import builders.ShapeBuilder;
 import constants.PhysicsDefaults;
-import jellyPhysics.ClosedShape;
+import enums.*;
+import enums.PieceType;
+import gamepieces.GamePiece;
 import jellyPhysics.ExternalSpring;
 import jellyPhysics.PointMass;
 import jellyPhysics.math.Vector2;
 import jellyPhysics.math.VectorTools;
+import patterns.*;
 
 class GamePieceBuilder
 {

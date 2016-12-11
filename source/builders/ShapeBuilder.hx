@@ -1,9 +1,7 @@
 package builders;
 import enums.ShapeType;
-import flash.display3D.VertexBuffer3D;
-import jellyPhysics.math.Vector2;
-import jellyPhysics.math.VectorTools;
 import jellyPhysics.ClosedShape;
+import jellyPhysics.math.Vector2;
 /**
  * ...
  * @author 

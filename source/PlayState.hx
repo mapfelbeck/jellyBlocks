@@ -1,26 +1,22 @@
 package;
 
-import flixel.*;
+import blocks.*;
 import builders.GameBlockBuilder;
 import builders.GamePieceBuilder;
 import builders.ShapeBuilder;
-import flixel.graphics.FlxGraphic;
+import constants.PhysicsDefaults;
+import enums.*;
+import flash.events.*;
+import flixel.*;
+import flixel.addons.ui.FlxUIState;
 import flixel.input.keyboard.FlxKey;
-import flixel.input.touch.FlxTouch;
-import flixel.math.FlxPoint;
+import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
-import jellyPhysics.*;
-import flash.events.*;
 import gamepieces.GamePiece;
+import jellyPhysics.*;
 import jellyPhysics.math.*;
-import openfl.Lib;
 import openfl.display.*;
-import blocks.*;
-import enums.*;
-import flixel.math.FlxRandom;
-import constants.PhysicsDefaults;
-import flixel.addons.ui.FlxUIState;
 
 class PlayState extends FlxUIState
 {
