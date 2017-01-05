@@ -1,9 +1,18 @@
+http://coinflipstudios.com/devblog/?p=243
+https://github.com/HaxeFlixel/flixel/issues/808
+
+block size: 2x2
+arena size:
+    10x12
+    
 gameArena.png
 
 1024x1024
 
 columns (left to right):
-85x854x85
+    43x426x43
+    85x854x85
 
 rows (top to bottom):
-45x876x103
+    43x417x52
+    45x876x103

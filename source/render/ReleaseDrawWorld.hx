@@ -1,14 +1,20 @@
 package render;
 import jellyPhysics.*;
+import flash.geom.Rectangle;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.addons.ui.FlxUI9SliceSprite;
 import flixel.math.FlxPoint;
+import flixel.util.FlxSpriteUtil;
 import jellyPhysics.World;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import openfl.events.*;
 import openfl.text.TextField;
 import render.DebugDrawBodyOption;
+import flixel.util.FlxColor;
+import haxe.ds.Vector;
+import openfl.Assets;
 
 /**
  * ...
@@ -17,6 +23,10 @@ import render.DebugDrawBodyOption;
 class ReleaseDrawWorld extends BaseDrawWorld
 {
     private static var groundAssetPath:String = "assets/images/gameArena.png";
+    
+    private static var tileAssetPath:String = "assets/images/tiled greyscale.png";
+    private static var frostedAssetPath:String = "assets/images/frosted greyscale.png";
+    
     private static var groundAssetImage:FlxSprite;
     private var parentState:FlxState;
     public var drawLookup:Map<Int,render.DebugDrawBodyOption>;
@@ -31,8 +41,6 @@ class ReleaseDrawWorld extends BaseDrawWorld
     
     private var labels:Array<TextField>;
     
-    public var offset:Vector2 = new Vector2(0, 0);
-    public var scale:Vector2 = new Vector2(10.0, 10.0);
     public var width:Int = 0;
     public var height:Int = 0;
     public var overscan:Int = 0;
@@ -79,8 +87,110 @@ class ReleaseDrawWorld extends BaseDrawWorld
             createTextLabels(world.NumberBodies);
         }
         
-        groundAssetImage = new FlxSprite(50, 50, groundAssetPath);
-        parentState.add(groundAssetImage);
+        createGameBlockSprite();
+    }
+    
+    private function createGameBlockSprite(){
+        //var imageSprite:FlxSprite = new FlxSprite(0, 0);
+        //imageSprite.loadGraphic(tileAssetPath);
+        //parentState.add(imageSprite);
+        
+        var flashSprite:Sprite = new Sprite();
+        var vertices:Vector<Float> = new Vector<Float>(8);
+        var indices:Vector<Int> = new Vector<Int>(6);
+        var uvtData:Vector<Float> = new Vector<Float>(8);
+        
+        vertices[0] = 0;
+        vertices[1] = 0;
+        
+        vertices[2] = 100;
+        vertices[3] = 0;
+        
+        vertices[4] = 100;
+        vertices[5] = 100;
+        
+        vertices[6] = 0;
+        vertices[7] = 100;
+        
+        indices[0]=0;
+        indices[1]=1;
+        indices[2]=3;
+        
+        indices[3]=1;
+        indices[4]=2;
+        indices[5]=3;
+        
+        uvtData[0]=0;
+        uvtData[1]=0;
+        
+        uvtData[2]=0.333;
+        uvtData[3]=0;
+        
+        uvtData[4]=0.333;
+        uvtData[5]=0.333;
+        
+        uvtData[6]=0;
+        uvtData[7]=0.333;
+        
+        var data:BitmapData = Assets.getBitmapData(tileAssetPath);
+        flashSprite.graphics.beginBitmapFill(data);
+        flashSprite.graphics.drawTriangles(vertices, indices, uvtData);
+        flashSprite.graphics.endFill();
+        
+        var flxSprite:FlxSprite = new FlxSprite().makeGraphic(100, 100, FlxColor.TRANSPARENT);
+        var pixels:BitmapData = flxSprite.pixels;
+        pixels.fillRect(pixels.rect, FlxColor.TRANSPARENT);
+        pixels.draw(flashSprite);
+        flxSprite.pixels = pixels;
+        var testColor:FlxColor = new FlxColor(drawLookup.get(2).Color);
+        flxSprite.color = testColor;
+        //flxSprite.x = 150;
+        //flxSprite.y = 150;
+        parentState.add(flxSprite);
+    }
+    
+    public override function setGameGround(ground:GameGround){
+        super.setGameGround(ground);
+/* 1024x1024
+ * 512x512
+columns (left to right):
+    43x426x43
+    85x854x85
+
+rows (top to bottom):
+    43x417x52
+    45x876x103
+var myCustomImage1 = new FlxUI9SliceSprite(210, 10, _graphic, new Rectangle(0,0,50,50), _slice);
+add(myCustomImage1);
+
+*/
+        /*var center:Vector2 = new Vector2(0, 0);
+        var ul:Vector2 = new Vector2(center.x, center.y);
+        var lr:Vector2 = new Vector2(center.x, center.y);
+        var screenCenter:Vector2 = worldToLocal(center);
+        ul.x -= ground.Width / 2;
+        ul.y -= ground.Height / 2;
+        lr.x += ground.Width / 2;
+        lr.y += ground.Height / 2;
+        trace("center: "+center.x + ", " + center.y);
+        trace("ul: "+ul.x + ", " + ul.y);
+        trace("lr: "+lr.x + ", " + lr.y);
+        var screenUL:Vector2 = worldToLocal(ul);
+        var screenLR:Vector2 = worldToLocal(lr);
+        trace("screenUL: "+screenUL.x + ", " + screenUL.y);
+        trace("screenLR: "+screenLR.x + ", " + screenLR.y);*/
+        
+        /*var groundImage:FlxSprite = new FlxSprite(0, 0, groundAssetPath);
+        groundImage.scale.x = 0.4;
+        groundImage.scale.y = 0.6;
+        groundImage.x = 0;
+        groundImage.y = 0;
+        parentState.add(groundImage);*/
+        //var slices:Array<Int> = [43, 43, 469, 460];
+        //var groundNineSlice:FlxUI9SliceSprite = new FlxUI9SliceSprite(screenUL.x, screenUL.y, groundAssetPath, new Rectangle(0, 0, 300, 300), slices);
+        //parentState.add(groundNineSlice);
+        
+        //parentState.add(groundAssetImage);
     }
     
     private var worldWidth:Float;
@@ -173,13 +283,6 @@ class ReleaseDrawWorld extends BaseDrawWorld
                 DrawingInternalSprings?drawInternalSprings(springBody):null;
             }
         }
-    }
-    
-    private function worldToLocal(world:Vector2):Vector2{
-        var local:Vector2 = new Vector2();
-        local.x = (world.x * scale.x) + offset.x;
-        local.y = (world.y * scale.y) + offset.y;
-        return local;
     }
     
     public function SetMaterialDrawOptions(material:Int, color:Int, isSolid:Bool) 

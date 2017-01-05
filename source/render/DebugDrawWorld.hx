@@ -25,8 +25,6 @@ class DebugDrawWorld extends BaseDrawWorld
     
     private var labels:Array<TextField>;
     
-    public var offset:Vector2 = new Vector2(0, 0);
-    public var scale:Vector2 = new Vector2(10.0, 10.0);
     public var width:Int = 0;
     public var height:Int = 0;
     public var overscan:Int = 0;
@@ -160,13 +158,6 @@ class DebugDrawWorld extends BaseDrawWorld
                 DrawingInternalSprings?drawInternalSprings(springBody):null;
             }
         }
-    }
-    
-    private function worldToLocal(world:Vector2):Vector2{
-        var local:Vector2 = new Vector2();
-        local.x = (world.x * scale.x) + offset.x;
-        local.y = (world.y * scale.y) + offset.y;
-        return local;
     }
     
     public function SetMaterialDrawOptions(material:Int, color:Int, isSolid:Bool) 

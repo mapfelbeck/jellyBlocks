@@ -14,20 +14,35 @@ import jellyPhysics.math.VectorTools;
  */
 class GameGround
 {
+    //width of play space inside arena
     private var width:Float;
+    public var Width(get, null):Float;
+    public function get_Width(){ return width; }
+    
+    //height of play space inside arena
     private var height:Float;
+    public var Height(get, null):Float;
+    public function get_Height(){ return height; }
+    
+    //size of blocks around arena
     private var border:Float;
-    private var position:Vector2;
+    public var Border(get, null):Float;
+    public function get_Border(){ return border; }
+    
+    /*private var position:Vector2;
+    public var Position(get, null):Vector2;
+    public function get_Position(){ return position; }*/
+    
     private var builder:GameBlockBuilder;
     
     private var bodies:Array<Body>;
     public function new(border:Float, width:Float, height:Float, 
-                        position:Vector2, builder:GameBlockBuilder) 
+                        /*position:Vector2, */builder:GameBlockBuilder) 
     {
         this.width = width;
         this.height = height;
         this.border = border;
-        this.position = position;
+        //this.position = position;
         this.builder = builder;
         bodies = new Array<Body>();
     }

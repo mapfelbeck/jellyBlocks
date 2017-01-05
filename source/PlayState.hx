@@ -115,7 +115,7 @@ class PlayState extends FlxUIState
         
         setupConfigForSpawingBlocks();
         
-        var release:Bool = false;
+        var release:Bool = true;
         if (release){
             render = setupReleaseRender();
         }else{
@@ -437,7 +437,7 @@ class PlayState extends FlxUIState
         pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
 
         //create static bodies for the container
-        ground = new GameGround(2, 16, 20, new Vector2(0, 12), blockBuilder);
+        ground = new GameGround(2, 16, 20, /*new Vector2(0, 12),*/ blockBuilder);
         physicsWorld.addGround(ground);
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);

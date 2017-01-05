@@ -1,5 +1,6 @@
 package render;
 
+import jellyPhysics.math.Vector2;
 /**
  * ...
  * @author 
@@ -19,6 +20,8 @@ class BaseDrawWorld
     public static var COLOR_AQUA:Int = 0x00FFFF;
     
     private var ground:GameGround;
+    public var offset:Vector2 = new Vector2(0, 0);
+    public var scale:Vector2 = new Vector2(10.0, 10.0);
 
     public function new(){
         
@@ -32,6 +35,13 @@ class BaseDrawWorld
     
     public function setGameGround(ground:GameGround){
         this.ground = ground;
+    }
+    
+    private function worldToLocal(world:Vector2):Vector2{
+        var local:Vector2 = new Vector2();
+        local.x = (world.x * scale.x) + offset.x;
+        local.y = (world.y * scale.y) + offset.y;
+        return local;
     }
     
     public function rotateColorUp() 
