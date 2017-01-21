@@ -15,6 +15,7 @@ import render.DebugDrawBodyOption;
 import flixel.util.FlxColor;
 import haxe.ds.Vector;
 import openfl.Assets;
+import render.BaseDrawWorld;
 
 /**
  * ...
@@ -29,9 +30,9 @@ class ReleaseDrawWorld extends BaseDrawWorld
     
     private static var groundAssetImage:FlxSprite;
     private var parentState:FlxState;
-    public var drawLookup:Map<Int,render.DebugDrawBodyOption>;
-    public var drawGlobalBodyDefault:render.DebugDrawBodyOption;
-    public var drawPhysicsBodyDefault:render.DebugDrawBodyOption;
+    public var drawLookup:Map<Int,DebugDrawBodyOption>;
+    public var drawGlobalBodyDefault:DebugDrawBodyOption;
+    public var drawPhysicsBodyDefault:DebugDrawBodyOption;
     public var backgroundSize:Vector2;
     
     private var renderTarget:Sprite;
@@ -45,15 +46,15 @@ class ReleaseDrawWorld extends BaseDrawWorld
     public var height:Int = 0;
     public var overscan:Int = 0;
     
-    public var ColorOfBounds:Int = render.BaseDrawWorld.COLOR_PURPLE;
-    public var ColorOfText:Int = render.BaseDrawWorld.COLOR_GREY;
-    public var ColorOfAABB:Int = render.BaseDrawWorld.COLOR_GREY;
-    public var ColorOfBackground:Int = render.BaseDrawWorld.COLOR_BLACK;
-    public var ColorOfGlobalVerts:Int = render.BaseDrawWorld.COLOR_YELLOW;
-    public var ColorOfGlobalBody:Int = render.BaseDrawWorld.COLOR_YELLOW;
-    public var ColorOfPhysicsBody:Int = render.BaseDrawWorld.COLOR_WHITE;
-    public var ColorOfInternalSprings:Int = render.BaseDrawWorld.COLOR_RED;
-    public var ColorOfPointMasses:Int = render.BaseDrawWorld.COLOR_BLUE;
+    public var ColorOfBounds:Int = BaseDrawWorld.COLOR_PURPLE;
+    public var ColorOfText:Int = BaseDrawWorld.COLOR_GREY;
+    public var ColorOfAABB:Int = BaseDrawWorld.COLOR_GREY;
+    public var ColorOfBackground:Int = BaseDrawWorld.COLOR_BLACK;
+    public var ColorOfGlobalVerts:Int = BaseDrawWorld.COLOR_YELLOW;
+    public var ColorOfGlobalBody:Int = BaseDrawWorld.COLOR_YELLOW;
+    public var ColorOfPhysicsBody:Int = BaseDrawWorld.COLOR_WHITE;
+    public var ColorOfInternalSprings:Int = BaseDrawWorld.COLOR_RED;
+    public var ColorOfPointMasses:Int = BaseDrawWorld.COLOR_BLUE;
     
     public var SizeOfVert:Float = 4;
     
@@ -412,7 +413,7 @@ add(myCustomImage1);
         this.DrawingGlobalBody = false;
         this.DrawingPointMasses = false;
         this.DrawingLabels = false;
-        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, render.BaseDrawWorld.COLOR_WHITE, false);
+        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
         for (i in 1...colors.length + 1){
             this.SetMaterialDrawOptions(i, colors[i-1], true);
