@@ -110,10 +110,6 @@ class GameGround
         var shapeBuilder: ShapeBuilder = builder.getShapeBuilder().type(ShapeType.Rectangle).width(width).height(height);
         builder = builder.setPosition(relPosition).setType(BlockType.Normal);
         
-        /*var shapeBuilder:ShapeBuilder = builder.get new ShapeBuilder().type(ShapeType.Rectangle).width(width).height(height);
-        var bodyPosition:Vector2 = VectorTools.Add(relPosition, position);
-        var shape:ClosedShape = shapeBuilder.create();
-        var body:Body = new Body(shape, Math.POSITIVE_INFINITY, bodyPosition, 0.0, new Vector2(1, 1), true);*/
         return builder.create();
     }    
 }

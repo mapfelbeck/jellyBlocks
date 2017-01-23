@@ -27,7 +27,6 @@ class ReleaseDrawWorld extends BaseDrawWorld
     private static var tileAssetPath:String = "assets/images/tiled greyscale.png";
     private static var frostedAssetPath:String = "assets/images/frosted greyscale.png";
     
-    private static var groundAssetImage:FlxSprite;
     private var parentState:FlxState;
     public var drawLookup:Map<Int,DebugDrawBodyOption>;
     public var drawPhysicsBodyDefault:DebugDrawBodyOption;
@@ -48,6 +47,8 @@ class ReleaseDrawWorld extends BaseDrawWorld
     public var ColorOfGlobalVerts:Int = BaseDrawWorld.COLOR_YELLOW;
     public var ColorOfGlobalBody:Int = BaseDrawWorld.COLOR_YELLOW;
     public var ColorOfPhysicsBody:Int = BaseDrawWorld.COLOR_WHITE;
+	
+	private var gameArenaSprite:NineSliceSprite;
 
     public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
@@ -64,9 +65,40 @@ class ReleaseDrawWorld extends BaseDrawWorld
         
         setRenderAndOffset(width, height, overscan);
     }
-    
+    /*
+columns (left to right):
+    43x426x43
+
+rows (top to bottom):
+    43x417x52*/
     public override function setGameGround(ground:GameGround){
         super.setGameGround(ground);
+		trace("I see a game ground with width " +ground.Width + ", height " + ground.Height + " and border " + ground.Border + ".");
+		var h:Float = ground.Height;
+		var w:Float = ground.Width;
+		var b:Float = ground.Border;
+		gameArenaSprite = new NineSliceSprite(0, 0, groundAssetPath, 
+												[43,426,43,43,417,52], 
+												[b, w, b, b, h, b]);
+		//gameArenaSprite.scale.set(0.5, 0.5);
+		//gameArenaSprite.updateHitbox();
+		//gameArenaSprite.setGraphicSize(100, 100);
+		var center:Vector2 = new Vector2(0, 0);
+		var borderSize:Vector2 = new Vector2(ground.Border, ground.Border);
+		var centerAsScreen:Vector2 = new Vector2(center.x * scale.x + offset.x, center.y * scale.y + offset.y);
+		var borderSizeAsScreen:Vector2 = new Vector2(borderSize.x * scale.x + offset.x, borderSize.y * scale.y + offset.y);
+		var diff:Vector2 = VectorTools.Subtract(borderSizeAsScreen, centerAsScreen);
+		diff.x *= 0.5;
+		diff.y *= 0.5;
+		var arenaWidth:Int = Std.int(diff.x * (2 * ground.Border + ground.Width));
+		var arenaHeight:Int = Std.int(diff.y * (2 * ground.Border + ground.Height));
+		//gameArenaSprite.width = arenaWidth;
+		//gameArenaSprite.height = arenaHeight;
+		gameArenaSprite.setGraphicSize(arenaWidth, arenaHeight);
+		gameArenaSprite.updateHitbox();
+		gameArenaSprite.x = Std.int((width - arenaWidth) / 2);
+		gameArenaSprite.y = Std.int((height - arenaHeight) / 2);
+		parentState.add(gameArenaSprite);
     }
     
     private var worldWidth:Float;
@@ -114,9 +146,9 @@ class ReleaseDrawWorld extends BaseDrawWorld
         
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
-            /*if (body.IsStatic){
+            if (body.IsStatic){
                 continue;
-            }*/
+            }
             drawPhysicsBody(body);
         }
     }
