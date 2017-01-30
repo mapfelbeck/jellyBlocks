@@ -49,6 +49,7 @@ class ReleaseDrawWorld extends BaseDrawWorld
     public var ColorOfPhysicsBody:Int = BaseDrawWorld.COLOR_WHITE;
 	
 	private var gameArenaSprite:NineSliceSprite;
+	private var gameTileSprite:NineSliceSprite;
 
     public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
@@ -80,6 +81,7 @@ rows (top to bottom):
 		gameArenaSprite = new NineSliceSprite(0, 0, groundAssetPath, 
 												[43,426,43,43,417,52], 
 												[b, w, b, b, h, b]);
+		gameTileSprite = new NineSliceSprite(0, 0, tileAssetPath, null, null, new MultiColorSource());
 		//gameArenaSprite.scale.set(0.5, 0.5);
 		//gameArenaSprite.updateHitbox();
 		//gameArenaSprite.setGraphicSize(100, 100);
@@ -140,16 +142,53 @@ rows (top to bottom):
         }
     }
     
+	var vertices:Vector<Float> = new Vector<Float>(8);
+	var indices:Vector<Int> = new Vector<Int>(6);
+	var uvtData:Vector<Float> = new Vector<Float>(8);
     public override function Draw():Void
     {
         graphics.clear();
         
+		indices[0] = 0;
+		indices[1] = 1;
+		indices[2] = 3;
+		indices[3] = 1;
+		indices[4] = 2;
+		indices[5] = 3;
+		//texture co-ords
+		uvtData[0] = 0;
+		uvtData[1] = 0.33;
+		
+		uvtData[2] = 0.33;
+		uvtData[3] = 0.33;
+		
+		uvtData[4] = 0.33;
+		uvtData[5] = 0.66;
+		
+		uvtData[6] = 0;
+		uvtData[7] = 0.66;
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
             if (body.IsStatic){
                 continue;
             }
-            drawPhysicsBody(body);
+            //drawPhysicsBody(body);
+			vertices[0] = (body.PointMasses[0].Position.x * scale.x) + offset.x;
+			vertices[1] = (body.PointMasses[0].Position.y * scale.y) + offset.y;
+			
+			vertices[2] = (body.PointMasses[1].Position.x * scale.x) + offset.x;
+			vertices[3] = (body.PointMasses[1].Position.y * scale.y) + offset.y;
+			
+			vertices[4] = (body.PointMasses[2].Position.x * scale.x) + offset.x;
+			vertices[5] = (body.PointMasses[2].Position.y * scale.y) + offset.y;
+			
+			vertices[6] = (body.PointMasses[3].Position.x * scale.x) + offset.x;
+			vertices[7] = (body.PointMasses[3].Position.y * scale.y) + offset.y;
+			
+			graphics.beginBitmapFill(gameTileSprite.framePixels);
+			graphics.drawTriangles(vertices, indices, uvtData);
+			graphics.endFill();
+			break;
         }
     }
     
@@ -169,7 +208,7 @@ rows (top to bottom):
         drawPhysicsBodyDefault.Color = color;
         drawPhysicsBodyDefault.IsSolid = isSolid;
     }
-    
+	
     function drawPhysicsBody(body:Body) 
     {
         var shape:Array<Vector2> = new Array<Vector2>();
