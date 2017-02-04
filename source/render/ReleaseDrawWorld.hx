@@ -32,6 +32,7 @@ class ReleaseDrawWorld extends BaseDrawWorld
     public var drawPhysicsBodyDefault:DebugDrawBodyOption;
     public var backgroundSize:Vector2;
     
+	private var colorSource:MultiColorSource;
     private var renderTarget:Sprite;
     private var graphics:Graphics;
     private var world:World;
@@ -61,17 +62,14 @@ class ReleaseDrawWorld extends BaseDrawWorld
         renderTarget = sprite;
         graphics = renderTarget.graphics;
         world = physicsWorld;
+		
+		colorSource = new MultiColorSource(GameConstants.UniqueColors);
         
         setupDrawParam();
         
         setRenderAndOffset(width, height, overscan);
     }
-    /*
-columns (left to right):
-    43x426x43
 
-rows (top to bottom):
-    43x417x52*/
     public override function setGameGround(ground:GameGround){
         super.setGameGround(ground);
 		trace("I see a game ground with width " +ground.Width + ", height " + ground.Height + " and border " + ground.Border + ".");
@@ -81,10 +79,8 @@ rows (top to bottom):
 		gameArenaSprite = new NineSliceSprite(0, 0, groundAssetPath, 
 												[43,426,43,43,417,52], 
 												[b, w, b, b, h, b]);
-		gameTileSprite = new NineSliceSprite(0, 0, tileAssetPath, null, null, new MultiColorSource());
-		//gameArenaSprite.scale.set(0.5, 0.5);
-		//gameArenaSprite.updateHitbox();
-		//gameArenaSprite.setGraphicSize(100, 100);
+		gameTileSprite = new NineSliceSprite(0, 0, tileAssetPath, null, null, colorSource);
+
 		var center:Vector2 = new Vector2(0, 0);
 		var borderSize:Vector2 = new Vector2(ground.Border, ground.Border);
 		var centerAsScreen:Vector2 = new Vector2(center.x * scale.x + offset.x, center.y * scale.y + offset.y);
@@ -94,8 +90,7 @@ rows (top to bottom):
 		diff.y *= 0.5;
 		var arenaWidth:Int = Std.int(diff.x * (2 * ground.Border + ground.Width));
 		var arenaHeight:Int = Std.int(diff.y * (2 * ground.Border + ground.Height));
-		//gameArenaSprite.width = arenaWidth;
-		//gameArenaSprite.height = arenaHeight;
+
 		gameArenaSprite.setGraphicSize(arenaWidth, arenaHeight);
 		gameArenaSprite.updateHitbox();
 		gameArenaSprite.x = Std.int((width - arenaWidth) / 2);
@@ -172,8 +167,8 @@ rows (top to bottom):
             if (body.IsStatic){
                 continue;
             }
-            //drawPhysicsBody(body);
-			vertices[0] = (body.PointMasses[0].Position.x * scale.x) + offset.x;
+            drawPhysicsBody(body);
+			/*vertices[0] = (body.PointMasses[0].Position.x * scale.x) + offset.x;
 			vertices[1] = (body.PointMasses[0].Position.y * scale.y) + offset.y;
 			
 			vertices[2] = (body.PointMasses[1].Position.x * scale.x) + offset.x;
@@ -188,7 +183,7 @@ rows (top to bottom):
 			graphics.beginBitmapFill(gameTileSprite.framePixels);
 			graphics.drawTriangles(vertices, indices, uvtData);
 			graphics.endFill();
-			break;
+			break;*/
         }
     }
     
@@ -250,6 +245,18 @@ rows (top to bottom):
             graphics.endFill();
         }
     }
+	
+	public override function rotateColorUp(){
+		colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.05) % 1.0;
+		setupDrawParam();
+
+	}
+    
+    public override function rotateColorDown() 
+    {
+		colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.95) % 1.0;
+        setupDrawParam();
+    }
     
     public override function setupDrawParam():Void
     {
@@ -257,7 +264,8 @@ rows (top to bottom):
         this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
         for (i in 1...colors.length + 1){
-            this.SetMaterialDrawOptions(i, colors[i-1], true);
+            //this.SetMaterialDrawOptions(i, colors[i-1], true);
+            this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);
         }
     }
 }
