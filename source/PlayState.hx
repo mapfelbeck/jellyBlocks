@@ -433,7 +433,7 @@ class PlayState extends FlxUIState
         
         //new up the builders
         shapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
-        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure);
+        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure).setMaterial(GameConstants.MATERIAL_GROUND);
         pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
 
         //create static bodies for the container

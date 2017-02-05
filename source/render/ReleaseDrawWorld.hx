@@ -263,7 +263,7 @@ class ReleaseDrawWorld extends BaseDrawWorld
         super.setupDrawParam();
         this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
-        for (i in 1...colors.length + 1){
+        for (i in 0...colors.length+1){
             //this.SetMaterialDrawOptions(i, colors[i-1], true);
             this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);
         }

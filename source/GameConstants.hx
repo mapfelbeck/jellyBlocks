@@ -9,7 +9,7 @@ class GameConstants
     public function new() 
     {
     }
-    public static var MATERIAL_GROUND:Int = 0;
+    public static var MATERIAL_GROUND:Int = UniqueColors;
     
     public static inline var settingsFile:String = "Balloon Blocks Settings";
     public static inline var highScoreFile:String = "Balloon Blocks High Scores";

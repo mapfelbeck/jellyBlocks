@@ -113,7 +113,7 @@ class JellyBlocksWorld extends World
                 checkNumber = Std.int(Math.pow(primes[color], maxSameColor + 1));
             }while (potentialBlockId % checkNumber == 0);
             
-            blockColors.push(color + 1);
+            blockColors.push(color);
             blockId = potentialBlockId;
         }
         return blockColors;
