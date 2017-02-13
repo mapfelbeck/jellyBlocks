@@ -55,6 +55,7 @@ class MultiColorSource implements IColorSource
     
     public function getColor(index:Int):FlxColor 
     {
+        //return FlxColor.GREEN;
         return colors[index % colors.length];
     }
 	
@@ -109,7 +110,9 @@ class MultiColorSource implements IColorSource
         var rInt:Int = Std.int(r * 255.0);
         var gInt:Int = Std.int(g * 255.0);
         var bInt:Int = Std.int(b * 255.0);
+        //alpha, fully opaque
+        var aInt:Int = 255;
         
-        return (rInt << 16) + (gInt << 8) + (bInt);
+        return (aInt << 24) + (rInt << 16) + (gInt << 8) + (bInt);
     }
 }

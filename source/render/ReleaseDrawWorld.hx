@@ -23,8 +23,8 @@ import render.BaseDrawWorld;
  */
 class ReleaseDrawWorld extends BaseDrawWorld
 {
-    private static var groundAssetPath:String = "assets/images/gameArena.png";
-    private static var tileAssetPath:String = "assets/images/tiled greyscale.png";
+    private static var groundAssetPath:String =  "assets/images/gameArena.png";
+    private static var tileAssetPath:String =    "assets/images/tiled greyscale.png";
     private static var frostedAssetPath:String = "assets/images/frosted greyscale.png";
     
     private var parentState:FlxState;
@@ -51,6 +51,11 @@ class ReleaseDrawWorld extends BaseDrawWorld
 	
 	private var gameArenaSprite:NineSliceSprite;
 	private var gameTileSprite:NineSliceSprite;
+	
+	private var activeBodyCount:Int = -1;
+	var vertices:Vector<Float> = null;
+	var indices:Vector<Int> = null;
+	var uvtData:Vector<Float> = null;
 
     public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
@@ -72,7 +77,7 @@ class ReleaseDrawWorld extends BaseDrawWorld
 
     public override function setGameGround(ground:GameGround){
         super.setGameGround(ground);
-		trace("I see a game ground with width " +ground.Width + ", height " + ground.Height + " and border " + ground.Border + ".");
+		//trace("I see a game ground with width " +ground.Width + ", height " + ground.Height + " and border " + ground.Border + ".");
 		var h:Float = ground.Height;
 		var w:Float = ground.Width;
 		var b:Float = ground.Border;
@@ -96,6 +101,9 @@ class ReleaseDrawWorld extends BaseDrawWorld
 		gameArenaSprite.x = Std.int((width - arenaWidth) / 2);
 		gameArenaSprite.y = Std.int((height - arenaHeight) / 2);
 		parentState.add(gameArenaSprite);
+        //gameTileSprite.x = 0;
+        //gameTileSprite.y = 0;
+        //parentState.add(gameTileSprite);
     }
     
     private var worldWidth:Float;
@@ -137,14 +145,28 @@ class ReleaseDrawWorld extends BaseDrawWorld
         }
     }
     
-	var vertices:Vector<Float> = new Vector<Float>(8);
-	var indices:Vector<Int> = new Vector<Int>(6);
-	var uvtData:Vector<Float> = new Vector<Float>(8);
     public override function Draw():Void
     {
+        if (activeBodyCount != world.NumberBodies - ground.BodyCount)
+        {
+            activeBodyCount = world.NumberBodies - ground.BodyCount;
+            trace("New active body count: " + activeBodyCount);
+            allocateDrawVectors();
+            
+            var builtRed:Int = (255 << 24) + (255 << 16) + (0 << 8) + (0);
+            var flxColorRed:Int = FlxColor.RED;
+            trace("Red value: " + builtRed);
+            trace("FlxColor.RED value: " + flxColorRed);
+            
+            /*for(i in 0...GameConstants.UniqueColors){
+                var xOff:Float = uvXoffsetForMaterial(i);
+                var yOff:Float = uvYoffsetForMaterial(i);
+                trace("material " + i + " has offsets [" + xOff + "," + yOff + "]");
+            }*/
+        }
         graphics.clear();
         
-		indices[0] = 0;
+		/*indices[0] = 0;
 		indices[1] = 1;
 		indices[2] = 3;
 		indices[3] = 1;
@@ -161,31 +183,121 @@ class ReleaseDrawWorld extends BaseDrawWorld
 		uvtData[5] = 0.66;
 		
 		uvtData[6] = 0;
-		uvtData[7] = 0.66;
+		uvtData[7] = 0.66;*/
+        var bodyIndex:Int = 0;
+        //var upperLeft:Vector2 = new Vector2(0, 0);
+        //var upperRight:Vector2 = new Vector2(0, 0);
+        //var lowerRight:Vector2 = new Vector2(0, 0);
+        //var lowerLeft:Vector2 = new Vector2(0, 0);
+        //graphics.lineStyle(0, FlxColor.WHITE);
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
             if (body.IsStatic){
                 continue;
             }
-            drawPhysicsBody(body);
-			/*vertices[0] = (body.PointMasses[0].Position.x * scale.x) + offset.x;
-			vertices[1] = (body.PointMasses[0].Position.y * scale.y) + offset.y;
-			
-			vertices[2] = (body.PointMasses[1].Position.x * scale.x) + offset.x;
-			vertices[3] = (body.PointMasses[1].Position.y * scale.y) + offset.y;
-			
-			vertices[4] = (body.PointMasses[2].Position.x * scale.x) + offset.x;
-			vertices[5] = (body.PointMasses[2].Position.y * scale.y) + offset.y;
-			
-			vertices[6] = (body.PointMasses[3].Position.x * scale.x) + offset.x;
-			vertices[7] = (body.PointMasses[3].Position.y * scale.y) + offset.y;
-			
-			graphics.beginBitmapFill(gameTileSprite.framePixels);
-			graphics.drawTriangles(vertices, indices, uvtData);
-			graphics.endFill();
-			break;*/
+            //drawPhysicsBody(body);
+            var vertexIndex:Int = bodyIndex * vertexesPerBlock * elementsPerEntry;
+            
+            /*upperLeft.x = body.PointMasses[0].Position.x * scale.x + offset.x;
+            upperLeft.y = body.PointMasses[0].Position.y * scale.y + offset.y;
+            upperRight.x = body.PointMasses[1].Position.x * scale.x + offset.x;
+            upperRight.y = body.PointMasses[1].Position.y * scale.y + offset.y;
+            lowerRight.x = body.PointMasses[2].Position.x * scale.x + offset.x;
+            lowerRight.y = body.PointMasses[2].Position.y * scale.y + offset.y;
+            lowerLeft.x = body.PointMasses[3].Position.x * scale.x + offset.x;
+            lowerLeft.y = body.PointMasses[3].Position.y * scale.y + offset.y;*/
+            
+            vertices[vertexIndex + 0] = body.PointMasses[0].Position.x * scale.x + offset.x;
+            vertices[vertexIndex + 1] = body.PointMasses[0].Position.y * scale.y + offset.y;
+            
+            vertices[vertexIndex + 2] = body.PointMasses[1].Position.x * scale.x + offset.x;
+            vertices[vertexIndex + 3] = body.PointMasses[1].Position.y * scale.y + offset.y;
+            
+            vertices[vertexIndex + 4] = body.PointMasses[2].Position.x * scale.x + offset.x;
+            vertices[vertexIndex + 5] = body.PointMasses[2].Position.y * scale.y + offset.y;
+            
+            vertices[vertexIndex + 6] = body.PointMasses[3].Position.x * scale.x + offset.x;
+            vertices[vertexIndex + 7] = body.PointMasses[3].Position.y * scale.y + offset.y;
+            
+            bodyIndex++;
+        }
+        
+        graphics.beginBitmapFill(gameTileSprite.framePixels);
+        graphics.drawTriangles(vertices, indices, uvtData);
+        graphics.endFill();
+    }
+	
+	//var vertices:Vector<Float> = null;
+	//var indices:Vector<Int> = null;
+	//var uvtData:Vector<Float> = null;
+    private static var vertexesPerBlock:Int = 4;
+    private static var elementsPerEntry:Int = 2;
+    private static var indexesPerTriangle:Int = 3;
+    private static var trianglesPerBlock:Int = 2;
+    private static var oneThird:Float = 1.0 / 3.0;
+	function allocateDrawVectors() 
+	{
+        
+        //all the vertexes we're going to draw in [x1, y1,... xn, yn] format
+        //4 vertexes per block * 2 floats per vertex
+        //vertexes start at the upper left and move clockwise
+        //vertex locations are set per frame
+		vertices = new Vector<Float>(activeBodyCount * vertexesPerBlock * elementsPerEntry);
+        //indexes of all the triangles we draw, 3 vertexes per triangle * 2 triangles per block
+		indices = new Vector<Int>(activeBodyCount * indexesPerTriangle * trianglesPerBlock);
+        //texture coordinates in [x1, y1,... xn, yn] format
+        //each vertex has 1 texture coordinate
+		uvtData = new Vector<Float>(activeBodyCount * vertexesPerBlock * elementsPerEntry);
+        
+        for (i in 0...activeBodyCount){
+            var index:Int = i * indexesPerTriangle * trianglesPerBlock;
+            var vertindex:Int = i * vertexesPerBlock;
+            indices[index + 0] = vertindex + 0;
+            indices[index + 1] = vertindex + 1;
+            indices[index + 2] = vertindex + 2;
+            indices[index + 3] = vertindex + 0;
+            indices[index + 4] = vertindex + 2;
+            indices[index + 5] = vertindex + 3;
+        }
+        
+        var bodyIndex:Int = 0;
+        for (i in 0...world.NumberBodies){
+            var body:Body = world.GetBody(i);
+            if (body.IsStatic){
+                continue;
+            }
+            var uvXoffset:Float = uvXoffsetForMaterial(body.Material);
+            var uvYoffset:Float = uvYoffsetForMaterial(body.Material);
+            var uvIndex:Int = bodyIndex * vertexesPerBlock * elementsPerEntry;
+            
+            uvtData[uvIndex + 0] = uvXoffset;
+            uvtData[uvIndex + 1] = uvYoffset;
+            
+            uvtData[uvIndex + 2] = uvXoffset + oneThird;
+            uvtData[uvIndex + 3] = uvYoffset;
+            
+            uvtData[uvIndex + 4] = uvXoffset + oneThird;
+            uvtData[uvIndex + 5] = uvYoffset + oneThird;
+            
+            uvtData[uvIndex + 6] = uvXoffset;
+            uvtData[uvIndex + 7] = uvYoffset + oneThird;
+            
+            //trace("Body: " + body.BodyNumber + ", material: " + body.Material);
+            bodyIndex++;
         }
     }
+    
+    function uvXoffsetForMaterial(material:Int):Float
+    {
+        var xIndex:Int = material % 3;
+        return oneThird * xIndex;
+	}
+    
+    function uvYoffsetForMaterial(material:Int):Float
+    {
+        var yIndex:Int = Math.floor(material / 3);
+        return (1.0/3.0) * yIndex;
+	}
     
     public function SetMaterialDrawOptions(material:Int, color:Int, isSolid:Bool) 
     {
@@ -231,6 +343,7 @@ class ReleaseDrawWorld extends BaseDrawWorld
         if (opts.IsSolid){
             graphics.beginFill(opts.Color, 1.0);
         }
+        //trace("line starts: " +((start.x * scale.x) + offset.x)+", " + ((start.y * scale.y) + offset.y));
         graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
         for (i in 0...shape.length){
             var next:Vector2;
@@ -239,6 +352,7 @@ class ReleaseDrawWorld extends BaseDrawWorld
             }else{
                 next = shape[i+1];
             }
+            //trace("line goes: " +((next.x * scale.x) + offset.x)+", " + ((next.y * scale.y) + offset.y));
             graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
         }
         if (opts.IsSolid){

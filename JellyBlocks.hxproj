@@ -27,12 +27,12 @@
   </classpaths>
   <!-- Build options -->
   <build>
-    <option directives="jellyPhysics=1.0.0&#xA;flixel=4.2.0&#xA;lime=2.9.1&#xA;flixel-addons=2.2.0&#xA;openfl=3.6.1&#xA;flixel-ui=2.2.0&#xA;HXCPP_QUIET&#xA;openfl-next&#xA;FLX_NO_GAMEPAD&#xA;tools=2.9.1&#xA;windowWidth=450&#xA;no-compilation&#xA;FLX_NO_SOUND_SYSTEM&#xA;NAPE_RELEASE_BUILD&#xA;openfl-flash&#xA;FLX_NO_SOUND_TRAY&#xA;windowHeight=600&#xA;web&#xA;display" />
+    <option directives="jellyPhysics=1.0.0&#xA;flixel=4.2.0&#xA;lime=2.9.1&#xA;flixel-addons=2.2.0&#xA;openfl=3.6.1&#xA;flixel-ui=2.2.0&#xA;HXCPP_QUIET&#xA;openfl-next&#xA;FLX_NO_GAMEPAD&#xA;tools=2.9.1&#xA;windowWidth=450&#xA;no-compilation&#xA;FLX_NO_SOUND_SYSTEM&#xA;openfl-flash&#xA;FLX_NO_SOUND_TRAY&#xA;windowHeight=600&#xA;web&#xA;display" />
     <option flashStrict="False" />
     <option noInlineOnDebug="False" />
     <option mainClass="ApplicationMain" />
     <option enabledebug="False" />
-    <option additional="--macro flixel.system.macros.FlxDefines.run()&#xA;-swf-version 11.8" />
+    <option additional="--macro flixel.system.macros.FlxDefines.run()&#xA;-swf-version 11.8&#xA;-debug " />
   </build>
   <!-- haxelib libraries -->
   <haxelib>

@@ -36,6 +36,8 @@ class GameGround
     private var builder:GameBlockBuilder;
     
     private var bodies:Array<Body>;
+	public var BodyCount(get, null):Int;
+	public function get_BodyCount():Int{ return bodies.length;}
     public function new(border:Float, width:Float, height:Float, 
                         /*position:Vector2, */builder:GameBlockBuilder) 
     {
