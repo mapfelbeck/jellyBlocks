@@ -115,7 +115,9 @@ class NineSliceSprite extends FlxSprite
         var vertices:Array<Float> = UtilClass.arrayOfSize(32);
         var indices:Array<Int> = UtilClass.arrayOfSize(54);
         var uvtData:Array<Float> = UtilClass.arrayOfSize(32);
+        //Assets.cache.removeBitmapData(GraphicPath);
         var data:BitmapData = Assets.getBitmapData(GraphicPath);
+        //data.colorTransform(data.rect, FlxColorToColorTransform(FlxColor.WHITE));
         var pixelWidth:Int = Std.int(data.width / 3);
         var pixelHeight:Int = Std.int(data.height / 3);
         spriteHeight = data.height;

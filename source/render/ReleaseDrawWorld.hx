@@ -75,8 +75,22 @@ class ReleaseDrawWorld extends BaseDrawWorld
         
         setRenderAndOffset(width, height, overscan);
     }
+    
+    private function buildTileTexture():Void{
+        if (gameTileSprite != null){
+            Assets.cache.removeBitmapData(tileAssetPath);
+            gameTileSprite.destroy();
+            gameTileSprite = null;
+        }
+		gameTileSprite = new NineSliceSprite(0, 0, tileAssetPath, null, null, colorSource);
+        #if (cpp || neko)
+        gameTileSprite.useFramePixels = true;
+        #end
+        
+        
+    }
 
-    public override function setGameGround(ground:GameGround){
+    public override function setGameGround(ground:GameGround):Void{
         super.setGameGround(ground);
 		//trace("I see a game ground with width " +ground.Width + ", height " + ground.Height + " and border " + ground.Border + ".");
 		var h:Float = ground.Height;
@@ -87,10 +101,6 @@ class ReleaseDrawWorld extends BaseDrawWorld
 		/*gameArenaSprite = new NineSliceSprite(0, 0, groundAssetPath, 
 												[43,426,43,43,417,52], 
 												[b, w, b, b, h, b]);*/
-		gameTileSprite = new NineSliceSprite(0, 0, tileAssetPath, null, null, colorSource);
-        #if (cpp || neko)
-        gameTileSprite.useFramePixels = true;
-        #end
 
 		var center:Vector2 = new Vector2(0, 0);
 		var borderSize:Vector2 = new Vector2(ground.Border, ground.Border);
@@ -107,9 +117,6 @@ class ReleaseDrawWorld extends BaseDrawWorld
 		gameArenaSprite.x = Std.int((width - arenaWidth) / 2);
 		gameArenaSprite.y = Std.int((height - arenaHeight) / 2);
 		parentState.add(gameArenaSprite);
-        //gameTileSprite.x = 0;
-        //gameTileSprite.y = 0;
-        //parentState.add(gameTileSprite);
     }
     
     private var worldWidth:Float;
@@ -158,44 +165,10 @@ class ReleaseDrawWorld extends BaseDrawWorld
             activeBodyCount = world.NumberBodies - ground.BodyCount;
             trace("New active body count: " + activeBodyCount);
             allocateDrawVectors();
-            
-            var builtRed:Int = (255 << 24) + (255 << 16) + (0 << 8) + (0);
-            var flxColorRed:Int = FlxColor.RED;
-            trace("Red value: " + builtRed);
-            trace("FlxColor.RED value: " + flxColorRed);
-            
-            /*for(i in 0...GameConstants.UniqueColors){
-                var xOff:Float = uvXoffsetForMaterial(i);
-                var yOff:Float = uvYoffsetForMaterial(i);
-                trace("material " + i + " has offsets [" + xOff + "," + yOff + "]");
-            }*/
         }
         graphics.clear();
         
-		/*indices[0] = 0;
-		indices[1] = 1;
-		indices[2] = 3;
-		indices[3] = 1;
-		indices[4] = 2;
-		indices[5] = 3;
-		//texture co-ords
-		uvtData[0] = 0;
-		uvtData[1] = 0.33;
-		
-		uvtData[2] = 0.33;
-		uvtData[3] = 0.33;
-		
-		uvtData[4] = 0.33;
-		uvtData[5] = 0.66;
-		
-		uvtData[6] = 0;
-		uvtData[7] = 0.66;*/
         var bodyIndex:Int = 0;
-        //var upperLeft:Vector2 = new Vector2(0, 0);
-        //var upperRight:Vector2 = new Vector2(0, 0);
-        //var lowerRight:Vector2 = new Vector2(0, 0);
-        //var lowerLeft:Vector2 = new Vector2(0, 0);
-        //graphics.lineStyle(0, FlxColor.WHITE);
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
             if (body.IsStatic){
@@ -378,5 +351,6 @@ class ReleaseDrawWorld extends BaseDrawWorld
             //this.SetMaterialDrawOptions(i, colors[i-1], true);
             this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);
         }
+        buildTileTexture();
     }
 }
