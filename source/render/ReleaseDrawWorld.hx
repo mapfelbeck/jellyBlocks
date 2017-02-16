@@ -16,6 +16,7 @@ import flixel.util.FlxColor;
 import haxe.ds.Vector;
 import openfl.Assets;
 import render.BaseDrawWorld;
+import util.UtilClass;
 
 /**
  * ...
@@ -53,9 +54,9 @@ class ReleaseDrawWorld extends BaseDrawWorld
 	private var gameTileSprite:NineSliceSprite;
 	
 	private var activeBodyCount:Int = -1;
-	var vertices:Vector<Float> = null;
-	var indices:Vector<Int> = null;
-	var uvtData:Vector<Float> = null;
+	var vertices:Array<Float> = null;
+	var indices:Array<Int> = null;
+	var uvtData:Array<Float> = null;
 
     public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
@@ -87,6 +88,9 @@ class ReleaseDrawWorld extends BaseDrawWorld
 												[43,426,43,43,417,52], 
 												[b, w, b, b, h, b]);*/
 		gameTileSprite = new NineSliceSprite(0, 0, tileAssetPath, null, null, colorSource);
+        #if (cpp || neko)
+        gameTileSprite.useFramePixels = true;
+        #end
 
 		var center:Vector2 = new Vector2(0, 0);
 		var borderSize:Vector2 = new Vector2(ground.Border, ground.Border);
@@ -235,12 +239,12 @@ class ReleaseDrawWorld extends BaseDrawWorld
         //4 vertexes per block * 2 floats per vertex
         //vertexes start at the upper left and move clockwise
         //vertex locations are set per frame
-		vertices = new Vector<Float>(activeBodyCount * vertexesPerBlock * elementsPerEntry);
+		vertices = UtilClass.arrayOfSize(activeBodyCount * vertexesPerBlock * elementsPerEntry);
         //indexes of all the triangles we draw, 3 vertexes per triangle * 2 triangles per block
-		indices = new Vector<Int>(activeBodyCount * indexesPerTriangle * trianglesPerBlock);
+		indices = UtilClass.arrayOfSize(activeBodyCount * indexesPerTriangle * trianglesPerBlock);
         //texture coordinates in [x1, y1,... xn, yn] format
         //each vertex has 1 texture coordinate
-		uvtData = new Vector<Float>(activeBodyCount * vertexesPerBlock * elementsPerEntry);
+		uvtData = UtilClass.arrayOfSize(activeBodyCount * vertexesPerBlock * elementsPerEntry);
         
         for (i in 0...activeBodyCount){
             var index:Int = i * indexesPerTriangle * trianglesPerBlock;

@@ -5,8 +5,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.FlxSprite;
 import flixel.util.FlxColor;
 import openfl.display.BitmapData;
-//import flash.geom.ColorTransform;
-//import flash.geom.Rectangle;
+import util.UtilClass;
 import openfl.geom.ColorTransform;
 import openfl.geom.Rectangle;
 import haxe.ds.Vector;
@@ -110,11 +109,12 @@ class NineSliceSprite extends FlxSprite
         }
         return 1;
     }
+    
     private function drawSprite(GraphicPath:String):BitmapData{
         var flashSprite:Sprite = new Sprite();
-        var vertices:Vector<Float> = new Vector<Float>(32);
-        var indices:Vector<Int> = new Vector<Int>(54);
-        var uvtData:Vector<Float> = new Vector<Float>(32);
+        var vertices:Array<Float> = UtilClass.arrayOfSize(32);
+        var indices:Array<Int> = UtilClass.arrayOfSize(54);
+        var uvtData:Array<Float> = UtilClass.arrayOfSize(32);
         var data:BitmapData = Assets.getBitmapData(GraphicPath);
         var pixelWidth:Int = Std.int(data.width / 3);
         var pixelHeight:Int = Std.int(data.height / 3);
