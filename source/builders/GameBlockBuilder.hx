@@ -54,6 +54,7 @@ class GameBlockBuilder
             default:
         }
         finalBlock.Material = material;
+        
         //finalBlock.CollisionCallback = collisionCallback;
         if (label != null){
             finalBlock.Label = label;

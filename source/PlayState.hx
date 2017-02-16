@@ -115,12 +115,11 @@ class PlayState extends FlxUIState
         
         setupConfigForSpawingBlocks();
         
-        render = setupSolidColorRender();
-        /*#if (html5)
+        #if (html5)
         render = setupSolidColorRender();
         #else
         render = setupTexturedRender();
-        #end*/
+        #end
         render.setGameGround(ground);
         
         #if (html5 || mobile)

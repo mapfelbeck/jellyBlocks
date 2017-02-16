@@ -9,7 +9,7 @@ class GameConstants
     public function new() 
     {
     }
-    public static var MATERIAL_GROUND:Int = UniqueColors;
+    public static inline var MATERIAL_GROUND:Int = UniqueColors;
     
     public static inline var settingsFile:String = "Balloon Blocks Settings";
     public static inline var highScoreFile:String = "Balloon Blocks High Scores";
@@ -45,7 +45,7 @@ class GameConstants
     public static inline var MaxFrictionDecrease:Float = .4;
 
     //How many unique colors are there
-    public static var UniqueColors:Int = 6;
+    public static inline var UniqueColors:Int = 6;
     //How many of the same color can be in a game piece
     public static var MaxSameColorPerPiece:Int = 2;
 
