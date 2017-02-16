@@ -49,7 +49,7 @@ class ReleaseDrawWorld extends BaseDrawWorld
     public var ColorOfGlobalBody:Int = BaseDrawWorld.COLOR_YELLOW;
     public var ColorOfPhysicsBody:Int = BaseDrawWorld.COLOR_WHITE;
 	
-	private var gameArenaSprite:NineSliceSprite;
+	private var gameArenaSprite:FlxSprite;
 	private var gameTileSprite:NineSliceSprite;
 	
 	private var activeBodyCount:Int = -1;
@@ -81,9 +81,11 @@ class ReleaseDrawWorld extends BaseDrawWorld
 		var h:Float = ground.Height;
 		var w:Float = ground.Width;
 		var b:Float = ground.Border;
-		gameArenaSprite = new NineSliceSprite(0, 0, groundAssetPath, 
+		gameArenaSprite = new FlxSprite(0, 0, groundAssetPath);
+        //from old texture that had to be resized
+		/*gameArenaSprite = new NineSliceSprite(0, 0, groundAssetPath, 
 												[43,426,43,43,417,52], 
-												[b, w, b, b, h, b]);
+												[b, w, b, b, h, b]);*/
 		gameTileSprite = new NineSliceSprite(0, 0, tileAssetPath, null, null, colorSource);
 
 		var center:Vector2 = new Vector2(0, 0);
@@ -197,15 +199,6 @@ class ReleaseDrawWorld extends BaseDrawWorld
             }
             //drawPhysicsBody(body);
             var vertexIndex:Int = bodyIndex * vertexesPerBlock * elementsPerEntry;
-            
-            /*upperLeft.x = body.PointMasses[0].Position.x * scale.x + offset.x;
-            upperLeft.y = body.PointMasses[0].Position.y * scale.y + offset.y;
-            upperRight.x = body.PointMasses[1].Position.x * scale.x + offset.x;
-            upperRight.y = body.PointMasses[1].Position.y * scale.y + offset.y;
-            lowerRight.x = body.PointMasses[2].Position.x * scale.x + offset.x;
-            lowerRight.y = body.PointMasses[2].Position.y * scale.y + offset.y;
-            lowerLeft.x = body.PointMasses[3].Position.x * scale.x + offset.x;
-            lowerLeft.y = body.PointMasses[3].Position.y * scale.y + offset.y;*/
             
             vertices[vertexIndex + 0] = body.PointMasses[0].Position.x * scale.x + offset.x;
             vertices[vertexIndex + 1] = body.PointMasses[0].Position.y * scale.y + offset.y;
