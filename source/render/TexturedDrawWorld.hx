@@ -22,7 +22,7 @@ import util.UtilClass;
  * ...
  * @author 
  */
-class ReleaseDrawWorld extends BaseDrawWorld
+class TexturedDrawWorld extends BaseDrawWorld
 {
     private static var groundAssetPath:String =  "assets/images/gameArena.png";
     private static var tileAssetPath:String =    "assets/images/tiled greyscale.png";

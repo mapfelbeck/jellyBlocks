@@ -289,7 +289,7 @@ class DebugDrawWorld extends BaseDrawWorld
         this.DrawingLabels = false;
         this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
         var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
-        for (i in 1...colors.length + 1){
+        for (i in 0...colors.length){
             this.SetMaterialDrawOptions(i, colors[i-1], true);
         }
     }

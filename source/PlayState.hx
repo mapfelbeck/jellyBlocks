@@ -115,12 +115,12 @@ class PlayState extends FlxUIState
         
         setupConfigForSpawingBlocks();
         
-        var release:Bool = true;
-        if (release){
-            render = setupReleaseRender();
-        }else{
-            render = setupDebugRender();
-        }
+        render = setupSolidColorRender();
+        /*#if (html5)
+        render = setupSolidColorRender();
+        #else
+        render = setupTexturedRender();
+        #end*/
         render.setGameGround(ground);
         
         #if (html5 || mobile)
@@ -128,16 +128,22 @@ class PlayState extends FlxUIState
         #end
 	}
     
-    function setupReleaseRender() : BaseDrawWorld
+    function setupTexturedRender() : BaseDrawWorld
     {
-        var debugRender:BaseDrawWorld = new ReleaseDrawWorld(createDrawSurface(), this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
-        return debugRender;
+        var render:BaseDrawWorld = new TexturedDrawWorld(createDrawSurface(), this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        return render;
+    }
+    
+    function setupSolidColorRender() : BaseDrawWorld
+    {
+        var render:BaseDrawWorld = new SolidColorDrawWorld(createDrawSurface(), this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        return render;
     }
     
     function setupDebugRender() : BaseDrawWorld
     {
-        var debugRender:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
-        return debugRender;
+        var render:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        return render;
     }
 
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
