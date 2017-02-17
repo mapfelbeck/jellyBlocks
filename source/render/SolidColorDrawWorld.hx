@@ -35,12 +35,15 @@ class SolidColorDrawWorld extends BaseDrawWorld
     
     public var SizeOfVert:Float = 4;
     
+    private var outlineColor:FlxColor = FlxColor.BLACK;
+    private var outlineAlpha:Float = 0.25;
+    
     public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
         super();
         drawLookup = new Map<Int,DebugDrawBodyOption>();
         drawBodyDefault = new DebugDrawBodyOption(0, FlxColor.WHITE, true);
-    
+        
         this.parentState = parentState;
         renderTarget = sprite;
         graphics = renderTarget.graphics;
@@ -141,7 +144,9 @@ class SolidColorDrawWorld extends BaseDrawWorld
     
     function drawBody(shape:Array<Vector2>, opts:DebugDrawBodyOption) 
     {
-        graphics.lineStyle(0, opts.Color);
+        //graphics.lineStyle(0, opts.Color);
+        //graphics.lineStyle(0, outlineColor);
+        graphics.lineStyle(0, outlineColor, outlineAlpha);
         var start:Vector2 = shape[0];
         if (opts.IsSolid){
             graphics.beginFill(opts.Color, 1.0);

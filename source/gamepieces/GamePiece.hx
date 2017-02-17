@@ -198,7 +198,12 @@ class GamePiece
 
         for (i in 0...blocks.length)
         {
-            omega += blocks[i].DerivedOmega;
+            var derivedOmega:Float = blocks[i].DerivedOmega;
+            if (derivedOmega == null){
+                //clear up a Neko bug
+                continue;
+            }
+            omega += derivedOmega;
         }
 
         omega = omega / blocks.length;

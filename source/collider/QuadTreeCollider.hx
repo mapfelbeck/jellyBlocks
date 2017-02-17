@@ -187,8 +187,14 @@ class QuadTreeCollider implements ColliderBase
         var b2:Body = colliderObject2.body;
         
         var aCollide:Array<BodyCollisionInfo> = Body.BodyCollide(b1, b2, penetrationThreshold);
+        /*while(aCollide.length >0){
+            collisions.unshift(aCollide.shift());
+        }*/
         collisions = collisions.concat(aCollide);
         var bCollide:Array<BodyCollisionInfo> = Body.BodyCollide(b2, b1, penetrationThreshold);
+        /*while(bCollide.length >0){
+            collisions.unshift(bCollide.shift());
+        }*/
         collisions = collisions.concat(bCollide);
         //trace("object " + c1.body.Label + "("+c1.body.DerivedPos.x+","+c1.body.DerivedPos.y+") collided with object " + c2.body.Label+"("+c2.body.DerivedPos.x+","+c2.body.DerivedPos.y+")");
     }

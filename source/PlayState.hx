@@ -464,6 +464,12 @@ class PlayState extends FlxUIState
         var colInc:Float = 3;
         var colOffset:Float = 0.5;
         
+        var stressPhysics:Bool = false;
+        if (stressPhysics){
+            rowCount = 6;
+            rowStart = -9;
+        }
+        
         for (j in 0...rowCount){
             //trace("j: " + j + ", j%2: " + (j % 2));
             var colBase:Float = colStart;
