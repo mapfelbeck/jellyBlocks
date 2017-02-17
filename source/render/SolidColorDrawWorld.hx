@@ -148,22 +148,13 @@ class SolidColorDrawWorld extends BaseDrawWorld
         //graphics.lineStyle(0, outlineColor);
         graphics.lineStyle(0, outlineColor, outlineAlpha);
         var start:Vector2 = shape[0];
-        if (opts.IsSolid){
-            graphics.beginFill(opts.Color, 1.0);
-        }
+        graphics.beginFill(opts.Color, 1.0);
         graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
-        for (i in 0...shape.length){
-            var next:Vector2;
-            if (i == shape.length-1){
-                next = shape[0];
-            }else{
-                next = shape[i+1];
-            }
+        for (i in 1...shape.length){
+            var next:Vector2 = shape[i];
             graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
         }
-        if (opts.IsSolid){
-            graphics.endFill();
-        }
+        graphics.endFill();
     }
     
     public override function setupDrawParam():Void
