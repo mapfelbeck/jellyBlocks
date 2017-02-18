@@ -21,6 +21,8 @@ import render.*;
 
 class PlayState extends FlxUIState
 {
+    private static var settings:GameSettings = new GameSettings();
+    
     var render:BaseDrawWorld;
     var debugDrawSurface:Sprite;
     var flxDrawSurface:FlxSprite;
@@ -122,9 +124,19 @@ class PlayState extends FlxUIState
         #end
         render.setGameGround(ground);
         
-        #if (html5 || mobile)
-        addButtons();
+        #if (html5)
+        var r:EReg = new EReg("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini", "i");
+        if (r.match(js.Browser.navigator.userAgent)){
+            settings.showTouchControls = true;
+            addButtons();
+        }
+        #elseif  (mobile)
+        settings.showTouchControls = true;
         #end
+        
+        if (settings.showTouchControls){
+            addButtons();
+        }
 	}
     
     function setupTexturedRender() : BaseDrawWorld

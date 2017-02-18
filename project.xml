@@ -21,7 +21,7 @@
     <haxedef name="windowHeight" value="${windowHeight}" />
     
 	<!--These window settings apply to all targets-->
-	<window width="${windowWidth}" height="${windowHeight}" fps="60" background="#FFF8E7" hardware="true" vsync="true"/>
+	<window width="${windowWidth}" height="${windowHeight}" fps="60" background="#FFF8E7" hardware="true" vsync="true" antialiasing="4"/>
     <!--<window fps="60" background="#FFF8E7" hardware="true" vsync="true"  width="450" height="600" />-->
     
     

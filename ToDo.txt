@@ -22,14 +22,12 @@ swf: [2.2.3]
 task: [1.0.7]
 
 ToDo:
+    Resolution independence
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
     Improve match-3 collision detection.
     Improve physics sim speed.
-    Replace debug rendering with textured render.
     Improve touch screen controls.
     Fix frozen blocks in mid air bug.
-    Pause Menu
+    Fill out pause Menu
     Sound FX
-    Background graphics
-    Block graphics
     
