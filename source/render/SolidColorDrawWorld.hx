@@ -100,6 +100,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
     public override function Draw():Void
     {
         graphics.clear();
+        graphics.lineStyle(0, outlineColor, outlineAlpha);
         
         for (i in 0...world.NumberBodies){
             var body:Body = world.GetBody(i);
@@ -146,15 +147,24 @@ class SolidColorDrawWorld extends BaseDrawWorld
     {
         //graphics.lineStyle(0, opts.Color);
         //graphics.lineStyle(0, outlineColor);
-        graphics.lineStyle(0, outlineColor, outlineAlpha);
         var start:Vector2 = shape[0];
         graphics.beginFill(opts.Color, 1.0);
-        graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
+        //graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
+        graphics.moveTo(localToWorldX(start.x) , localToWorldY(start.y) );
         for (i in 1...shape.length){
             var next:Vector2 = shape[i];
-            graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
+            //graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
+            graphics.lineTo(localToWorldX(next.x) , localToWorldY(next.y));
         }
         graphics.endFill();
+    }
+    
+    private function localToWorldX(x:Float):Float{
+        return Math.round((x * scale.x) + offset.x);
+    }
+    
+    private function localToWorldY(y:Float):Float{
+        return Math.round((y * scale.y) + offset.y);
     }
     
     public override function setupDrawParam():Void
