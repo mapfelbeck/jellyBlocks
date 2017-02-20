@@ -1,5 +1,6 @@
 package blocks;
 
+import events.*;
 import flixel.util.FlxColor;
 import jellyPhysics.Body;
 import jellyPhysics.ClosedShape;
@@ -135,7 +136,6 @@ class GameBlock extends PressureBody
             for (i in 0...CollisionList.length){
                 CollisionList[i].Popping = true;
             }
-            //EventManager.Trigger(this, "Inflate");
         }
 
         CollisionList = new Array<GameBlock>();
@@ -147,6 +147,7 @@ class GameBlock extends PressureBody
             if (collideTime > GameConstants.BlockCollideTime)
             {
                 DeleteThis = true;
+                EventManager.Trigger(this, Events.BLOCK_POP);
             }
         }
     }

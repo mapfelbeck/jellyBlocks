@@ -1,21 +1,15 @@
 package render;
-import jellyPhysics.*;
-import flash.geom.Rectangle;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.addons.ui.FlxUI9SliceSprite;
-import flixel.math.FlxPoint;
-import flixel.util.FlxSpriteUtil;
+import jellyPhysics.*;
 import jellyPhysics.World;
 import jellyPhysics.math.*;
+import openfl.Assets;
 import openfl.display.*;
 import openfl.events.*;
 import openfl.text.TextField;
-import render.DebugDrawBodyOption;
-import flixel.util.FlxColor;
-import haxe.ds.Vector;
-import openfl.Assets;
 import render.BaseDrawWorld;
+import render.DebugDrawBodyOption;
 import util.UtilClass;
 
 /**

@@ -6,6 +6,7 @@ import builders.GamePieceBuilder;
 import builders.ShapeBuilder;
 import constants.PhysicsDefaults;
 import enums.*;
+import events.*;
 import flash.events.*;
 import flixel.*;
 import flixel.addons.ui.FlxUIState;
@@ -128,7 +129,6 @@ class PlayState extends FlxUIState
         var r:EReg = new EReg("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini", "i");
         if (r.match(js.Browser.navigator.userAgent)){
             settings.showTouchControls = true;
-            addButtons();
         }
         #elseif  (mobile)
         settings.showTouchControls = true;
@@ -137,7 +137,13 @@ class PlayState extends FlxUIState
         if (settings.showTouchControls){
             addButtons();
         }
+        
+        EventManager.Register(OnPop, Events.BLOCK_POP);
 	}
+    
+    private function OnPop(sender:Dynamic, event:String, params:Dynamic){
+        trace("Block popped.");
+    }
     
     function setupTexturedRender() : BaseDrawWorld
     {
@@ -304,11 +310,14 @@ class PlayState extends FlxUIState
         return materialMatrix;
     }
     
+    private var changeTimer:Float = 0;
     private var timerTickingDown:Bool = true;
     private var spawnPieceFlag:Bool = false;
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
+        
+        changeTimer = Math.max(0, changeTimer - elapsed);
         
         if (gamePiece != null && gamePiece.HasEverCollided){
             timerTickingDown = true;

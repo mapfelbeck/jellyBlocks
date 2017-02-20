@@ -1,14 +1,13 @@
 package render;
+import flixel.FlxSprite;
+import flixel.FlxState;
+import flixel.util.FlxColor;
 import jellyPhysics.*;
 import jellyPhysics.World;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import openfl.events.*;
-import openfl.text.TextField;
 import render.DebugDrawBodyOption;
-import flixel.util.FlxColor;
-import flixel.FlxSprite;
-import flixel.FlxState;
 
 /**
  * ...

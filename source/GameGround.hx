@@ -1,12 +1,10 @@
 package;
 import builders.GameBlockBuilder;
 import builders.ShapeBuilder;
-import enums.ShapeType;
 import enums.BlockType;
+import enums.ShapeType;
 import jellyPhysics.Body;
-import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
-import jellyPhysics.math.VectorTools;
 
 /**
  * ...

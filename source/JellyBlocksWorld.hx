@@ -4,7 +4,6 @@ import collider.QuadTreeCollider;
 import flixel.math.FlxRandom;
 import gamepieces.GamePiece;
 import jellyPhysics.AABB;
-import jellyPhysics.ArrayCollider;
 import jellyPhysics.Body;
 import jellyPhysics.ColliderBase;
 import jellyPhysics.MaterialMatrix;
