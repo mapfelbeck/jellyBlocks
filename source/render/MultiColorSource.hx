@@ -7,12 +7,13 @@ import flixel.util.FlxColor;
  * @author Michael Apfelbeck
  */
 class MultiColorSource implements IColorSource
-{	/**
+{
+	/**
 	 * The saturation of the color (from 0 to 1)
 	 */
 	public var Saturation(get, set):Float;
-	function get_Saturation():Float {return saturation;}	
-	function set_Saturation(val:Float):Float 
+	public function get_Saturation():Float {return saturation;}	
+	public function set_Saturation(val:Float):Float 
 	{
 		this.saturation = val;
 		colors = makeColors();
@@ -22,8 +23,8 @@ class MultiColorSource implements IColorSource
 	 * The value of the color (from 0 to 1)
 	 */
 	public var Value(get, set):Float;
-	function get_Value():Float{return value;}	
-	function set_Value(val:Float):Float 
+	public function get_Value():Float{return value;}	
+	public function set_Value(val:Float):Float 
 	{
 		this.value = val;
 		colors = makeColors();
@@ -33,8 +34,8 @@ class MultiColorSource implements IColorSource
 	 * Offset for generating colors (from 0 to 1)
 	 */
 	public var ColorAdjust(get, set):Float;	
-	function get_ColorAdjust():Float {return this.colorAdjust;}
-	function set_ColorAdjust(val:Float):Float 
+	public function get_ColorAdjust():Float {return this.colorAdjust;}
+	public function set_ColorAdjust(val:Float):Float 
 	{
 		this.colorAdjust = val;
 		colors = makeColors();
@@ -55,7 +56,6 @@ class MultiColorSource implements IColorSource
     
     public function getColor(index:Int):FlxColor 
     {
-        //return FlxColor.GREEN;
         return colors[index % colors.length];
     }
 	

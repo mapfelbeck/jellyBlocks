@@ -27,7 +27,6 @@ class TexturedDrawWorld extends BaseDrawWorld
     public var drawPhysicsBodyDefault:DebugDrawBodyOption;
     public var backgroundSize:Vector2;
     
-	private var colorSource:MultiColorSource;
     private var renderTarget:Sprite;
     private var graphics:Graphics;
     private var world:World;
@@ -52,9 +51,9 @@ class TexturedDrawWorld extends BaseDrawWorld
 	var indices:Array<Int> = null;
 	var uvtData:Array<Float> = null;
 
-    public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
+    public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
-        super();
+        super(colorSource);
         drawLookup = new Map<Int,render.DebugDrawBodyOption>();
         drawPhysicsBodyDefault = new render.DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
     
@@ -191,9 +190,6 @@ class TexturedDrawWorld extends BaseDrawWorld
         graphics.endFill();
     }
 	
-	//var vertices:Vector<Float> = null;
-	//var indices:Vector<Int> = null;
-	//var uvtData:Vector<Float> = null;
     private static var vertexesPerBlock:Int = 4;
     private static var elementsPerEntry:Int = 2;
     private static var indexesPerTriangle:Int = 3;
@@ -323,26 +319,12 @@ class TexturedDrawWorld extends BaseDrawWorld
             graphics.endFill();
         }
     }
-	
-	public override function rotateColorUp(){
-		colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.05) % 1.0;
-		setupDrawParam();
-
-	}
-    
-    public override function rotateColorDown() 
-    {
-		colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.95) % 1.0;
-        setupDrawParam();
-    }
     
     public override function setupDrawParam():Void
     {
         super.setupDrawParam();
         this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
-        var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
-        for (i in 0...colors.length+1){
-            //this.SetMaterialDrawOptions(i, colors[i-1], true);
+        for (i in 0...GameConstants.UniqueColors+1){
             this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);
         }
         buildTileTexture();

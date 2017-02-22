@@ -7,7 +7,6 @@ import jellyPhysics.World;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import openfl.events.*;
-import render.DebugDrawBodyOption;
 
 /**
  * ...
@@ -16,8 +15,6 @@ import render.DebugDrawBodyOption;
 class SolidColorDrawWorld extends BaseDrawWorld 
 {
     private static var groundAssetPath:String =  "assets/images/gameArena.png";
-    public var drawLookup:Map<Int,DebugDrawBodyOption>;
-    public var drawBodyDefault:DebugDrawBodyOption;
     public var backgroundSize:Vector2;
     
     private var parentState:FlxState;
@@ -37,11 +34,9 @@ class SolidColorDrawWorld extends BaseDrawWorld
     private var outlineColor:FlxColor = FlxColor.BLACK;
     private var outlineAlpha:Float = 0.25;
     
-    public function new(sprite:Sprite, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
+    public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
-        super();
-        drawLookup = new Map<Int,DebugDrawBodyOption>();
-        drawBodyDefault = new DebugDrawBodyOption(0, FlxColor.WHITE, true);
+        super(colorSource);
         
         this.parentState = parentState;
         renderTarget = sprite;
@@ -110,17 +105,6 @@ class SolidColorDrawWorld extends BaseDrawWorld
             drawPhysicsBody(body);
         }
     }
-    
-    public function SetMaterialDrawOptions(material:Int, color:Int, isSolid:Bool) 
-    {
-        if (drawLookup.exists(material)){
-            drawLookup[material].Color = color;
-            drawLookup[material].IsSolid = isSolid;
-        }else{
-            var newOption:DebugDrawBodyOption = new DebugDrawBodyOption(material, color, isSolid);
-            drawLookup.set(material, newOption);
-        }
-    }
         
     function drawPhysicsBody(body:Body) 
     {
@@ -129,25 +113,20 @@ class SolidColorDrawWorld extends BaseDrawWorld
             shape.push(body.PointMasses[i].Position);
         }
         
-        drawBody(shape, getDrawOptions(body));
-    }
-    
-    private function getDrawOptions(body:Body):DebugDrawBodyOption{
-        var drawOpts:DebugDrawBodyOption = null;
-        if (drawLookup.exists(body.Material)){
-            drawOpts = drawLookup.get(body.Material);
-        }else{
-            drawOpts = drawBodyDefault;
+        var color:FlxColor = FlxColor.WHITE;
+        if (body.Material != GameConstants.MATERIAL_GROUND){
+            color = colorSource.getColor(body.Material);
         }
-        return drawOpts;
+        
+        drawBody(shape, color);
     }
     
-    function drawBody(shape:Array<Vector2>, opts:DebugDrawBodyOption) 
+    function drawBody(shape:Array<Vector2>, color:FlxColor) 
     {
         //graphics.lineStyle(0, opts.Color);
         //graphics.lineStyle(0, outlineColor);
         var start:Vector2 = shape[0];
-        graphics.beginFill(opts.Color, 1.0);
+        graphics.beginFill(color, 1.0);
         //graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
         graphics.moveTo(localToWorldX(start.x) , localToWorldY(start.y) );
         for (i in 1...shape.length){
@@ -164,15 +143,5 @@ class SolidColorDrawWorld extends BaseDrawWorld
     
     private function localToWorldY(y:Float):Float{
         return Math.round((y * scale.y) + offset.y);
-    }
-    
-    public override function setupDrawParam():Void
-    {
-        super.setupDrawParam();
-        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
-        var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
-        for (i in 0...colors.length){
-            this.SetMaterialDrawOptions(i, colors[i], true);
-        }
     }
 }

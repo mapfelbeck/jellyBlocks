@@ -51,9 +51,9 @@ class DebugDrawWorld extends BaseDrawWorld
     public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;
     
-    public function new(sprite:Sprite, physicsWorld:World, width:Int, height:Int, overscan:Int) 
+    public function new(sprite:Sprite, colorSource:IColorSource, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
-        super();
+        super(colorSource);
         drawLookup = new Map<Int,DebugDrawBodyOption>();
         drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
         drawPhysicsBodyDefault = new DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
@@ -62,7 +62,7 @@ class DebugDrawWorld extends BaseDrawWorld
         graphics = renderTarget.graphics;
         world = physicsWorld;
         
-        setupDrawParam();
+        //setupDrawParam();
         
         setRenderAndOffset(width, height, overscan);
         
@@ -288,9 +288,8 @@ class DebugDrawWorld extends BaseDrawWorld
         this.DrawingPointMasses = false;
         this.DrawingLabels = false;
         this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
-        var colors:Array<Int> = makeColors(.8, .9, GameConstants.UniqueColors);
-        for (i in 0...colors.length){
-            this.SetMaterialDrawOptions(i, colors[i-1], true);
+        for (i in 0...GameConstants.UniqueColors){
+            this.SetMaterialDrawOptions(i, colorSource.getColor(i-1), true);
         }
     }
 }

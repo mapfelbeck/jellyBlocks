@@ -18,6 +18,8 @@ import gamepieces.GamePiece;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
+import plugins.BlockPopEffectPlugin;
+import plugins.PluginBase;
 import render.*;
 
 class PlayState extends FlxUIState
@@ -36,6 +38,7 @@ class PlayState extends FlxUIState
     private var gamePiece:GamePiece;
     
     public var defaultMaterial:MaterialPair;
+	private var colorSource:IColorSource;
     
     private var leftButton:FlxButton;
     private var rightButton:FlxButton;
@@ -62,6 +65,8 @@ class PlayState extends FlxUIState
     //spawn pieces at at least this interval
     private var maxLifeTime:Float = 7.0;
     
+    private var plugins:List<PluginBase> = new List<PluginBase>();
+    
 	override public function create():Void
 	{
 		_xml_id = "play_state";
@@ -81,6 +86,8 @@ class PlayState extends FlxUIState
         //trace("Window width: " + WINDOW_WIDTH);
         //trace("Window height: " + WINDOW_HEIGHT);
 		super.create();
+        
+        colorSource = new MultiColorSource(GameConstants.UniqueColors);
         
         /*
         //wrong in HTML5 and Flash
@@ -118,11 +125,11 @@ class PlayState extends FlxUIState
         
         setupConfigForSpawingBlocks();
         
-        #if (html5)
+        //#if (html5)
         render = setupSolidColorRender();
-        #else
-        render = setupTexturedRender();
-        #end
+        //#else
+        //render = setupTexturedRender();
+        //#end
         render.setGameGround(ground);
         
         #if (html5)
@@ -138,28 +145,31 @@ class PlayState extends FlxUIState
             addButtons();
         }
         
-        EventManager.Register(OnPop, Events.BLOCK_POP);
+        loadPlugins();
 	}
     
-    private function OnPop(sender:Dynamic, event:String, params:Dynamic){
-        trace("Block popped.");
+    private function loadPlugins():Void
+    {
+        var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
+        add(blockPopPlugin);
+        plugins.add(blockPopPlugin);
     }
     
     function setupTexturedRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new TexturedDrawWorld(createDrawSurface(), this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        var render:BaseDrawWorld = new TexturedDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         return render;
     }
     
     function setupSolidColorRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new SolidColorDrawWorld(createDrawSurface(), this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        var render:BaseDrawWorld = new SolidColorDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         return render;
     }
     
     function setupDebugRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        var render:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), colorSource, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         return render;
     }
 
@@ -378,11 +388,11 @@ class PlayState extends FlxUIState
     }
     
     private function adjustColorUp():Void{
-        render.rotateColorUp();
+        colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.05) % 1.0;
     }
     
     private function adjustColorDown():Void{
-        render.rotateColorDown();
+        colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.95) % 1.0;
     }
     
     private function spawnPiece():Void{
