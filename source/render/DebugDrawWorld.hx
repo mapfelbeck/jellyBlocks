@@ -13,7 +13,7 @@ import render.DebugDrawBodyOption;
  */
 class DebugDrawWorld extends BaseDrawWorld
 {
-    public var drawLookup:Map<Int,DebugDrawBodyOption>;
+    public var drawLookup:Map<Int,DebugDrawBodyOption> = new Map<Int,DebugDrawBodyOption>();
     public var drawGlobalBodyDefault:DebugDrawBodyOption;
     public var drawPhysicsBodyDefault:DebugDrawBodyOption;
     public var backgroundSize:Vector2;
@@ -54,7 +54,6 @@ class DebugDrawWorld extends BaseDrawWorld
     public function new(sprite:Sprite, colorSource:IColorSource, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
         super(colorSource);
-        drawLookup = new Map<Int,DebugDrawBodyOption>();
         drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
         drawPhysicsBodyDefault = new DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
     
@@ -289,7 +288,7 @@ class DebugDrawWorld extends BaseDrawWorld
         this.DrawingLabels = false;
         this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
         for (i in 0...GameConstants.UniqueColors){
-            this.SetMaterialDrawOptions(i, colorSource.getColor(i-1), true);
+            this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);
         }
     }
 }

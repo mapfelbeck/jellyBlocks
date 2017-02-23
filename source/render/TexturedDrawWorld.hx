@@ -11,6 +11,7 @@ import openfl.text.TextField;
 import render.BaseDrawWorld;
 import render.DebugDrawBodyOption;
 import util.UtilClass;
+import events.*;
 
 /**
  * ...
@@ -23,8 +24,6 @@ class TexturedDrawWorld extends BaseDrawWorld
     private static var frostedAssetPath:String = "assets/images/frosted greyscale.png";
     
     private var parentState:FlxState;
-    public var drawLookup:Map<Int,DebugDrawBodyOption>;
-    public var drawPhysicsBodyDefault:DebugDrawBodyOption;
     public var backgroundSize:Vector2;
     
     private var renderTarget:Sprite;
@@ -54,8 +53,6 @@ class TexturedDrawWorld extends BaseDrawWorld
     public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
         super(colorSource);
-        drawLookup = new Map<Int,render.DebugDrawBodyOption>();
-        drawPhysicsBodyDefault = new render.DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
     
         this.parentState = parentState;
         renderTarget = sprite;
@@ -67,6 +64,13 @@ class TexturedDrawWorld extends BaseDrawWorld
         setupDrawParam();
         
         setRenderAndOffset(width, height, overscan);
+        
+        EventManager.Register(onColorRotate, Events.COLOR_ROTATE);
+    }
+    
+    function onColorRotate(sender:Dynamic, event:String, params:Dynamic) 
+    {
+        buildTileTexture();
     }
     
     private function buildTileTexture():Void{
@@ -167,7 +171,7 @@ class TexturedDrawWorld extends BaseDrawWorld
             if (body.IsStatic){
                 continue;
             }
-            //drawPhysicsBody(body);
+            
             var vertexIndex:Int = bodyIndex * vertexesPerBlock * elementsPerEntry;
             
             vertices[vertexIndex + 0] = body.PointMasses[0].Position.x * scale.x + offset.x;
@@ -259,74 +263,10 @@ class TexturedDrawWorld extends BaseDrawWorld
         return (1.0/3.0) * yIndex;
 	}
     
-    public function SetMaterialDrawOptions(material:Int, color:Int, isSolid:Bool) 
-    {
-        if (drawLookup.exists(material)){
-            drawLookup[material].Color = color;
-            drawLookup[material].IsSolid = isSolid;
-        }else{
-            var newOption:render.DebugDrawBodyOption = new render.DebugDrawBodyOption(material, color, isSolid);
-            drawLookup.set(material, newOption);
-        }
-    }
-    
-    public function SetDefaultBodyDrawOptions(color:Int, isSolid:Bool) 
-    {
-        drawPhysicsBodyDefault.Color = color;
-        drawPhysicsBodyDefault.IsSolid = isSolid;
-    }
-	
-    function drawPhysicsBody(body:Body) 
-    {
-        var shape:Array<Vector2> = new Array<Vector2>();
-        for (i in 0...body.PointMasses.length){
-            shape.push(body.PointMasses[i].Position);
-        }
-        
-        drawBody(shape, getDrawOptions(body));
-    }
-    
-    private function getDrawOptions(body:Body):render.DebugDrawBodyOption{
-        var drawOpts:render.DebugDrawBodyOption;
-        if (drawLookup.exists(body.Material)){
-            drawOpts = drawLookup.get(body.Material);
-        }else{
-            drawOpts = drawPhysicsBodyDefault;
-        }
-        return drawOpts;
-    }
-    
-    function drawBody(shape:Array<Vector2>, opts:render.DebugDrawBodyOption) 
-    {
-        graphics.lineStyle(0, opts.Color);
-        var start:Vector2 = shape[0];
-        if (opts.IsSolid){
-            graphics.beginFill(opts.Color, 1.0);
-        }
-        //trace("line starts: " +((start.x * scale.x) + offset.x)+", " + ((start.y * scale.y) + offset.y));
-        graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
-        for (i in 0...shape.length){
-            var next:Vector2;
-            if (i == shape.length-1){
-                next = shape[0];
-            }else{
-                next = shape[i+1];
-            }
-            //trace("line goes: " +((next.x * scale.x) + offset.x)+", " + ((next.y * scale.y) + offset.y));
-            graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
-        }
-        if (opts.IsSolid){
-            graphics.endFill();
-        }
-    }
-    
     public override function setupDrawParam():Void
     {
         super.setupDrawParam();
-        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
-        for (i in 0...GameConstants.UniqueColors+1){
-            this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);
-        }
+        
         buildTileTexture();
     }
 }

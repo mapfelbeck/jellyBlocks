@@ -22,6 +22,8 @@ swf: [2.2.3]
 task: [1.0.7]
 
 ToDo:
+    Move color rotation into it's own plugin
+    Remove hard coded values from particle effect plugin
     Resolution independence
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
     Improve match-3 collision detection.

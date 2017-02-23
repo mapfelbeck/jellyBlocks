@@ -125,11 +125,11 @@ class PlayState extends FlxUIState
         
         setupConfigForSpawingBlocks();
         
-        //#if (html5)
+        #if (html5)
         render = setupSolidColorRender();
-        //#else
-        //render = setupTexturedRender();
-        //#end
+        #else
+        render = setupTexturedRender();
+        #end
         render.setGameGround(ground);
         
         #if (html5)
@@ -389,10 +389,12 @@ class PlayState extends FlxUIState
     
     private function adjustColorUp():Void{
         colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.05) % 1.0;
+        EventManager.Trigger(this, Events.COLOR_ROTATE);
     }
     
     private function adjustColorDown():Void{
         colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.95) % 1.0;
+        EventManager.Trigger(this, Events.COLOR_ROTATE);
     }
     
     private function spawnPiece():Void{
