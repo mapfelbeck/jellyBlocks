@@ -78,7 +78,7 @@ class BlockPopEffectPlugin extends PluginBase
     }
     
     private function OnPop(sender:Dynamic, event:String, params:Dynamic){
-        trace("Block pop effect: Block popped.");
+        //trace("Block pop effect: Block popped.");
         
         var block:GameBlock = Std.instance(sender, GameBlock);
         if (block != null){

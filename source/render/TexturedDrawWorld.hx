@@ -58,8 +58,6 @@ class TexturedDrawWorld extends BaseDrawWorld
         renderTarget = sprite;
         graphics = renderTarget.graphics;
         world = physicsWorld;
-		
-		colorSource = new MultiColorSource(GameConstants.UniqueColors);
         
         setupDrawParam();
         
@@ -160,7 +158,7 @@ class TexturedDrawWorld extends BaseDrawWorld
         if (activeBodyCount != world.NumberBodies - ground.BodyCount)
         {
             activeBodyCount = world.NumberBodies - ground.BodyCount;
-            trace("New active body count: " + activeBodyCount);
+            //trace("New active body count: " + activeBodyCount);
             allocateDrawVectors();
         }
         graphics.clear();

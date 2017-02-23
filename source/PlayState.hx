@@ -19,6 +19,7 @@ import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import plugins.BlockPopEffectPlugin;
+import plugins.ColorRotatePlugin;
 import plugins.PluginBase;
 import render.*;
 
@@ -153,6 +154,10 @@ class PlayState extends FlxUIState
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
         add(blockPopPlugin);
         plugins.add(blockPopPlugin);
+        
+        var colorRotatePlugin = new ColorRotatePlugin(this, colorSource);
+        add(colorRotatePlugin);
+        plugins.add(colorRotatePlugin);
     }
     
     function setupTexturedRender() : BaseDrawWorld
