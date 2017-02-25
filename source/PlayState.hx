@@ -10,6 +10,7 @@ import events.*;
 import flash.events.*;
 import flixel.*;
 import flixel.addons.ui.FlxUIState;
+import flixel.addons.ui.FlxUIBar;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
@@ -148,6 +149,8 @@ class PlayState extends FlxUIState
         }
         
         loadPlugins();
+        
+        EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
 	}
     
     private function loadPlugins():Void
@@ -391,6 +394,10 @@ class PlayState extends FlxUIState
     
     private function rotatePieceCW():Void{
         pieceCW = true;
+    }
+    
+    private function OnColorRotated(sender:Dynamic, event:String, params:Dynamic){
+        unfreeze();
     }
     
     private function adjustColorUp():Void{
