@@ -1,6 +1,7 @@
 package plugins;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
+import util.Capabilities;
 
 /**
  * ...
@@ -8,7 +9,8 @@ import flixel.util.FlxColor;
  */
 class PopEffect 
 {
-    public static var DEFAULT_PARTICLE_COUNT:Int = 10;
+    public static var DEFAULT_PARTICLE_COUNT:Int = 15;
+    public static var MOBILE_PARTICLE_COUNT:Int = 9;
     public var position:FlxPoint;
     public var color:FlxColor;
     public var count:Int;
@@ -19,7 +21,11 @@ class PopEffect
         if (count != null){
             this.count = count;
         }else{
-            this.count = DEFAULT_PARTICLE_COUNT;
+            if (Capabilities.IsMobileBrowser()){
+                this.count = MOBILE_PARTICLE_COUNT;
+            }else{
+                this.count = DEFAULT_PARTICLE_COUNT;
+            }
         }
         
     }

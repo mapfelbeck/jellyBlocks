@@ -17,7 +17,7 @@ class ColorRotatePlugin extends PluginBase
     //amount per block pop
     private static var popAccumulate:Float = 1.0 / 3.0;
     //amount per second
-    private static var popSublimate:Float = 1.0 / 3.0;
+    private static var popSublimate:Float = 1.0 / 4.0;
     
     private var colorSource:IColorSource;
     
@@ -34,7 +34,7 @@ class ColorRotatePlugin extends PluginBase
         accumulated = Math.max(accumulated-(popSublimate * elapsed), 0.0);
         
         if (accumulated > accumulateThreshold){
-            colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.10) % 1.0;
+            colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.05) % 1.0;
             EventManager.Trigger(this, Events.COLOR_ROTATE);
             accumulated = 0;
         }

@@ -16,7 +16,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import jellyPhysics.math.Vector2;
 import render.IColorSource;
-
+import util.Capabilities;
 /**
  * ...
  * @author Michael Apfelbeck
@@ -43,8 +43,12 @@ class BlockPopEffectPlugin extends PluginBase
 		parent.add(emitter);
         emitter.color.set(colorSource.getColor(emitterColor));
         emitter.launchMode = FlxEmitterMode.CIRCLE;
-        emitter.speed.set(30, 70);
-        emitter.alpha.set(1, 1, 0, 0);
+        emitter.speed.set(50, 100);
+        if(Capabilities.IsMobileBrowser()){
+            emitter.alpha.set(1, 1, 1, 1);
+        }else{
+            emitter.alpha.set(1, 1, 0, 0);
+        }
     }
     
     override function createEventSet():Void 

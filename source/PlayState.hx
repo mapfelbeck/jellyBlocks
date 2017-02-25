@@ -22,6 +22,7 @@ import plugins.BlockPopEffectPlugin;
 import plugins.ColorRotatePlugin;
 import plugins.PluginBase;
 import render.*;
+import util.Capabilities;
 
 class PlayState extends FlxUIState
 {
@@ -135,7 +136,7 @@ class PlayState extends FlxUIState
         
         #if (html5)
         var r:EReg = new EReg("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini", "i");
-        if (r.match(js.Browser.navigator.userAgent)){
+        if (Capabilities.IsMobileBrowser()){
             settings.showTouchControls = true;
         }
         #elseif  (mobile)
