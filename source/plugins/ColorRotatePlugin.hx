@@ -4,6 +4,7 @@ import events.*;
 import flixel.addons.ui.FlxUIState;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import render.IColorSource;
+import flixel.math.FlxMath;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 
@@ -14,12 +15,16 @@ import flixel.util.FlxColor;
 class ColorRotatePlugin extends PluginBase 
 {
     private var accumulated:Float = 0.0;
+    private var timeSincePop:Float = 0.0;
     
-    private static var accumulateThreshold:Float = 3.0;
+    //how much to accumulate before colors stuff shift
+    private static var accumulateThreshold:Float = 6.0;
     //amount per block pop
-    private static var popAccumulate:Float = 1.0 / 3.0;
+    private static var popAccumulate:Float = 1.0;
     //amount per second
-    private static var popSublimate:Float = 1.0 / 6.0;
+    private static var popSublimateMin:Float = 1.0 / 5.0;
+    private static var popSublimateMax:Float = 1.0 / 1.0;
+    private static var sublimateTimeToMin:Float = 2.0;
     
     private var colorSource:IColorSource;
     
@@ -30,7 +35,7 @@ class ColorRotatePlugin extends PluginBase
         super(parent, X, Y, SimpleGraphic);
         this.colorSource = colorSource;
         
-        testBar = new FlxBar(10, 10, null, 100, 10, this, "accumulated", 0, accumulateThreshold, true);
+        testBar = new FlxBar(10, 10, null, 250, 15, this, "accumulated", 0, accumulateThreshold, true);
         testBar.createFilledBar(0xFF63460C, 0xFFE6AA2F, true, FlxColor.BLACK);
         parent.add(testBar);
     }
@@ -38,11 +43,12 @@ class ColorRotatePlugin extends PluginBase
     override public function update(elapsed:Float):Void 
     {
         super.update(elapsed);
+        timeSincePop += elapsed;
         
-        accumulated = Math.max(accumulated-(popSublimate * elapsed), 0.0);
+        accumulated = Math.max(accumulated-(sublimationRate() * elapsed), 0.0);
         
         if (accumulated > accumulateThreshold){
-            colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.05) % 1.0;
+            colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.10) % 1.0;
             EventManager.Trigger(this, Events.COLOR_ROTATE);
             accumulated -= accumulateThreshold;
         }
@@ -55,6 +61,14 @@ class ColorRotatePlugin extends PluginBase
     }
     
     private function OnPop(sender:Dynamic, event:String, params:Dynamic){
-        accumulated+= popAccumulate;
+        accumulated += popAccumulate;
+        timeSincePop = 0.0;
+    }
+    
+    private function sublimationRate():Float{
+        if (timeSincePop > sublimateTimeToMin){
+            return popSublimateMin;
+        }
+        return FlxMath.lerp(popSublimateMin, popSublimateMax, 1 - (timeSincePop / sublimateTimeToMin));
     }
 }
