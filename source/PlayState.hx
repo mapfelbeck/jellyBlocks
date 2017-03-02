@@ -73,7 +73,7 @@ class PlayState extends FlxUIState
 	override public function create():Void
 	{
 		_xml_id = "play_state";
-        persistentDraw = false;
+        persistentDraw = true;
         persistentUpdate = false;
         
         /*#if mobile
@@ -543,7 +543,11 @@ class PlayState extends FlxUIState
     {
         physicsWorld.addGamePiece(newGamePiece, controlled);
         
-        if(controlled){
+        if (controlled){
+            if(gamePiece != null){
+                gamePiece.IsControlled = false;
+            }
+            newGamePiece.IsControlled = true;
             gamePiece = newGamePiece;
         }
     }

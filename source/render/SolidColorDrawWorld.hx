@@ -1,4 +1,6 @@
 package render;
+import blocks.GameBlock;
+import blocks.FreezingGameBlock;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.util.FlxColor;
@@ -32,6 +34,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
     public var SizeOfVert:Float = 4;
     
     private var outlineColor:FlxColor = FlxColor.BLACK;
+    //higher = darker, [0...1]
     private var outlineAlpha:Float = 0.25;
     
     public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
@@ -97,36 +100,52 @@ class SolidColorDrawWorld extends BaseDrawWorld
         graphics.lineStyle(0, outlineColor, outlineAlpha);
         
         for (i in 0...world.NumberBodies){
-            var body:Body = world.GetBody(i);
-            if (body.IsStatic){
+            var block:GameBlock = Std.instance(world.GetBody(i), GameBlock);
+            
+            if (block.IsStatic){
                 continue;
             }
             
-            drawPhysicsBody(body);
+            drawBlock(block);
         }
     }
         
-    function drawPhysicsBody(body:Body) 
+    function drawBlock(block:GameBlock) 
     {
+        var freezingBlock:FreezingGameBlock = Std.instance(block, FreezingGameBlock);
+        if (freezingBlock.IsFrozen) {
+            graphics.lineStyle(0, outlineColor, outlineAlpha);
+        }else if (freezingBlock.Popping) {
+            graphics.lineStyle(2, colorSource.getColor(freezingBlock.Material), 1.0);
+        }else if (freezingBlock.IsControlled){
+            graphics.lineStyle(0, outlineColor, outlineAlpha + 0.5);
+        }else{
+            graphics.lineStyle(0, outlineColor, outlineAlpha);
+        }
         var shape:Array<Vector2> = new Array<Vector2>();
-        for (i in 0...body.PointMasses.length){
-            shape.push(body.PointMasses[i].Position);
+        for (i in 0...freezingBlock.PointMasses.length){
+            shape.push(freezingBlock.PointMasses[i].Position);
         }
         
         var color:FlxColor = FlxColor.WHITE;
-        if (body.Material != GameConstants.MATERIAL_GROUND){
-            color = colorSource.getColor(body.Material);
+        if (freezingBlock.Material != GameConstants.MATERIAL_GROUND){
+            color = colorSource.getColor(freezingBlock.Material);
         }
         
-        drawBody(shape, color);
+        var alpha:Float = 1.0;
+        if (freezingBlock.Popping){
+            alpha = 0.5;
+        }
+        
+        drawBody(shape, color, alpha);
     }
     
-    function drawBody(shape:Array<Vector2>, color:FlxColor) 
+    function drawBody(shape:Array<Vector2>, color:FlxColor, alpha:Float) 
     {
         //graphics.lineStyle(0, opts.Color);
         //graphics.lineStyle(0, outlineColor);
         var start:Vector2 = shape[0];
-        graphics.beginFill(color, 1.0);
+        graphics.beginFill(color, alpha);
         //graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
         graphics.moveTo(localToWorldX(start.x) , localToWorldY(start.y) );
         for (i in 1...shape.length){

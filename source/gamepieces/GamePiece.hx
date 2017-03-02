@@ -27,7 +27,21 @@ class GamePiece
         return hasEverCollided;
     }
     
-    private var isControlled:Bool;
+    public var IsControlled(get, set):Bool;
+    private var isControlled:Bool = false;
+    function get_IsControlled():Bool 
+    {
+        return isControlled;
+    }
+    
+    function set_IsControlled(value:Bool):Bool 
+    {
+        for (i in 0...blocks.length){
+            blocks[i].IsControlled = value;
+        }
+        return isControlled = value;
+    }
+    
     private var showColorPulse:Bool;
     private var pieceNumber:Int;
     private var collidedThisFrame:Bool;

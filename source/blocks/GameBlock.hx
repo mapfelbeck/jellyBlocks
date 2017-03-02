@@ -53,6 +53,17 @@ class GameBlock extends PressureBody
     public var rotateCenter:Vector2;
 
     private var lifeTime:Float;
+    
+    public var IsControlled(get, set):Bool;
+    private var isControlled:Bool = false;
+    function get_IsControlled():Bool 
+    {
+        return isControlled;
+    }
+    function set_IsControlled(value:Bool):Bool 
+    {
+        return isControlled = value;
+    }
 
     //delete if the block falls below this treshhold
     private var deleteRange:Float;
