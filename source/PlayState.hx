@@ -19,9 +19,7 @@ import gamepieces.GamePiece;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
-import plugins.BlockPopEffectPlugin;
-import plugins.ColorRotatePlugin;
-import plugins.PluginBase;
+import plugins.*;
 import render.*;
 import util.Capabilities;
 
@@ -59,8 +57,11 @@ class PlayState extends FlxUIState
     
     private var input:Input;
     
-    //timer starts spawning pieces 2 seconds after game loads.
-    private var firstSpawnTimer:Float = 3.0;
+    private var spawnTimer:Float = 0.0;
+    private var spawnTimerMax:Float = 10.0;
+    private var spawnTimerInc:Float = 0.0;
+    //timer starts spawning pieces 3 seconds after game loads.
+    private var timeTillFirstSpawn:Float = 3.0;
     //new piece spawned this many seconds after controlled piece hits something
     private var spawnAfterCollidionTime:Float = 2.5;
     //don't spaw pieces at less than this interval
@@ -162,6 +163,10 @@ class PlayState extends FlxUIState
         var colorRotatePlugin = new ColorRotatePlugin(this, colorSource);
         add(colorRotatePlugin);
         plugins.add(colorRotatePlugin);
+        
+        var spawnPlugin = new GamePieceSpawnPlugin(this);
+        add(spawnPlugin);
+        plugins.add(spawnPlugin);
     }
     
     function setupTexturedRender() : BaseDrawWorld
@@ -343,8 +348,8 @@ class PlayState extends FlxUIState
         }
         
         if(timerTickingDown){
-            firstSpawnTimer -= elapsed;
-            if (firstSpawnTimer <= 0 && (gamePiece == null || gamePiece.LifeTime >= minLifeTime)){
+            timeTillFirstSpawn -= elapsed;
+            if (timeTillFirstSpawn <= 0 && (gamePiece == null || gamePiece.LifeTime >= minLifeTime)){
                 spawnPieceFlag = true;
             }
         }
@@ -356,7 +361,7 @@ class PlayState extends FlxUIState
         if (spawnPieceFlag && null != pieceBuilder){
             spawnPieceFlag = false;
             timerTickingDown = false;
-            firstSpawnTimer = spawnAfterCollidionTime;
+            timeTillFirstSpawn = spawnAfterCollidionTime;
             addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)), true);
         }
         

@@ -2,11 +2,11 @@ package plugins;
 
 import events.*;
 import flixel.addons.ui.FlxUIState;
-import flixel.system.FlxAssets.FlxGraphicAsset;
-import render.IColorSource;
 import flixel.math.FlxMath;
+import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
+import render.IColorSource;
 
 /**
  * ...
