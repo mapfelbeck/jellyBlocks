@@ -4,13 +4,13 @@ import blocks.*;
 import builders.GameBlockBuilder;
 import builders.GamePieceBuilder;
 import builders.ShapeBuilder;
+import constants.GameConstants;
 import constants.PhysicsDefaults;
 import enums.*;
 import events.*;
 import flash.events.*;
 import flixel.*;
 import flixel.addons.ui.FlxUIState;
-import flixel.addons.ui.FlxUIBar;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
@@ -60,16 +60,16 @@ class PlayState extends FlxUIState
     private var input:Input;
     
     //timer starts spawning pieces 2 seconds after game loads.
-    private var firstSpawnTimer:Float = 2.0;
+    private var firstSpawnTimer:Float = 3.0;
     //new piece spawned this many seconds after controlled piece hits something
-    private var spawnAfterCollidionTime:Float = 1.0;
+    private var spawnAfterCollidionTime:Float = 2.5;
     //don't spaw pieces at less than this interval
     private var minLifeTime:Float = 3.0;
     //spawn pieces at at least this interval
     private var maxLifeTime:Float = 7.0;
     
     private var plugins:List<PluginBase> = new List<PluginBase>();
-    
+
 	override public function create():Void
 	{
 		_xml_id = "play_state";
@@ -90,7 +90,7 @@ class PlayState extends FlxUIState
         //trace("Window height: " + WINDOW_HEIGHT);
 		super.create();
         
-        colorSource = new MultiColorSource(GameConstants.UniqueColors);
+        colorSource = new MultiColorSource(constants.GameConstants.UniqueColors);
         
         /*
         //wrong in HTML5 and Flash
@@ -324,7 +324,7 @@ class PlayState extends FlxUIState
     
     public function getMaterialMatrix():MaterialMatrix 
     {
-        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, GameConstants.UniqueColors + 1);
+        var materialMatrix:MaterialMatrix = new MaterialMatrix(defaultMaterial, constants.GameConstants.UniqueColors + 1);
         
         return materialMatrix;
     }
@@ -484,7 +484,7 @@ class PlayState extends FlxUIState
         
         //new up the builders
         shapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
-        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure).setMaterial(GameConstants.MATERIAL_GROUND);
+        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure).setMaterial(constants.GameConstants.MATERIAL_GROUND);
         pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
 
         //create static bodies for the container
@@ -503,11 +503,13 @@ class PlayState extends FlxUIState
         var rowCount:Int = 2;
         var colCount:Int = 3;
         
-        var rowStart:Float = -2;
+        var rowStart:Float = 4;
         var rowInc:Float = 2;
         
-        var colStart:Float = -6;
-        var colInc:Float = 3;
+        var bottomRowOffset:Float = -1.5;
+        
+        var colStart:Float = -5.2;
+        var colInc:Float = 3.4;
         var colOffset:Float = 0.5;
         
         var stressPhysics:Bool = false;
@@ -528,6 +530,9 @@ class PlayState extends FlxUIState
             var rowLoc:Float = rowStart + (rowInc * initialConfig.scale) * j;
             for (k in 0...colCount){
                 var colLoc:Float = colBase+(colInc * initialConfig.scale) * k;
+                if (j % 2 == 1){
+                    colLoc += bottomRowOffset;
+                }
                 addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false);
             }
         }

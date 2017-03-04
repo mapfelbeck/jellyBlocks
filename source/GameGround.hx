@@ -108,7 +108,7 @@ class GameGround
     function makeBody(width:Float, height:Float, relPosition:Vector2):Body
     {
         var shapeBuilder: ShapeBuilder = builder.getShapeBuilder().type(ShapeType.Rectangle).width(width).height(height);
-        builder = builder.setPosition(relPosition).setType(BlockType.Normal).setMaterial(GameConstants.MATERIAL_GROUND);
+        builder = builder.setPosition(relPosition).setType(BlockType.Normal).setMaterial(constants.GameConstants.MATERIAL_GROUND);
         
         return builder.create();
     }    

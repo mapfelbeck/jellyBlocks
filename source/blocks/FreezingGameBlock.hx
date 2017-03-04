@@ -1,5 +1,6 @@
 package blocks;
 
+import constants.GameConstants;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.PointMass;
 import jellyPhysics.math.Vector2;
@@ -72,7 +73,7 @@ class FreezingGameBlock extends DeflatingGameBlock
         for (i in 0...PointMasses.length)
         {
             var mass:PointMass = PointMasses[i];
-            mass.Mass = GameConstants.MassPerPoint;
+            mass.Mass = constants.GameConstants.MassPerPoint;
             mass.Force = new Vector2(0, 0);
             mass.Velocity = new Vector2(0, 0);
         }

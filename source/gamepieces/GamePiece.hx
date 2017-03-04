@@ -1,5 +1,6 @@
 package gamepieces;
 import blocks.GameBlock;
+import constants.GameConstants;
 import jellyPhysics.Body;
 import jellyPhysics.ExternalSpring;
 import jellyPhysics.math.Vector2;
@@ -84,9 +85,9 @@ class GamePiece
     
     function SetControlForces(gravityScalar:Float) 
     {
-        pushForceX = -gravityScalar * GameConstants.PushForceXCoefficient;
-        pushForceY = -gravityScalar * GameConstants.PushForceYCoefficient;
-        torqueForce = -gravityScalar * GameConstants.TorqueForceCoefficient;
+        pushForceX = -gravityScalar * constants.GameConstants.PushForceXCoefficient;
+        pushForceY = -gravityScalar * constants.GameConstants.PushForceYCoefficient;
+        torqueForce = -gravityScalar * constants.GameConstants.TorqueForceCoefficient;
     }
     
     public function Update(elapsedTime:Float):Void

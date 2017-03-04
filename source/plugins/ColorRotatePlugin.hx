@@ -35,7 +35,7 @@ class ColorRotatePlugin extends PluginBase
         super(parent, X, Y, SimpleGraphic);
         this.colorSource = colorSource;
         
-        testBar = new FlxBar(10, 10, null, 250, 15, this, "accumulated", 0, accumulateThreshold, true);
+        testBar = new FlxBar(10, 30, null, 250, 15, this, "accumulated", 0, accumulateThreshold, true);
         testBar.createFilledBar(0xFF63460C, 0xFFE6AA2F, true, FlxColor.BLACK);
         parent.add(testBar);
     }

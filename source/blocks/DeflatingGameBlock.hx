@@ -1,5 +1,6 @@
 package blocks;
 
+import constants.GameConstants;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
 
@@ -26,7 +27,7 @@ class DeflatingGameBlock extends DampingGameBlock
         if (deflates && !popping && lifeTime > timeTillDamping && !IsAsleep)
         {
             GasAmount = Math.max(
-                GasAmount - elapsed * GameConstants.GasPressure * deflateRate, 0);
+                GasAmount - elapsed * constants.GameConstants.GasPressure * deflateRate, 0);
         }
     }
 }

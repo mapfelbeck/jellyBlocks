@@ -1,6 +1,7 @@
 package;
 
 import collider.QuadTreeCollider;
+import constants.GameConstants;
 import flixel.math.FlxRandom;
 import gamepieces.GamePiece;
 import jellyPhysics.AABB;
@@ -37,7 +38,7 @@ class JellyBlocksWorld extends World
     }
         
     private function GravityAccumulator(elapsed:Float){
-        var gravity:Vector2 = new Vector2(0, 0.5 * GameConstants.GravityConstant);
+        var gravity:Vector2 = new Vector2(0, 0.5 * constants.GameConstants.GravityConstant);
 
         for(i in 0...NumberBodies)
         {
@@ -84,10 +85,10 @@ class JellyBlocksWorld extends World
     {
         var colors:Array<Int> = null;
         if(controlled){
-            colors = randomPieceColors(newGamePiece.Blocks.length, GameConstants.UniqueColors, GameConstants.MaxSameColorPerPiece);
+            colors = randomPieceColors(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, constants.GameConstants.MaxSameColorPerPiece);
         }else{
             //colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
-            colors = randomPieceColors(newGamePiece.Blocks.length, GameConstants.UniqueColors, 1);
+            colors = randomPieceColors(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, 1);
         }
         for (i in 0...newGamePiece.Blocks.length){
             newGamePiece.Blocks[i].Material = colors[i];

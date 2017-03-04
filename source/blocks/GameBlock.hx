@@ -1,6 +1,7 @@
 package blocks;
 
 import events.*;
+import constants.GameConstants;
 import flixel.util.FlxColor;
 import jellyPhysics.Body;
 import jellyPhysics.ClosedShape;
@@ -154,8 +155,8 @@ class GameBlock extends PressureBody
         if (popping)
         {
             collideTime += elapsed;
-            GasAmount += elapsed * GameConstants.GasPressure;
-            if (collideTime > GameConstants.BlockCollideTime)
+            GasAmount += elapsed * constants.GameConstants.GasPressure;
+            if (collideTime > constants.GameConstants.BlockCollideTime)
             {
                 DeleteThis = true;
                 EventManager.Trigger(this, Events.BLOCK_POP);

@@ -1,5 +1,6 @@
 package render;
 import jellyPhysics.*;
+import constants.GameConstants;
 import jellyPhysics.World;
 import jellyPhysics.math.*;
 import openfl.display.*;
@@ -286,8 +287,8 @@ class DebugDrawWorld extends BaseDrawWorld
         this.DrawingGlobalBody = false;
         this.DrawingPointMasses = false;
         this.DrawingLabels = false;
-        this.SetMaterialDrawOptions(GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
-        for (i in 0...GameConstants.UniqueColors){
+        this.SetMaterialDrawOptions(constants.GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
+        for (i in 0...constants.GameConstants.UniqueColors){
             this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);
         }
     }

@@ -1,6 +1,7 @@
 package render;
 import blocks.GameBlock;
 import blocks.FreezingGameBlock;
+import constants.GameConstants;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.util.FlxColor;
@@ -35,7 +36,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
     
     private var outlineColor:FlxColor = FlxColor.BLACK;
     //higher = darker, [0...1]
-    private var outlineAlpha:Float = 0.25;
+    private var outlineAlpha:Float = 0.5;
     
     public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
     {
@@ -114,7 +115,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
     {
         var freezingBlock:FreezingGameBlock = Std.instance(block, FreezingGameBlock);
         if (freezingBlock.IsFrozen) {
-            graphics.lineStyle(0, outlineColor, outlineAlpha);
+            graphics.lineStyle(0, outlineColor, outlineAlpha - 0.25);
         }else if (freezingBlock.Popping) {
             graphics.lineStyle(2, colorSource.getColor(freezingBlock.Material), 1.0);
         }else if (freezingBlock.IsControlled){
@@ -128,7 +129,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
         }
         
         var color:FlxColor = FlxColor.WHITE;
-        if (freezingBlock.Material != GameConstants.MATERIAL_GROUND){
+        if (freezingBlock.Material != constants.GameConstants.MATERIAL_GROUND){
             color = colorSource.getColor(freezingBlock.Material);
         }
         
