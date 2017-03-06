@@ -1,12 +1,15 @@
 package plugins;
 
-import events.*;
+import builders.GamePieceBuilder;
 import enums.PressType;
+import events.*;
+import jellyPhysics.math.Vector2;
 import flixel.addons.ui.FlxUIState;
+import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
-import flixel.input.keyboard.FlxKey;
+import gamepieces.GamePiece;
 
 /**
  * ...
@@ -31,12 +34,20 @@ class GamePieceSpawnPlugin extends PluginBase
     
     private var input:Input;
     
-    public function new(parent:FlxUIState, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
+    private var world:JellyBlocksWorld;
+    private var builder:GamePieceBuilder;
+        
+    public var gamePiece:GamePiece = null;
+    
+    public function new(parent:FlxUIState, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
     {
         super(parent, X, Y, SimpleGraphic);
         
+        this.builder = builder;
+        this.world = world;
+        
         testBar = new FlxBar(10, 10, null, 250, 15, this, "spawnTimer", 0, spawnTimerMax, true);
-        testBar.createFilledBar(0xFF63460C, 0xFFE6AA2F, true, FlxColor.BLACK);
+        testBar.createFilledBar(0xFF73561C, 0xFFF69A1F, true, FlxColor.BLACK);
         parent.add(testBar);
         
         input = new Input();
@@ -53,6 +64,26 @@ class GamePieceSpawnPlugin extends PluginBase
         if (spawnTimer > spawnTimerMax){
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
+            addGamePiece(createGamePiece(builder, new Vector2(0, -10)), true);
+        }
+    }
+    
+    public function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
+    {
+        pieceBuilder = pieceBuilder.setLocation(location);
+        return pieceBuilder.create();
+    }
+    
+    public function addGamePiece(newGamePiece:GamePiece, controlled:Bool):Void
+    {
+        world.addGamePiece(newGamePiece, controlled);
+        
+        if (controlled){
+            if(gamePiece != null){
+                gamePiece.IsControlled = false;
+            }
+            newGamePiece.IsControlled = true;
+            gamePiece = newGamePiece;
         }
     }
     

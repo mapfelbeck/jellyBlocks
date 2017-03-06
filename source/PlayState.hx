@@ -36,8 +36,6 @@ class PlayState extends FlxUIState
 
     var physicsWorld:JellyBlocksWorld;
     
-    private var gamePiece:GamePiece;
-    
     public var defaultMaterial:MaterialPair;
 	private var colorSource:IColorSource;
     
@@ -70,6 +68,7 @@ class PlayState extends FlxUIState
     private var maxLifeTime:Float = 7.0;
     
     private var plugins:List<PluginBase> = new List<PluginBase>();
+    private var spawnPlugin:GamePieceSpawnPlugin;
 
 	override public function create():Void
 	{
@@ -164,7 +163,7 @@ class PlayState extends FlxUIState
         add(colorRotatePlugin);
         plugins.add(colorRotatePlugin);
         
-        var spawnPlugin = new GamePieceSpawnPlugin(this);
+        spawnPlugin = new GamePieceSpawnPlugin(this, physicsWorld, pieceBuilder);
         add(spawnPlugin);
         plugins.add(spawnPlugin);
     }
@@ -343,7 +342,7 @@ class PlayState extends FlxUIState
         
         changeTimer = Math.max(0, changeTimer - elapsed);
         
-        if (gamePiece != null && gamePiece.HasEverCollided){
+        /*if (gamePiece != null && gamePiece.HasEverCollided){
             timerTickingDown = true;
         }
         
@@ -363,7 +362,7 @@ class PlayState extends FlxUIState
             timerTickingDown = false;
             timeTillFirstSpawn = spawnAfterCollidionTime;
             addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)), true);
-        }
+        }*/
         
         input.Update(elapsed);
         
@@ -553,13 +552,13 @@ class PlayState extends FlxUIState
     {
         physicsWorld.addGamePiece(newGamePiece, controlled);
         
-        if (controlled){
+        /*if (controlled){
             if(gamePiece != null){
                 gamePiece.IsControlled = false;
             }
             newGamePiece.IsControlled = true;
             gamePiece = newGamePiece;
-        }
+        }*/
     }
     
     private function getBigSquareShape(size:Float):Array<Vector2>{
@@ -594,7 +593,7 @@ class PlayState extends FlxUIState
     }
     
     private function MoveAccumulator(elapsed:Float){
-        if (gamePiece == null){
+        if (spawnPlugin.gamePiece == null){
             return;
         }
         var rotationAmount:Float = 0;
@@ -615,8 +614,8 @@ class PlayState extends FlxUIState
         //If no player input then counteract the game pieces rotation
         //makes piece much easier to control. Length check is here so
         //the piece doesn't go wonky when one of the pieces pops.
-        if (rotationAmount == 0 && gamePiece.Blocks.length == 3){
-            rotationAmount = -clampValue(gamePiece.RotationSpeed, -1, 1);
+        if (rotationAmount == 0 && spawnPlugin.gamePiece.Blocks.length == 3){
+            rotationAmount = -clampValue(spawnPlugin.gamePiece.RotationSpeed, -1, 1);
         }
 
         if (pieceLeft || leftHeld){
@@ -632,10 +631,10 @@ class PlayState extends FlxUIState
             pushAmount.y += moveForce;
         }
         if (pushAmount.x != 0 || pushAmount.y !=0){
-            gamePiece.ApplyForce(pushAmount);
+            spawnPlugin.gamePiece.ApplyForce(pushAmount);
         }
-        if (rotationAmount != 0 && Math.abs(gamePiece.GamePieceOmega()) < 6.0){
-            gamePiece.ApplyTorque(rotationAmount);
+        if (rotationAmount != 0 && Math.abs(spawnPlugin.gamePiece.Omega()) < 6.0){
+            spawnPlugin.gamePiece.ApplyTorque(rotationAmount);
         }
     }
     

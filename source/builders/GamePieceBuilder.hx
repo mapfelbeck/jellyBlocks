@@ -24,6 +24,8 @@ class GamePieceBuilder
     var rotation:Float = 0;
     var scale:Float = 1.0;
     
+    var idCounter:Int = 0;
+    
     public function new(){
     }
     
@@ -130,7 +132,7 @@ class GamePieceBuilder
             }
         }
         
-        gamePiece = new GamePiece(blocks, springs, 9.8);
+        gamePiece = new GamePiece(blocks, springs, 9.8, idCounter++);
         
         if(rotation != 0){
             rotatePiece(gamePiece, rotation);

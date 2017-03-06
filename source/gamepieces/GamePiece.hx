@@ -43,15 +43,19 @@ class GamePiece
         return isControlled = value;
     }
     
-    private var showColorPulse:Bool;
-    private var pieceNumber:Int;
+    private var id:Int;
+    private var ID(get, null):Int;
+    function get_ID():Int 
+    {
+        return id;
+    }
+    
     private var collidedThisFrame:Bool;
     
     private var pushForceX:Float;
     private var pushForceY:Float;
     private var torqueForce:Float;
     
-    private var inFailLocation:Bool;
     private var lifeTime:Float = 0;
     public var LifeTime(get, null):Float; 
     public function get_LifeTime():Float {return lifeTime;}
@@ -65,9 +69,9 @@ class GamePiece
     public function get_RotationSpeed():Float{return rotationSpeed;}
     
     public function new(theBlocks:Array<GameBlock>, theSprings:Array<ExternalSpring>,
-            gravityScalar:Float) 
+            gravityScalar:Float, id:Int) 
     {
-        showColorPulse = true;
+        this.id = id;
         blocks = theBlocks;
         originalBlockCount = blocks.length;
         attachSprings = theSprings;
@@ -207,7 +211,7 @@ class GamePiece
         return rotation;
     }
     
-    public function GamePieceOmega():Float
+    public function Omega():Float
     {
         var omega:Float = 0;
 
