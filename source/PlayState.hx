@@ -454,7 +454,7 @@ class PlayState extends FlxUIState
         spawnConfig.deflateRate = .25;
         spawnConfig.timeTillDeflate = 5;
         
-        spawnConfig.timeTillFreeze = 2;
+        spawnConfig.timeTillFreeze = 5;
         spawnConfig.freezeWaitTimerLength = 0.5;
         spawnConfig.freezeDistortionThreshhold = 0.8;
         spawnConfig.freezeVelocityThreshhold = 0.08;
@@ -479,7 +479,7 @@ class PlayState extends FlxUIState
         initialConfig.deflateRate = .25;
         initialConfig.timeTillDeflate = 5;
         
-        initialConfig.timeTillFreeze = 2;
+        initialConfig.timeTillFreeze = 5;
         initialConfig.freezeWaitTimerLength = 0.5;
         initialConfig.freezeDistortionThreshhold = 0.8;
         initialConfig.freezeVelocityThreshhold = 0.08;

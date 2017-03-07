@@ -17,14 +17,12 @@ import gamepieces.GamePiece;
  */
 class GamePieceSpawnPlugin extends PluginBase 
 {
-
+    private var timeSinceSpawn:Float = 0;
     private var spawnTimer:Float = 0.0;
     private var spawnTimerMax:Float = 10.0;
     private var spawnTimerInc:Float = 0.0;
     //timer starts spawning pieces 3 seconds after game loads.
     private var timeTillFirstSpawn:Float = 3.0;
-    //new piece spawned this many seconds after controlled piece hits something
-    private var spawnAfterCollidionTime:Float = 2.5;
     //don't spaw pieces at less than this interval
     private var minLifeTime:Float = 3.0;
     //spawn pieces at at least this interval
@@ -59,12 +57,20 @@ class GamePieceSpawnPlugin extends PluginBase
     override public function update(elapsed:Float):Void 
     {
         super.update(elapsed);
+        input.Update(elapsed);
+        
+        timeSinceSpawn += elapsed;
+        
+        if (gamePiece!= null && gamePiece.HasEverCollided){
+            spawnTimerInc = spawnTimerMax / minLifeTime;
+        }
         
         spawnTimer += spawnTimerInc * elapsed;
         if (spawnTimer > spawnTimerMax){
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
             addGamePiece(createGamePiece(builder, new Vector2(0, -10)), true);
+            timeSinceSpawn = 0.0;
         }
     }
     
@@ -87,9 +93,10 @@ class GamePieceSpawnPlugin extends PluginBase
         }
     }
     
-    private var spawnPieceFlag:Bool = false;
     private function spawnPiece():Void{
-        spawnPieceFlag = true;
+        if (timeSinceSpawn > minLifeTime){
+            spawnTimer = spawnTimerMax;
+        }
     }
     
 }
