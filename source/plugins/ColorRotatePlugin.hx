@@ -1,11 +1,14 @@
 package plugins;
 
 import events.*;
+import flash.geom.Rectangle;
+import flixel.FlxSprite;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxMath;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
+import flixel.util.FlxSpriteUtil;
 import render.IColorSource;
 
 /**
@@ -30,13 +33,28 @@ class ColorRotatePlugin extends PluginBase
     
     private var testBar:FlxBar;
     
+    private static var emptyBarSpriteAssetPath:String =  "assets/images/ChargeBarH_empty.png";
+    private static var fullBarSpriteAssetPath:String =  "assets/images/ChargeBarH_full.png";
+    private static var alphaAssetPath:String =  "assets/images/ChargeBarH_alpha.png";
+    private var overlaySprite:FlxSprite;
+    private var alphaSprite:FlxSprite;
+    private var fullBarSprite:FlxSprite;
+    
     public function new(parent:FlxUIState, colorSource:IColorSource, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
         this.colorSource = colorSource;
         
-        testBar = new FlxBar(10, 30, null, 250, 15, this, "accumulated", 0, accumulateThreshold, true);
-        testBar.createFilledBar(0xFF63460C, 0xFFE6AA2F, true, FlxColor.BLACK);
+		alphaSprite = new FlxSprite(0, 0, alphaAssetPath);
+        
+		overlaySprite = new FlxSprite(10, 60, emptyBarSpriteAssetPath);
+        FlxSpriteUtil.alphaMaskFlxSprite(overlaySprite, alphaSprite, overlaySprite);
+        
+        fullBarSprite = new FlxSprite(0, 0, fullBarSpriteAssetPath);
+        FlxSpriteUtil.alphaMaskFlxSprite(fullBarSprite, alphaSprite, fullBarSprite);
+        
+        testBar = new FlxBar(10, 30, null, Std.int(overlaySprite.width), Std.int(overlaySprite.height), this, "accumulated", 0, accumulateThreshold, false);
+        testBar.createImageBar(overlaySprite.pixels, fullBarSprite.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(testBar);
     }
     
