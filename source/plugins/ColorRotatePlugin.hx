@@ -107,32 +107,50 @@ class ColorRotatePlugin extends PluginBase
     
     function makeColorWheelBase(sprite:FlxSprite) :FlxSprite
     {
+        //I had to do trig to figure this out :(
+        //correct for color count = 6
+        var magicRatio:Float = 0.21133;
+        var adjust:Float = colorWheelSize * magicRatio;
         sprite.makeGraphic(colorWheelSize, colorWheelSize, FlxColor.WHITE);
-        var colorIndexes:Array<Int> = UtilClass.randomInts(4, GameConstants.UniqueColors, 1);
         
-        //FlxSpriteUtil.drawRect(sprite, 0, 0, 20, 20, FlxColor.WHITE);
-        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[0]));
-        FlxSpriteUtil.flashGfx.moveTo(0, 0);
+        FlxSpriteUtil.beginDraw(colorSource.getColor(0));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, 0);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, 0);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, adjust);
         FlxSpriteUtil.endDraw(sprite);
         
-        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[1]));
-        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize, 0);
+        FlxSpriteUtil.beginDraw(colorSource.getColor(1));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, adjust);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize - adjust);
+        FlxSpriteUtil.endDraw(sprite);
+        
+        FlxSpriteUtil.beginDraw(colorSource.getColor(2));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize - adjust);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize);
         FlxSpriteUtil.endDraw(sprite);
         
-        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[2]));
-        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize, colorWheelSize);
+        FlxSpriteUtil.beginDraw(colorSource.getColor(3));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize);
         FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize - adjust);
         FlxSpriteUtil.endDraw(sprite);
         
-        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[3]));
-        FlxSpriteUtil.flashGfx.moveTo(0, colorWheelSize);
+        FlxSpriteUtil.beginDraw(colorSource.getColor(4));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize - adjust);
+        FlxSpriteUtil.flashGfx.lineTo(0, adjust);
+        FlxSpriteUtil.endDraw(sprite);
+        
+        FlxSpriteUtil.beginDraw(colorSource.getColor(5));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(0, adjust);
         FlxSpriteUtil.flashGfx.lineTo(0, 0);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, 0);
         FlxSpriteUtil.endDraw(sprite);
         
         return sprite;
