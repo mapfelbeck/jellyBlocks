@@ -8,6 +8,8 @@ import flixel.math.FlxRandom;
  */
 class UtilClass 
 {
+    public function new(){}
+    
     private static var random:FlxRandom = new FlxRandom();
     
     public static function arrayOfSize<T>(size:Int):Array<T>{

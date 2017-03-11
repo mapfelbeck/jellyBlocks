@@ -22,5 +22,4 @@ class Capabilities
         #end
         return isMobileBrowser;
     }
-    
 }

@@ -28,6 +28,7 @@ class Input
     
     public function Update(elapsed:Float) 
     {
+        #if (html5 || neko || flash)
         for (key in downKeys){
             if (FlxG.keys.anyJustPressed([key])){
                 for (action in actionDownMap.get(key)){
@@ -49,6 +50,7 @@ class Input
                 }
             }
         }
+        #end
     }
     
     public function AddInputCommand(key:FlxKey, action:Function, pressType:PressType) 
