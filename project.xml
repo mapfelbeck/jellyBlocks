@@ -35,6 +35,7 @@
 
 	<!--Mobile-specific-->
 	<window if="mobile" orientation="portrait" fullscreen="true" width="0" height="0" />
+    <window allow-shaders="true" require-shaders="true" if="cpp"/>
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 

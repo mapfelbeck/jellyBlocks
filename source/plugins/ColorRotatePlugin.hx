@@ -38,9 +38,11 @@ class ColorRotatePlugin extends PluginBase
     private static var emptyBarSpriteAssetPath:String =  "assets/images/ChargeBarH_empty.png";
     private static var fullBarSpriteAssetPath:String =  "assets/images/ChargeBarH_full.png";
     private static var alphaAssetPath:String =  "assets/images/ChargeBarH_alpha.png";
+    private static var backgroundAssetPath:String =  "assets/images/GUIElementBackground.png";
     private var overlay:FlxSprite;
     private var overlayAlpha:FlxSprite;
     private var fullBar:FlxSprite;
+    private var background:FlxSprite;
     
     private var colorWheelSize:Int = 30;
     private var colorWheel:FlxSprite;
@@ -63,9 +65,17 @@ class ColorRotatePlugin extends PluginBase
         testBar.createImageBar(overlay.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(testBar);
         
+        background = new FlxSprite(0, 0, backgroundAssetPath);
+        var backgroundScale:Float = 40 / background.width;
+        background.scale.set(backgroundScale, backgroundScale);
+        background.updateHitbox();
+        background.x = testBar.x + testBar.width;
+        background.y = testBar.y;
+        parent.add(background);
+        
         colorWheel = makeColorWheel(new FlxSprite());
-        colorWheel.x = testBar.x+testBar.width+5;
-        colorWheel.y = testBar.y;
+        colorWheel.x = background.x + 5;
+        colorWheel.y = background.y + 5;
         parent.add(colorWheel);
 
         colorWheelAlpha = makeColorWheelApha();

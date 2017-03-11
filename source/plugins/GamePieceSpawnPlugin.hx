@@ -69,7 +69,7 @@ class GamePieceSpawnPlugin extends PluginBase
         if (spawnTimer > spawnTimerMax){
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
-            addGamePiece(createGamePiece(builder, new Vector2(0, -10)), true);
+            addGamePiece(createGamePiece(builder, new Vector2(-1, -10)), true);
             timeSinceSpawn = 0.0;
         }
     }
