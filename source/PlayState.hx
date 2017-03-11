@@ -50,9 +50,7 @@ class PlayState extends FlxUIState
     private var pieceDown:Bool = false;
     private var pieceCCW:Bool = false;
     private var pieceCW:Bool = false;
-    
-    private var random:FlxRandom;
-    
+        
     private var input:Input;
     
     private var spawnTimer:Float = 0.0;
@@ -121,8 +119,6 @@ class PlayState extends FlxUIState
         defaultMaterial.Friction = 0.75;
         defaultMaterial.Elasticity = 0.8;
         
-        random = new FlxRandom();
-
         createWorld();
         addInitialBodiesToWorld();
         
@@ -341,29 +337,7 @@ class PlayState extends FlxUIState
         super.update(elapsed);
         
         changeTimer = Math.max(0, changeTimer - elapsed);
-        
-        /*if (gamePiece != null && gamePiece.HasEverCollided){
-            timerTickingDown = true;
-        }
-        
-        if(timerTickingDown){
-            timeTillFirstSpawn -= elapsed;
-            if (timeTillFirstSpawn <= 0 && (gamePiece == null || gamePiece.LifeTime >= minLifeTime)){
-                spawnPieceFlag = true;
-            }
-        }
-        
-        if (gamePiece != null && gamePiece.LifeTime >= maxLifeTime){
-            spawnPieceFlag = true;
-        }
-        
-        if (spawnPieceFlag && null != pieceBuilder){
-            spawnPieceFlag = false;
-            timerTickingDown = false;
-            timeTillFirstSpawn = spawnAfterCollidionTime;
-            addGamePiece(createGamePiece(pieceBuilder, new Vector2(0, -10)), true);
-        }*/
-        
+
         input.Update(elapsed);
         
         physicsWorld.Update(elapsed);
@@ -551,14 +525,6 @@ class PlayState extends FlxUIState
     function addGamePiece(newGamePiece:GamePiece, controlled:Bool) 
     {
         physicsWorld.addGamePiece(newGamePiece, controlled);
-        
-        /*if (controlled){
-            if(gamePiece != null){
-                gamePiece.IsControlled = false;
-            }
-            newGamePiece.IsControlled = true;
-            gamePiece = newGamePiece;
-        }*/
     }
     
     private function getBigSquareShape(size:Float):Array<Vector2>{

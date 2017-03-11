@@ -10,6 +10,8 @@ import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import render.IColorSource;
+import util.UtilClass;
+import constants.GameConstants;
 
 /**
  * ...
@@ -36,28 +38,97 @@ class ColorRotatePlugin extends PluginBase
     private static var emptyBarSpriteAssetPath:String =  "assets/images/ChargeBarH_empty.png";
     private static var fullBarSpriteAssetPath:String =  "assets/images/ChargeBarH_full.png";
     private static var alphaAssetPath:String =  "assets/images/ChargeBarH_alpha.png";
-    private var overlaySprite:FlxSprite;
-    private var alphaSprite:FlxSprite;
-    private var fullBarSprite:FlxSprite;
+    private var overlay:FlxSprite;
+    private var overlayAlpha:FlxSprite;
+    private var fullBar:FlxSprite;
+    
+    private var colorWheelSize:Int = 30;
+    private var colorWheel:FlxSprite;
+    private var colorWheelAlpha:FlxSprite;
     
     public function new(parent:FlxUIState, colorSource:IColorSource, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
         this.colorSource = colorSource;
         
-		alphaSprite = new FlxSprite(0, 0, alphaAssetPath);
+		overlayAlpha = new FlxSprite(0, 0, alphaAssetPath);
         
-		overlaySprite = new FlxSprite(10, 60, emptyBarSpriteAssetPath);
-        FlxSpriteUtil.alphaMaskFlxSprite(overlaySprite, alphaSprite, overlaySprite);
+		overlay = new FlxSprite(0, 0, emptyBarSpriteAssetPath);
+        FlxSpriteUtil.alphaMaskFlxSprite(overlay, overlayAlpha, overlay);
         
-        fullBarSprite = new FlxSprite(0, 0, fullBarSpriteAssetPath);
-        FlxSpriteUtil.alphaMaskFlxSprite(fullBarSprite, alphaSprite, fullBarSprite);
+        fullBar = new FlxSprite(0, 0, fullBarSpriteAssetPath);
+        FlxSpriteUtil.alphaMaskFlxSprite(fullBar, overlayAlpha, fullBar);
         
-        testBar = new FlxBar(10, 30, null, Std.int(overlaySprite.width), Std.int(overlaySprite.height), this, "accumulated", 0, accumulateThreshold, false);
-        testBar.createImageBar(overlaySprite.pixels, fullBarSprite.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
+        testBar = new FlxBar(50, 30, null, Std.int(overlay.width), Std.int(overlay.height), this, "accumulated", 0, accumulateThreshold, false);
+        testBar.createImageBar(overlay.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(testBar);
+        
+        colorWheel = makeColorWheel(new FlxSprite());
+        colorWheel.x = testBar.x+testBar.width+5;
+        colorWheel.y = testBar.y;
+        parent.add(colorWheel);
+
+        colorWheelAlpha = makeColorWheelApha();
     }
     
+    function makeColorWheel(sprite:FlxSprite):FlxSprite{
+        if (colorWheelAlpha == null){
+            colorWheelAlpha = makeColorWheelApha();
+        }
+        sprite = makeColorWheelBase(sprite);
+
+        FlxSpriteUtil.alphaMaskFlxSprite(sprite, colorWheelAlpha, sprite);
+        
+        return sprite;
+    }
+    
+    function makeColorWheelApha():FlxSprite{
+        var sprite:FlxSprite = new FlxSprite();
+        sprite.makeGraphic(colorWheelSize, colorWheelSize, FlxColor.BLACK);
+        
+        var spriteAlpha:FlxSprite = new FlxSprite();
+        spriteAlpha.makeGraphic(colorWheelSize, colorWheelSize, FlxColor.TRANSPARENT);
+        FlxSpriteUtil.drawCircle(spriteAlpha, -1, -1, colorWheelSize / 2, FlxColor.BLACK);
+        
+        FlxSpriteUtil.alphaMaskFlxSprite(sprite, spriteAlpha, sprite);
+        
+        return sprite;
+    }
+    
+    function makeColorWheelBase(sprite:FlxSprite) :FlxSprite
+    {
+        sprite.makeGraphic(colorWheelSize, colorWheelSize, FlxColor.WHITE);
+        var colorIndexes:Array<Int> = UtilClass.randomInts(4, GameConstants.UniqueColors, 1);
+        
+        //FlxSpriteUtil.drawRect(sprite, 0, 0, 20, 20, FlxColor.WHITE);
+        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[0]));
+        FlxSpriteUtil.flashGfx.moveTo(0, 0);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, 0);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.endDraw(sprite);
+        
+        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[1]));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize, 0);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.endDraw(sprite);
+        
+        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[2]));
+        FlxSpriteUtil.flashGfx.moveTo(colorWheelSize, colorWheelSize);
+        FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.endDraw(sprite);
+        
+        FlxSpriteUtil.beginDraw(colorSource.getColor(colorIndexes[3]));
+        FlxSpriteUtil.flashGfx.moveTo(0, colorWheelSize);
+        FlxSpriteUtil.flashGfx.lineTo(0, 0);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize/2);
+        FlxSpriteUtil.endDraw(sprite);
+        
+        return sprite;
+    }
+    
+    private var spinning:Bool = false;
     override public function update(elapsed:Float):Void 
     {
         super.update(elapsed);
@@ -69,6 +140,16 @@ class ColorRotatePlugin extends PluginBase
             colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.10) % 1.0;
             EventManager.Trigger(this, Events.COLOR_ROTATE);
             accumulated -= accumulateThreshold;
+            makeColorWheel(colorWheel);
+            spinning = true;
+        }
+        
+        if(spinning){
+            colorWheel.angle+= elapsed * 1500;
+            if (colorWheel.angle > 360){
+                spinning = false;
+                colorWheel.angle = 0;
+            }
         }
     }
     

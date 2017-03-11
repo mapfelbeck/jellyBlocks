@@ -11,6 +11,7 @@ import jellyPhysics.MaterialMatrix;
 import jellyPhysics.MaterialPair;
 import jellyPhysics.World;
 import jellyPhysics.math.Vector2;
+import util.UtilClass;
 
 /**
  * ...
@@ -85,10 +86,9 @@ class JellyBlocksWorld extends World
     {
         var colors:Array<Int> = null;
         if(controlled){
-            colors = randomPieceColors(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, constants.GameConstants.MaxSameColorPerPiece);
+            colors = UtilClass.randomInts(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, constants.GameConstants.MaxSameColorPerPiece);
         }else{
-            //colors = linearPieceColors(newGamePiece.Blocks.length, uniqueColors);
-            colors = randomPieceColors(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, 1);
+            colors = UtilClass.randomInts(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, 1);
         }
         for (i in 0...newGamePiece.Blocks.length){
             newGamePiece.Blocks[i].Material = colors[i];
@@ -98,27 +98,6 @@ class JellyBlocksWorld extends World
         
         gamePieces.push(newGamePiece);
         pieceCounter++;
-    }
-    
-    private static var primes:Array<Int> = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37];
-    function randomPieceColors(count:Int, howManyColors:Int, maxSameColor:Int) 
-    {
-        var blockColors:Array<Int> = new Array<Int>();
-        var blockId:Int = 1;
-        for (i in 0...count){
-            var color:Int = 1;
-            var potentialBlockId:Int = 1;
-            var checkNumber:Int = 1;
-            do{
-                color = random.int(0, howManyColors - 1);
-                potentialBlockId = blockId * primes[color];
-                checkNumber = Std.int(Math.pow(primes[color], maxSameColor + 1));
-            }while (potentialBlockId % checkNumber == 0);
-            
-            blockColors.push(color);
-            blockId = potentialBlockId;
-        }
-        return blockColors;
     }
     
     private static var colorCounter = 0;
