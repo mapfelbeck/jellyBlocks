@@ -44,6 +44,7 @@ class ColorRotatePlugin extends PluginBase
     private var fullBar:FlxSprite;
     private var background:FlxSprite;
     
+    private var colorWheelBackgroundSize:Int = 40;
     private var colorWheelSize:Int = 30;
     private var colorWheel:FlxSprite;
     private var colorWheelAlpha:FlxSprite;
@@ -51,6 +52,11 @@ class ColorRotatePlugin extends PluginBase
     public function new(parent:FlxUIState, colorSource:IColorSource, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
+        
+        var WINDOW_WIDTH:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
+        var WINDOW_HEIGHT:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
+        var yPos:Int = Std.int(WINDOW_HEIGHT / 20);
+        
         this.colorSource = colorSource;
         
 		overlayAlpha = new FlxSprite(0, 0, alphaAssetPath);
@@ -61,24 +67,27 @@ class ColorRotatePlugin extends PluginBase
         fullBar = new FlxSprite(0, 0, fullBarSpriteAssetPath);
         FlxSpriteUtil.alphaMaskFlxSprite(fullBar, overlayAlpha, fullBar);
         
-        testBar = new FlxBar(50, 30, null, Std.int(overlay.width), Std.int(overlay.height), this, "accumulated", 0, accumulateThreshold, false);
+        testBar = new FlxBar(0, yPos, null, Std.int(overlay.width), Std.int(overlay.height), this, "accumulated", 0, accumulateThreshold, false);
         testBar.createImageBar(overlay.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(testBar);
         
         background = new FlxSprite(0, 0, backgroundAssetPath);
-        var backgroundScale:Float = 40 / background.width;
+        var backgroundScale:Float = colorWheelBackgroundSize / background.width;
         background.scale.set(backgroundScale, backgroundScale);
         background.updateHitbox();
-        background.x = testBar.x + testBar.width;
-        background.y = testBar.y;
+        background.y = yPos;
         parent.add(background);
         
         colorWheel = makeColorWheel(new FlxSprite());
-        colorWheel.x = background.x + 5;
-        colorWheel.y = background.y + 5;
+        colorWheel.y = yPos + (colorWheelBackgroundSize-colorWheelSize)/2;
         parent.add(colorWheel);
 
         colorWheelAlpha = makeColorWheelApha();
+        
+        var xPos:Int = Std.int((WINDOW_WIDTH - (testBar.width + colorWheelBackgroundSize)) / 2);
+        testBar.x = xPos;
+        background.x = xPos + testBar.width;
+        colorWheel.x = xPos + testBar.width+(colorWheelBackgroundSize-colorWheelSize)/2;
     }
     
     function makeColorWheel(sprite:FlxSprite):FlxSprite{
@@ -110,25 +119,25 @@ class ColorRotatePlugin extends PluginBase
         //I had to do trig to figure this out :(
         //correct for color count = 6
         var magicRatio:Float = 0.21133;
-        var adjust:Float = colorWheelSize * magicRatio;
+        var sideLength:Float = colorWheelSize * magicRatio;
         sprite.makeGraphic(colorWheelSize, colorWheelSize, FlxColor.WHITE);
         
         FlxSpriteUtil.beginDraw(colorSource.getColor(0));
         FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, 0);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, 0);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, adjust);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, sideLength);
         FlxSpriteUtil.endDraw(sprite);
         
         FlxSpriteUtil.beginDraw(colorSource.getColor(1));
         FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, adjust);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize - adjust);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, sideLength);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize - sideLength);
         FlxSpriteUtil.endDraw(sprite);
         
         FlxSpriteUtil.beginDraw(colorSource.getColor(2));
         FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
-        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize - adjust);
+        FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize - sideLength);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize, colorWheelSize);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize);
         FlxSpriteUtil.endDraw(sprite);
@@ -137,18 +146,18 @@ class ColorRotatePlugin extends PluginBase
         FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, colorWheelSize);
         FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize);
-        FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize - adjust);
+        FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize - sideLength);
         FlxSpriteUtil.endDraw(sprite);
         
         FlxSpriteUtil.beginDraw(colorSource.getColor(4));
         FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
-        FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize - adjust);
-        FlxSpriteUtil.flashGfx.lineTo(0, adjust);
+        FlxSpriteUtil.flashGfx.lineTo(0, colorWheelSize - sideLength);
+        FlxSpriteUtil.flashGfx.lineTo(0, sideLength);
         FlxSpriteUtil.endDraw(sprite);
         
         FlxSpriteUtil.beginDraw(colorSource.getColor(5));
         FlxSpriteUtil.flashGfx.moveTo(colorWheelSize/2, colorWheelSize/2);
-        FlxSpriteUtil.flashGfx.lineTo(0, adjust);
+        FlxSpriteUtil.flashGfx.lineTo(0, sideLength);
         FlxSpriteUtil.flashGfx.lineTo(0, 0);
         FlxSpriteUtil.flashGfx.lineTo(colorWheelSize/2, 0);
         FlxSpriteUtil.endDraw(sprite);
