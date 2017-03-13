@@ -12,7 +12,6 @@ import flash.events.*;
 import flixel.*;
 import flixel.addons.ui.FlxUIState;
 import flixel.input.keyboard.FlxKey;
-import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
@@ -111,7 +110,6 @@ class PlayState extends FlxUIState
         input.AddInputCommand(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
         input.AddInputCommand(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
         input.AddInputCommand(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
-        input.AddInputCommand(FlxKey.SPACE, spawnPiece, PressType.Down);
         input.AddInputCommand(FlxKey.F, unfreeze, PressType.Down);
 
         defaultMaterial = new MaterialPair();
@@ -162,6 +160,12 @@ class PlayState extends FlxUIState
         spawnPlugin = new GamePieceSpawnPlugin(this, physicsWorld, pieceBuilder);
         add(spawnPlugin);
         plugins.add(spawnPlugin);
+        
+        #if debug
+        var fpsPlugin = new FrameRatePlugin(this);
+        add(fpsPlugin);
+        plugins.add(fpsPlugin);
+        #end
     }
     
     function setupTexturedRender() : BaseDrawWorld
@@ -329,14 +333,9 @@ class PlayState extends FlxUIState
         return materialMatrix;
     }
     
-    private var changeTimer:Float = 0;
-    private var timerTickingDown:Bool = true;
-    private var spawnPieceFlag:Bool = false;
     override public function update(elapsed:Float):Void
     {
         super.update(elapsed);
-        
-        changeTimer = Math.max(0, changeTimer - elapsed);
 
         input.Update(elapsed);
         
@@ -386,10 +385,6 @@ class PlayState extends FlxUIState
     private function adjustColorDown():Void{
         colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.95) % 1.0;
         EventManager.Trigger(this, Events.COLOR_ROTATE);
-    }
-    
-    private function spawnPiece():Void{
-        spawnPieceFlag = true;
     }
     
     private function unfreeze():Void{
@@ -551,7 +546,11 @@ class PlayState extends FlxUIState
         physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.SetBodyDamping(0.4);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
-        physicsWorld.PhysicsIter = 2;
+        if(Capabilities.IsMobileBrowser()){
+            physicsWorld.PhysicsIter = 1;
+        }else{
+            physicsWorld.PhysicsIter = 2;
+        }
     }
 
     private function PhysicsAccumulator(elapsed:Float){

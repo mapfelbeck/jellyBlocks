@@ -8,7 +8,7 @@ import jellyPhysics.math.Vector2;
  * ...
  * @author 
  */
-class DeflatingGameBlock extends DampingGameBlock
+class DeflatingGameBlock extends GameBlock
 {
     public var Deflated(get, null):Bool;    
     function get_Deflated():Bool { return deflates && GasAmount <= 0; }
@@ -24,7 +24,7 @@ class DeflatingGameBlock extends DampingGameBlock
     override public function Update(elapsed:Float):Void 
     {
         super.Update(elapsed);
-        if (deflates && !popping && lifeTime > timeTillDamping && !IsAsleep)
+        if (deflates && !popping && lifeTime > 0.5 && !IsAsleep)
         {
             GasAmount = Math.max(
                 GasAmount - elapsed * constants.GameConstants.GasPressure * deflateRate, 0);

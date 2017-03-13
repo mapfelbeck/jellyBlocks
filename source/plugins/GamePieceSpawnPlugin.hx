@@ -46,7 +46,7 @@ class GamePieceSpawnPlugin extends PluginBase
         
         testBar = new FlxBar(10, 0, null, 250, 15, this, "spawnTimer", 0, spawnTimerMax, true);
         testBar.createFilledBar(0xFF73561C, 0xFFF69A1F, false, FlxColor.BLACK);
-        //parent.add(testBar);
+        parent.add(testBar);
 
         input = new Input();
         input.AddInputCommand(FlxKey.SPACE, spawnPiece, PressType.Down);
