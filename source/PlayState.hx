@@ -544,10 +544,10 @@ class PlayState extends FlxUIState
         var penetrationThreshhold:Float = 1.0;
         
         physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
-        physicsWorld.SetBodyDamping(0.4);
+        physicsWorld.SetBodyDamping(0.5);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
         if(Capabilities.IsMobileBrowser()){
-            physicsWorld.PhysicsIter = 1;
+            physicsWorld.PhysicsIter = 2;
         }else{
             physicsWorld.PhysicsIter = 2;
         }
