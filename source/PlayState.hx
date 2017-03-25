@@ -118,11 +118,14 @@ class PlayState extends FlxUIState
         defaultMaterial.Elasticity = 0.8;
         
         createWorld();
+        
+        createPieceBuilder();
+        
+        loadPlugins();
+        
         addInitialBodiesToWorld();
         
         setupConfigForSpawingBlocks();
-        
-        loadPlugins();
         
         //#if (html5)
         render = setupSolidColorRender();
@@ -431,14 +434,14 @@ class PlayState extends FlxUIState
         blockBuilder = blockBuilder.setBlockConfig(spawnConfig).setPressure(PhysicsDefaults.SpawnedBlockPressure);
         pieceBuilder.setTriominoShape(TriominoShape.Random);
     }
-    
+        
+    private var initialConfig:BlockConfig = null;
     private var ground:GameGround;
     private var shapeBuilder:ShapeBuilder = null;
     private var blockBuilder:GameBlockBuilder = null;
     private var pieceBuilder:GamePieceBuilder = null;
-    function addInitialBodiesToWorld() 
-    {
-        var initialConfig:BlockConfig = new BlockConfig();
+    private function createPieceBuilder():GamePieceBuilder{        
+        initialConfig = new BlockConfig();
         initialConfig.timeTillDamping = 0.5;
         initialConfig.dampingRate = 0.25;
         initialConfig.dampingInc = 0.15;
@@ -459,7 +462,11 @@ class PlayState extends FlxUIState
         shapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
         blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure).setMaterial(constants.GameConstants.MATERIAL_GROUND);
         pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
-
+        return pieceBuilder;
+    }
+    
+    function addInitialBodiesToWorld() 
+    {
         //create static bodies for the container
         ground = new GameGround(2, 16, 20, /*new Vector2(0, 12),*/ blockBuilder);
         physicsWorld.addGround(ground);
@@ -506,12 +513,13 @@ class PlayState extends FlxUIState
                 if (j % 2 == 1){
                     colLoc += bottomRowOffset;
                 }
-                addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false);
+                spawnPlugin.addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false, false);
+                //addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false);
             }
         }
         
         //hack, make the game piece preview by adding a static game piece at the right spot
-        //addStaticGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)), false);
+        //spawnPlugin.addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false, true);
     }
     
     function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
@@ -520,16 +528,15 @@ class PlayState extends FlxUIState
         return pieceBuilder.create();
     }
     
-    function addGamePiece(newGamePiece:GamePiece, controlled:Bool) 
+    /*function addGamePiece(newGamePiece:GamePiece, controlled:Bool, kinematic:Bool) 
     {
-        physicsWorld.addGamePiece(newGamePiece, controlled);
+        physicsWorld.addGamePiece(newGamePiece, controlled, kinematic);
     }
     
     function addStaticGamePiece(newGamePiece:GamePiece, controlled:Bool) 
     {
-        newGamePiece.IsKinematic = true;
-        physicsWorld.addGamePiece(newGamePiece, controlled);
-    }
+        physicsWorld.addGamePiece(newGamePiece, controlled, true);
+    }*/
     
     private function getBigSquareShape(size:Float):Array<Vector2>{
         var bigSquareShape:Array<Vector2> = new Array<Vector2>();
@@ -567,7 +574,7 @@ class PlayState extends FlxUIState
     }
     
     private function MoveAccumulator(elapsed:Float){
-        if (spawnPlugin.gamePiece == null){
+        if (spawnPlugin.controlledGamePiece == null){
             return;
         }
         var rotationAmount:Float = 0;
@@ -588,8 +595,8 @@ class PlayState extends FlxUIState
         //If no player input then counteract the game pieces rotation
         //makes piece much easier to control. Length check is here so
         //the piece doesn't go wonky when one of the pieces pops.
-        if (rotationAmount == 0 && spawnPlugin.gamePiece.Blocks.length == 3){
-            rotationAmount = -clampValue(spawnPlugin.gamePiece.RotationSpeed, -1, 1);
+        if (rotationAmount == 0 && spawnPlugin.controlledGamePiece.Blocks.length == 3){
+            rotationAmount = -clampValue(spawnPlugin.controlledGamePiece.RotationSpeed, -1, 1);
         }
 
         if (pieceLeft || leftHeld){
@@ -605,10 +612,10 @@ class PlayState extends FlxUIState
             pushAmount.y += moveForce;
         }
         if (pushAmount.x != 0 || pushAmount.y !=0){
-            spawnPlugin.gamePiece.ApplyForce(pushAmount);
+            spawnPlugin.controlledGamePiece.ApplyForce(pushAmount);
         }
-        if (rotationAmount != 0 && Math.abs(spawnPlugin.gamePiece.Omega()) < 6.0){
-            spawnPlugin.gamePiece.ApplyTorque(rotationAmount);
+        if (rotationAmount != 0 && Math.abs(spawnPlugin.controlledGamePiece.Omega()) < 6.0){
+            spawnPlugin.controlledGamePiece.ApplyTorque(rotationAmount);
         }
     }
     

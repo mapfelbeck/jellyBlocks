@@ -49,13 +49,43 @@ class GamePiece
     {
         return isKinematic;
     }
-    
     function set_IsKinematic(value:Bool):Bool 
     {
         for (i in 0...blocks.length){
             blocks[i].Kinematic = value;
         }
         return isKinematic = value;
+    }
+    
+    public var Pressure(get, set):Float;
+    private var pressure:Float = 0;
+    function get_Pressure():Float 
+    {
+        if (blocks.length > 0){
+            return blocks[0].GasAmount;
+        }
+        return 0;
+    }
+    function set_Pressure(value:Float):Float 
+    {
+        for (i in 0...blocks.length){
+            blocks[i].GasAmount = value;
+        }
+        return pressure = value;
+    }
+    
+    public var Scale(get, set):Vector2;
+    private var scale:Vector2 = null;
+    function get_Scale():Vector2 
+    {
+        return scale;
+    }
+    function set_Scale(value:Vector2):Vector2 
+    {
+        for (i in 0...blocks.length){
+            blocks[i].Scale = value;
+        }
+        return scale = value;
     }
     
     private var id:Int;

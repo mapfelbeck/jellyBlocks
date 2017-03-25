@@ -36,7 +36,8 @@ class GamePieceSpawnPlugin extends PluginBase
     private var world:JellyBlocksWorld;
     private var builder:GamePieceBuilder;
         
-    public var gamePiece:GamePiece = null;
+    public var previewGamePiece:GamePiece = null;
+    public var controlledGamePiece:GamePiece = null;
     
     private var previewBackgroundSize:Int = 60;
     
@@ -46,6 +47,9 @@ class GamePieceSpawnPlugin extends PluginBase
     private var fullBar:FlxSprite;
     private var emptyBar:FlxSprite;
     private var background:FlxSprite;
+    
+    private var previewPos:Vector2 = new Vector2(-11, -15);
+    private var spawnPos:Vector2 = new Vector2( -1, -10);
     
     public function new(parent:FlxUIState, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
     {
@@ -87,9 +91,15 @@ class GamePieceSpawnPlugin extends PluginBase
         super.update(elapsed);
         input.Update(elapsed);
         
+        if (previewGamePiece == null){
+            previewGamePiece = createGamePiece(builder, previewPos);
+            addGamePiece(previewGamePiece, false, true);
+            previewGamePiece.Scale = new Vector2(0.5, 0.5);
+            previewGamePiece.Pressure = 0;
+        }
         timeSinceSpawn += elapsed;
         
-        if (gamePiece!= null && gamePiece.HasEverCollided){
+        if (controlledGamePiece!= null && controlledGamePiece.HasEverCollided){
             spawnTimerInc = spawnTimerMax / minLifeTime;
         }
         
@@ -97,7 +107,9 @@ class GamePieceSpawnPlugin extends PluginBase
         if (spawnTimer > spawnTimerMax){
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
-            addGamePiece(createGamePiece(builder, new Vector2(-1, -10)), true);
+            var newPiece:GamePiece = createGamePiece(builder, spawnPos);
+            addGamePiece(newPiece, true, false);
+            controlledGamePiece = newPiece;
             timeSinceSpawn = 0.0;
         }
     }
@@ -108,16 +120,15 @@ class GamePieceSpawnPlugin extends PluginBase
         return pieceBuilder.create();
     }
     
-    public function addGamePiece(newGamePiece:GamePiece, controlled:Bool):Void
+    public function addGamePiece(newGamePiece:GamePiece, controlled:Bool, kinematic:Bool):Void
     {
-        world.addGamePiece(newGamePiece, controlled);
+        world.addGamePiece(newGamePiece, controlled, kinematic);
         
         if (controlled){
-            if(gamePiece != null){
-                gamePiece.IsControlled = false;
+            if(controlledGamePiece != null){
+                controlledGamePiece.IsControlled = false;
             }
             newGamePiece.IsControlled = true;
-            gamePiece = newGamePiece;
         }
     }
     

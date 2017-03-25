@@ -82,7 +82,7 @@ class JellyBlocksWorld extends World
         }
     }
     
-    public function addGamePiece(newGamePiece:GamePiece, controlled:Bool):Void
+    public function addGamePiece(newGamePiece:GamePiece, controlled:Bool, kinematic:Bool):Void
     {
         var colors:Array<Int> = null;
         if(controlled){
@@ -95,6 +95,7 @@ class JellyBlocksWorld extends World
             AddBody(newGamePiece.Blocks[i]);
             newGamePiece.Blocks[i].GroupNumber = pieceCounter;
         }
+        newGamePiece.IsKinematic = kinematic;
         
         gamePieces.push(newGamePiece);
         pieceCounter++;
