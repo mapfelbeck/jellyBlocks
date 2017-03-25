@@ -10,6 +10,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
+import flixel.FlxSprite;
 
 /**
  * ...
@@ -28,7 +29,7 @@ class GamePieceSpawnPlugin extends PluginBase
     //spawn pieces at at least this interval
     private var maxLifeTime:Float = 7.0;
     
-    private var testBar:FlxBar;
+    private var previewBar:FlxBar;
     
     private var input:Input;
     
@@ -37,6 +38,15 @@ class GamePieceSpawnPlugin extends PluginBase
         
     public var gamePiece:GamePiece = null;
     
+    private var previewBackgroundSize:Int = 60;
+    
+    private static var fullBarSpriteAssetPath:String =  "assets/images/previewBarFull.png";
+    private static var emptyBarSpriteAssetPath:String =  "assets/images/previewBarEmpty.png";
+    private static var backgroundAssetPath:String =  "assets/images/piecePreviewBackground.png";
+    private var fullBar:FlxSprite;
+    private var emptyBar:FlxSprite;
+    private var background:FlxSprite;
+    
     public function new(parent:FlxUIState, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
     {
         super(parent, X, Y, SimpleGraphic);
@@ -44,10 +54,28 @@ class GamePieceSpawnPlugin extends PluginBase
         this.builder = builder;
         this.world = world;
         
-        testBar = new FlxBar(10, 0, null, 250, 15, this, "spawnTimer", 0, spawnTimerMax, true);
-        testBar.createFilledBar(0xFF73561C, 0xFFF69A1F, false, FlxColor.BLACK);
-        parent.add(testBar);
+        var WINDOW_WIDTH:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
+        var WINDOW_HEIGHT:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
+        var yPos:Int = Std.int(WINDOW_HEIGHT / 20);
+        yPos -= 10;
+        var xPos:Int = Std.int(WINDOW_WIDTH / 20);
+        xPos -= 10;
 
+        background = new FlxSprite(0, 0, backgroundAssetPath);
+        var backgroundScale:Float = previewBackgroundSize / background.width;
+        background.scale.set(backgroundScale, backgroundScale);
+        background.updateHitbox();
+        background.y = yPos;
+        background.x = xPos;
+        parent.add(background);
+        
+        emptyBar = new FlxSprite(0, 0, emptyBarSpriteAssetPath);
+        fullBar = new FlxSprite(0, 0, fullBarSpriteAssetPath);
+        
+        previewBar = new FlxBar(xPos, yPos+previewBackgroundSize, FlxBarFillDirection.TOP_TO_BOTTOM, Std.int(emptyBar.width), Std.int(emptyBar.height), this, "spawnTimer", 0, spawnTimerMax, true);
+        previewBar.createImageBar(emptyBar.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
+        parent.add(previewBar);
+        
         input = new Input();
         input.AddInputCommand(FlxKey.SPACE, spawnPiece, PressType.Down);
         

@@ -43,6 +43,21 @@ class GamePiece
         return isControlled = value;
     }
     
+    public var IsKinematic(get, set):Bool;
+    private var isKinematic:Bool = false;
+    function get_IsKinematic():Bool 
+    {
+        return isKinematic;
+    }
+    
+    function set_IsKinematic(value:Bool):Bool 
+    {
+        for (i in 0...blocks.length){
+            blocks[i].Kinematic = value;
+        }
+        return isKinematic = value;
+    }
+    
     private var id:Int;
     private var ID(get, null):Int;
     function get_ID():Int 

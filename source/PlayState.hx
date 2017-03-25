@@ -122,6 +122,8 @@ class PlayState extends FlxUIState
         
         setupConfigForSpawingBlocks();
         
+        loadPlugins();
+        
         //#if (html5)
         render = setupSolidColorRender();
         //#else
@@ -141,8 +143,6 @@ class PlayState extends FlxUIState
         if (settings.showTouchControls){
             addButtons();
         }
-        
-        loadPlugins();
         
         EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
 	}
@@ -509,6 +509,9 @@ class PlayState extends FlxUIState
                 addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false);
             }
         }
+        
+        //hack, make the game piece preview by adding a static game piece at the right spot
+        //addStaticGamePiece(createGamePiece(pieceBuilder, new Vector2(0, 0)), false);
     }
     
     function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
@@ -519,6 +522,12 @@ class PlayState extends FlxUIState
     
     function addGamePiece(newGamePiece:GamePiece, controlled:Bool) 
     {
+        physicsWorld.addGamePiece(newGamePiece, controlled);
+    }
+    
+    function addStaticGamePiece(newGamePiece:GamePiece, controlled:Bool) 
+    {
+        newGamePiece.IsKinematic = true;
         physicsWorld.addGamePiece(newGamePiece, controlled);
     }
     

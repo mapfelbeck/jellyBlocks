@@ -109,7 +109,7 @@ class FreezingGameBlock extends DeflatingGameBlock
     {
         var result:Bool = true;
         //cant't freeze if the block isn't touching anything
-        if(!CollidedThisFrame){
+        if(!CollidedThisFrame || Kinematic){
             result = false;
         }
         //can't freeze if the block is moving too fast

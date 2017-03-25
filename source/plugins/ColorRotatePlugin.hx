@@ -37,7 +37,7 @@ class ColorRotatePlugin extends PluginBase
     
     private static var fullBarSpriteAssetPath:String =  "assets/images/chargeBarFull.png";
     private static var emptyBarSpriteAssetPath:String =  "assets/images/chargeBarEmpty.png";
-    private static var backgroundAssetPath:String =  "assets/images/GUIElementBackground.png";
+    private static var backgroundAssetPath:String =  "assets/images/chargeBarBackground.png";
     private var fullBar:FlxSprite;
     private var emptyBar:FlxSprite;
     private var background:FlxSprite;

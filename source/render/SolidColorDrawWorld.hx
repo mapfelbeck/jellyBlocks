@@ -119,7 +119,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
         }else if (freezingBlock.Popping) {
             graphics.lineStyle(2, colorSource.getColor(freezingBlock.Material), 1.0);
         }else if (freezingBlock.IsControlled){
-            graphics.lineStyle(2, outlineColor, outlineAlpha + 0.5);
+            graphics.lineStyle(3, outlineColor, outlineAlpha + 0.5);
         }else{
             graphics.lineStyle(0, outlineColor, outlineAlpha);
         }
