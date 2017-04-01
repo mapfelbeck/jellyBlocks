@@ -1,7 +1,7 @@
 package plugins;
 
 import builders.GamePieceBuilder;
-import enums.PressType;
+import enums.*;
 import events.*;
 import openfl.display.*;
 import flixel.FlxSprite;
@@ -102,6 +102,7 @@ class GamePieceSpawnPlugin extends PluginBase
         
         if (previewGamePiece == null){
             previewGamePiece = createGamePiece(builder, spawnPos);
+            previewOverlay.makeGraphic(previewBackgroundSize, previewBackgroundSize, FlxColor.MAGENTA);
             makePreviewOverlay();
         }
         
@@ -120,6 +121,7 @@ class GamePieceSpawnPlugin extends PluginBase
             //trace("new game piece is: " + controlledGamePiece.Shape);
             addGamePiece(controlledGamePiece, true, false);
             previewGamePiece = createGamePiece(builder, spawnPos);
+            makePreviewOverlay();
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
             timeSinceSpawn = 0.0;
@@ -127,7 +129,6 @@ class GamePieceSpawnPlugin extends PluginBase
     }
     
     private function makePreviewOverlay(){
-        previewOverlay.makeGraphic(previewBackgroundSize, previewBackgroundSize, FlxColor.MAGENTA);
         
         var blockSize:Int = Std.int(previewBackgroundSize / 4);
         var blockPattern:Array<Vector2> = TriominoPatterns.getPattern(previewGamePiece.Shape);
@@ -136,11 +137,20 @@ class GamePieceSpawnPlugin extends PluginBase
         overLaybitmap.graphics.lineStyle(1, FlxColor.BLACK, 0.5);
         for (i in 0...previewGamePiece.Blocks.length){
             var blockPos:Vector2 = blockPattern[i];
+            var xOff:Float = 0;
+            var yOff:Float = 0;
+            if (previewGamePiece.Shape == TriominoShape.Line){
+                xOff = (previewBackgroundSize-(blockSize * 3)) / 2;
+                yOff = (previewBackgroundSize-blockSize) / 2;
+            }else if (previewGamePiece.Shape == TriominoShape.Corner){
+                xOff = (previewBackgroundSize-(blockSize * 2)) / 2;
+                yOff = (previewBackgroundSize-(blockSize * 2)) / 2;
+            }
             overLaybitmap.graphics.beginFill(colorSource.getColor(previewGamePiece.Blocks[i].Material));
-            overLaybitmap.graphics.moveTo(blockPos.x * blockSize, blockPos.y * blockSize);
-            overLaybitmap.graphics.lineTo((blockPos.x+1) * blockSize, blockPos.y * blockSize);
-            overLaybitmap.graphics.lineTo((blockPos.x+1) * blockSize, (blockPos.y+1) * blockSize);
-            overLaybitmap.graphics.lineTo(blockPos.x * blockSize, (blockPos.y+1) * blockSize);
+            overLaybitmap.graphics.moveTo(xOff+(blockPos.x * blockSize), yOff+(blockPos.y * blockSize));
+            overLaybitmap.graphics.lineTo(xOff+((blockPos.x+1) * blockSize), yOff+(blockPos.y * blockSize));
+            overLaybitmap.graphics.lineTo(xOff+((blockPos.x+1) * blockSize), yOff+((blockPos.y+1) * blockSize));
+            overLaybitmap.graphics.lineTo(xOff+(blockPos.x * blockSize), yOff+((blockPos.y+1) * blockSize));
             overLaybitmap.graphics.endFill();
         }
         

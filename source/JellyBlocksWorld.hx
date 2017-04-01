@@ -86,12 +86,15 @@ class JellyBlocksWorld extends World
     {
         var colors:Array<Int> = null;
         if(controlled){
-            colors = UtilClass.randomInts(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, constants.GameConstants.MaxSameColorPerPiece);
+            //colors = UtilClass.randomInts(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, constants.GameConstants.MaxSameColorPerPiece);
         }else{
             colors = UtilClass.randomInts(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, 1);
+            for (i in 0...newGamePiece.Blocks.length){
+                newGamePiece.Blocks[i].Material = colors[i];
+            }
         }
         for (i in 0...newGamePiece.Blocks.length){
-            newGamePiece.Blocks[i].Material = colors[i];
+            //newGamePiece.Blocks[i].Material = colors[i];
             AddBody(newGamePiece.Blocks[i]);
             newGamePiece.Blocks[i].GroupNumber = pieceCounter;
         }

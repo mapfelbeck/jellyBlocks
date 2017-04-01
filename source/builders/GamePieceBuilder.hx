@@ -1,6 +1,7 @@
 package builders;
 import blocks.GameBlock;
 import builders.ShapeBuilder;
+import constants.GameConstants;
 import constants.PhysicsDefaults;
 import enums.*;
 import enums.PieceType;
@@ -11,6 +12,7 @@ import jellyPhysics.PointMass;
 import jellyPhysics.math.Vector2;
 import jellyPhysics.math.VectorTools;
 import patterns.*;
+import util.UtilClass;
 
 class GamePieceBuilder
 {
@@ -153,6 +155,18 @@ class GamePieceBuilder
             }
         }
         
+        var colors:Array<Int> = UtilClass.randomInts(blocks.length, GameConstants.UniqueColors, GameConstants.MaxSameColorPerPiece);
+        for (i in 0...blocks.length){
+            blocks[i].Material = colors[i];
+        }
+        /*        }else{
+            colors = UtilClass.randomInts(newGamePiece.Blocks.length, constants.GameConstants.UniqueColors, 1);
+        }
+        for (i in 0...newGamePiece.Blocks.length){
+            newGamePiece.Blocks[i].Material = colors[i];
+            AddBody(newGamePiece.Blocks[i]);
+            newGamePiece.Blocks[i].GroupNumber = pieceCounter;
+        }*/
         gamePiece = new GamePiece(blocks, springs, 9.8, idCounter++);
         gamePiece.Shape = triominoFinalShape;
         if(rotation != 0){
