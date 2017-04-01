@@ -160,7 +160,7 @@ class PlayState extends FlxUIState
         add(colorRotatePlugin);
         plugins.add(colorRotatePlugin);
         
-        spawnPlugin = new GamePieceSpawnPlugin(this, physicsWorld, pieceBuilder);
+        spawnPlugin = new GamePieceSpawnPlugin(this, colorSource, physicsWorld, pieceBuilder);
         add(spawnPlugin);
         plugins.add(spawnPlugin);
         
@@ -432,7 +432,7 @@ class PlayState extends FlxUIState
         spawnConfig.freezeVelocityThreshhold = 0.08;
         
         blockBuilder = blockBuilder.setBlockConfig(spawnConfig).setPressure(PhysicsDefaults.SpawnedBlockPressure);
-        pieceBuilder.setTriominoShape(TriominoShape.Random);
+        pieceBuilder.setTriominoBuildShape(TriominoShape.Random);
     }
         
     private var initialConfig:BlockConfig = null;
@@ -478,7 +478,7 @@ class PlayState extends FlxUIState
         blockBuilder = blockBuilder.setKinematic(false);
         blockBuilder = blockBuilder.setType(BlockType.Freeze);
         blockBuilder = blockBuilder.setShapeBuilder(shapeBuilder);
-        pieceBuilder.setPieceType(PieceType.Triomino).setTriominoShape(TriominoShape.Corner);
+        pieceBuilder.setPieceType(PieceType.Triomino).setTriominoBuildShape(TriominoShape.Corner);
 
         var rowCount:Int = 2;
         var colCount:Int = 3;

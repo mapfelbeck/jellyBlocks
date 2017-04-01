@@ -1,7 +1,6 @@
 package plugins;
 
 import events.*;
-import flash.geom.Rectangle;
 import flixel.FlxSprite;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxMath;
@@ -10,8 +9,6 @@ import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import render.IColorSource;
-import util.UtilClass;
-import constants.GameConstants;
 
 /**
  * ...

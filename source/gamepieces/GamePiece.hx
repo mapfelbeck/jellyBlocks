@@ -5,6 +5,7 @@ import jellyPhysics.Body;
 import jellyPhysics.ExternalSpring;
 import jellyPhysics.math.Vector2;
 import jellyPhysics.math.VectorTools;
+import enums.TriominoShape;
 
 /**
  * ...
@@ -93,6 +94,15 @@ class GamePiece
     function get_ID():Int 
     {
         return id;
+    }
+    
+    private var shape:TriominoShape;
+    public var Shape(get, set):TriominoShape;
+    function get_Shape():TriominoShape{
+        return shape;
+    }
+    function set_Shape(value:TriominoShape):TriominoShape{
+        return this.shape = value;
     }
     
     private var collidedThisFrame:Bool;

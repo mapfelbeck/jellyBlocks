@@ -3,14 +3,17 @@ package plugins;
 import builders.GamePieceBuilder;
 import enums.PressType;
 import events.*;
-import jellyPhysics.math.Vector2;
+import openfl.display.*;
+import flixel.FlxSprite;
 import flixel.addons.ui.FlxUIState;
 import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
-import flixel.FlxSprite;
+import jellyPhysics.math.Vector2;
+import render.IColorSource;
+import patterns.TriominoPatterns;
 
 /**
  * ...
@@ -41,22 +44,26 @@ class GamePieceSpawnPlugin extends PluginBase
     
     private var previewBackgroundSize:Int = 60;
     
-    private static var fullBarSpriteAssetPath:String =  "assets/images/previewBarFull.png";
-    private static var emptyBarSpriteAssetPath:String =  "assets/images/previewBarEmpty.png";
+    private static var fullPreviewBarAssetPath:String =  "assets/images/previewBarFull.png";
+    private static var emptyPreviewBarAssetPath:String =  "assets/images/previewBarEmpty.png";
     private static var backgroundAssetPath:String =  "assets/images/piecePreviewBackground.png";
-    private var fullBar:FlxSprite;
-    private var emptyBar:FlxSprite;
-    private var background:FlxSprite;
+    private var fullPreviewBar:FlxSprite;
+    private var emptyPreviewBar:FlxSprite;
+    private var previewBackground:FlxSprite;
+    private var previewOverlay:FlxSprite;
     
     private var previewPos:Vector2 = new Vector2(-11, -15);
     private var spawnPos:Vector2 = new Vector2( -1, -10);
     
-    public function new(parent:FlxUIState, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
+    private var colorSource:IColorSource;
+    
+    public function new(parent:FlxUIState, colorSource:IColorSource, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
     {
         super(parent, X, Y, SimpleGraphic);
         
         this.builder = builder;
         this.world = world;
+        this.colorSource = colorSource;
         
         var WINDOW_WIDTH:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
         var WINDOW_HEIGHT:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
@@ -65,19 +72,21 @@ class GamePieceSpawnPlugin extends PluginBase
         var xPos:Int = Std.int(WINDOW_WIDTH / 20);
         xPos -= 10;
 
-        background = new FlxSprite(0, 0, backgroundAssetPath);
-        var backgroundScale:Float = previewBackgroundSize / background.width;
-        background.scale.set(backgroundScale, backgroundScale);
-        background.updateHitbox();
-        background.y = yPos;
-        background.x = xPos;
-        parent.add(background);
+        previewBackground = new FlxSprite(0, 0, backgroundAssetPath);
+        var backgroundScale:Float = previewBackgroundSize / previewBackground.width;
+        previewBackground.scale.set(backgroundScale, backgroundScale);
+        previewBackground.updateHitbox();
+        previewBackground.x = xPos;
+        previewBackground.y = yPos;
+        parent.add(previewBackground);
+        previewOverlay = new FlxSprite(xPos, yPos);
+        parent.add(previewOverlay);
         
-        emptyBar = new FlxSprite(0, 0, emptyBarSpriteAssetPath);
-        fullBar = new FlxSprite(0, 0, fullBarSpriteAssetPath);
+        emptyPreviewBar = new FlxSprite(0, 0, emptyPreviewBarAssetPath);
+        fullPreviewBar = new FlxSprite(0, 0, fullPreviewBarAssetPath);
         
-        previewBar = new FlxBar(xPos, yPos+previewBackgroundSize, FlxBarFillDirection.TOP_TO_BOTTOM, Std.int(emptyBar.width), Std.int(emptyBar.height), this, "spawnTimer", 0, spawnTimerMax, true);
-        previewBar.createImageBar(emptyBar.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
+        previewBar = new FlxBar(xPos, yPos+previewBackgroundSize, FlxBarFillDirection.TOP_TO_BOTTOM, Std.int(emptyPreviewBar.width), Std.int(emptyPreviewBar.height), this, "spawnTimer", 0, spawnTimerMax, true);
+        previewBar.createImageBar(emptyPreviewBar.pixels, fullPreviewBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(previewBar);
         
         input = new Input();
@@ -92,11 +101,10 @@ class GamePieceSpawnPlugin extends PluginBase
         input.Update(elapsed);
         
         if (previewGamePiece == null){
-            previewGamePiece = createGamePiece(builder, previewPos);
-            addGamePiece(previewGamePiece, false, true);
-            previewGamePiece.Scale = new Vector2(0.5, 0.5);
-            previewGamePiece.Pressure = 0;
+            previewGamePiece = createGamePiece(builder, spawnPos);
+            makePreviewOverlay();
         }
+        
         timeSinceSpawn += elapsed;
         
         if (controlledGamePiece!= null && controlledGamePiece.HasEverCollided){
@@ -105,13 +113,41 @@ class GamePieceSpawnPlugin extends PluginBase
         
         spawnTimer += spawnTimerInc * elapsed;
         if (spawnTimer > spawnTimerMax){
+            if (controlledGamePiece != null){
+                controlledGamePiece.IsControlled = false;
+            }
+            controlledGamePiece = previewGamePiece;
+            //trace("new game piece is: " + controlledGamePiece.Shape);
+            addGamePiece(controlledGamePiece, true, false);
+            previewGamePiece = createGamePiece(builder, spawnPos);
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
-            var newPiece:GamePiece = createGamePiece(builder, spawnPos);
-            addGamePiece(newPiece, true, false);
-            controlledGamePiece = newPiece;
             timeSinceSpawn = 0.0;
         }
+    }
+    
+    private function makePreviewOverlay(){
+        previewOverlay.makeGraphic(previewBackgroundSize, previewBackgroundSize, FlxColor.MAGENTA);
+        
+        var blockSize:Int = Std.int(previewBackgroundSize / 4);
+        var blockPattern:Array<Vector2> = TriominoPatterns.getPattern(previewGamePiece.Shape);
+        var overLaybitmap:Sprite = new Sprite();
+        overLaybitmap.cacheAsBitmap = true;
+        overLaybitmap.graphics.lineStyle(1, FlxColor.BLACK, 0.5);
+        for (i in 0...previewGamePiece.Blocks.length){
+            var blockPos:Vector2 = blockPattern[i];
+            overLaybitmap.graphics.beginFill(colorSource.getColor(previewGamePiece.Blocks[i].Material));
+            overLaybitmap.graphics.moveTo(blockPos.x * blockSize, blockPos.y * blockSize);
+            overLaybitmap.graphics.lineTo((blockPos.x+1) * blockSize, blockPos.y * blockSize);
+            overLaybitmap.graphics.lineTo((blockPos.x+1) * blockSize, (blockPos.y+1) * blockSize);
+            overLaybitmap.graphics.lineTo(blockPos.x * blockSize, (blockPos.y+1) * blockSize);
+            overLaybitmap.graphics.endFill();
+        }
+        
+        var pixels:BitmapData = previewOverlay.pixels;
+        pixels.fillRect(pixels.rect, FlxColor.TRANSPARENT);
+        pixels.draw(overLaybitmap);
+        previewOverlay.pixels = pixels;
     }
     
     public function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
