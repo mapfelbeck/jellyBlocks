@@ -42,7 +42,7 @@ class GamePieceSpawnPlugin extends PluginBase
     public var previewGamePiece:GamePiece = null;
     public var controlledGamePiece:GamePiece = null;
     
-    private var previewBackgroundSize:Int = 60;
+    private var previewBackgroundSize:Int = 70;
     
     private static var fullPreviewBarAssetPath:String =  "assets/images/previewBarFull.png";
     private static var emptyPreviewBarAssetPath:String =  "assets/images/previewBarEmpty.png";
@@ -68,7 +68,7 @@ class GamePieceSpawnPlugin extends PluginBase
         var WINDOW_WIDTH:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
         var WINDOW_HEIGHT:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
         var yPos:Int = Std.int(WINDOW_HEIGHT / 20);
-        yPos -= 10;
+        yPos -= 20;
         var xPos:Int = Std.int(WINDOW_WIDTH / 20);
         xPos -= 10;
 
@@ -130,7 +130,7 @@ class GamePieceSpawnPlugin extends PluginBase
     
     private function makePreviewOverlay(){
         
-        var blockSize:Int = Std.int(previewBackgroundSize / 4);
+        var blockSize:Int = Std.int(previewBackgroundSize / 3.5);
         var blockPattern:Array<Vector2> = TriominoPatterns.getPattern(previewGamePiece.Shape);
         var overLaybitmap:Sprite = new Sprite();
         overLaybitmap.cacheAsBitmap = true;

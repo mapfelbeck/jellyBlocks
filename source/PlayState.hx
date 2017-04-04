@@ -417,10 +417,10 @@ class PlayState extends FlxUIState
     function setupConfigForSpawingBlocks() 
     {
         var spawnConfig:BlockConfig = new BlockConfig();
-        spawnConfig.timeTillDamping = 0.5;
+        /*spawnConfig.timeTillDamping = 0.5;
         spawnConfig.dampingRate = 0.60;
         spawnConfig.dampingInc = 0.10;
-        spawnConfig.dampingMax = 0.85;
+        spawnConfig.dampingMax = 0.85;*/
         
         spawnConfig.deflates = true;
         spawnConfig.deflateRate = .25;
@@ -442,10 +442,10 @@ class PlayState extends FlxUIState
     private var pieceBuilder:GamePieceBuilder = null;
     private function createPieceBuilder():GamePieceBuilder{        
         initialConfig = new BlockConfig();
-        initialConfig.timeTillDamping = 0.5;
+        /*initialConfig.timeTillDamping = 0.5;
         initialConfig.dampingRate = 0.25;
         initialConfig.dampingInc = 0.15;
-        initialConfig.dampingMax = 0.85;
+        initialConfig.dampingMax = 0.85;*/
         
         initialConfig.deflates = true;
         initialConfig.deflateRate = .25;
@@ -560,7 +560,7 @@ class PlayState extends FlxUIState
         var penetrationThreshhold:Float = 1.0;
         
         physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
-        physicsWorld.SetBodyDamping(0.5);
+        physicsWorld.SetBodyDamping(0.60);
         physicsWorld.externalAccumulator = PhysicsAccumulator;
         if(Capabilities.IsMobileBrowser()){
             physicsWorld.PhysicsIter = 2;

@@ -21,12 +21,11 @@ openfl: [3.6.1] 4.5.2
 task: [1.0.7]
 
 ToDo:
-    Move color rotation into it's own plugin
-    Remove hard coded values from particle effect plugin
+    Controller support
+    Fix Android version
     Resolution independence
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
     Improve match-3 collision detection.
-    Improve physics sim speed.
     Improve touch screen controls.
     Fix frozen blocks in mid air bug.
     Fill out pause Menu
