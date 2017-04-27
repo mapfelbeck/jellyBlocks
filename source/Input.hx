@@ -28,7 +28,7 @@ class Input
     
     public function Update(elapsed:Float) 
     {
-        #if (html5 || neko || flash)
+        #if (html5 || neko || flash || windows)
         for (key in downKeys){
             if (FlxG.keys.anyJustPressed([key])){
                 for (action in actionDownMap.get(key)){
