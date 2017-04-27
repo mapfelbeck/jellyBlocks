@@ -13,18 +13,6 @@ class EventManager
     private var callbackTable:Map<String,Array<EventManagerCallback>>;
     public function new(){
         callbackTable = new Map<String,Array<EventManagerCallback>>();
-        OnMonkey("SomeEvent", templateFunction);
-    }
-    
-    function OnMonkey(string:String, templateFunction:EventManagerCallback) 
-    {
-        trace("OnMonkey");
-        func = templateFunction;
-        func(null, "AnEvent", null);
-    }
-    
-    private function templateFunction(sender:Dynamic, event:String, params:Array<Dynamic>){
-        trace("my event is: " + event);
     }
     
     public static function Register(callback:EventManagerCallback, event:String):Void{

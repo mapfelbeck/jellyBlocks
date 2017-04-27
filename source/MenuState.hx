@@ -9,14 +9,12 @@ class MenuState extends FlxUIState
 	override public function create():Void
 	{
 		super.create();
-        trace("MenuState created.");
         add(new FlxText(0, 0, 0, "Menu State."));
 	}
 
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
-        trace("Jumping straight to game state.");
         FlxG.switchState(new PlayState());
 	}
     

@@ -191,18 +191,15 @@ class PlayState extends FlxUIState
 
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
 	{
-        trace("PlayState.getEvent(" + name+")");
 		var str:String = "";
 		
 		switch (name)
 		{
 			case "finish_load":
-                trace("Loaded!");
 			case "click_button":
                 trace("Button click.");
 				if (params != null && params.length > 0)
 				{
-                    trace("click param: " + Std.string(params[0]));
 					switch (Std.string(params[0]))
 					{
 						//case "pause": FlxG.switchState(new PauseMenu());
