@@ -21,7 +21,7 @@ class FrameRatePlugin extends PluginBase
         then = get_now();
         
         displayText = new FlxTextField(0, 0, 40, "0", 16, false);
-        displayText.color = FlxColor.BLACK;
+        displayText.color = new FlxColor(0xFFA0A0A0);
         parent.add(displayText);
     }
     

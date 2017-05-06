@@ -48,7 +48,9 @@ class BlockPopEffectPlugin extends PluginBase
         if(Capabilities.IsMobileBrowser()){
             emitter.alpha.set(1, 1, 1, 1);
         }else{
-            emitter.alpha.set(1, 1, 0, 0);
+            //fade out causes perf problems :(
+            //emitter.alpha.set(1, 1, 0, 0);
+            emitter.alpha.set(1, 1, 1, 1);
         }
     }
     

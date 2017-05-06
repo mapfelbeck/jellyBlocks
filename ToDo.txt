@@ -30,4 +30,6 @@ ToDo:
     Fix frozen blocks in mid air bug.
     Fill out pause Menu
     Sound FX
-    
+    Expand color generator to make complimentry colors as well
+    rotate backgrounds when clors rotate
+    fix Android build!

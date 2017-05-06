@@ -8,6 +8,7 @@ class MenuState extends FlxUIState
 {
 	override public function create():Void
 	{
+        trace("MenuState created");
 		super.create();
         add(new FlxText(0, 0, 0, "Menu State."));
 	}
