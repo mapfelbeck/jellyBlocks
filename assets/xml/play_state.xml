@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>		
 	<sprite id="background" src="ui/gameplay" center_x="true" center_y="true" group="back">
-	</sprite>
+        <scale to_height="100%"/>
+    </sprite>
 	
 	<button id="pause_btn" center_x="false" x="390" y="10" group="top" width="36" height="36">
 		<text use_def="sans14c"/>
