@@ -34,7 +34,7 @@
 	<window if="flash" orientation="landscape" fullscreen="false" resizable="true"/>
 
 	<!--Mobile-specific-->
-	<window if="mobile" orientation="portrait" fullscreen="true" width="0" height="0" />
+	<window if="mobile" orientation="portrait" fullscreen="true" width="${windowWidth}" height="${windowHeight}" />
 
 	<!-- _____________________________ Path Settings ____________________________ -->
 
