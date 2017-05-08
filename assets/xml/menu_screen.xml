@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+	<include id="ui_globals"/>
+	<sprite id="background" src="ui/gameplay" center_x="true" center_y="true" group="back">
+        <scale to_height="100%"/>
+    </sprite>
+    
+	<button id="play_btn" center_x="true" center_y="true" width="144pt" height="72pt" label="Play!">
+		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
+			<scale_src scale="0.5"/>
+		</graphic>
+		<param type="string" value="play"/>
+		<text use_def="sans32c" color="0xffffff">
+			<color id="up" value="0xffffff"/>
+			<color id="over" value="0xffff00"/>
+			<color id="down" value="0xffff00"/>
+		</text>
+	</button>
+
+</data>

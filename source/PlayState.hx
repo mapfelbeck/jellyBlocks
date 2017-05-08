@@ -202,7 +202,6 @@ class PlayState extends FlxUIState
 				{
 					switch (Std.string(params[0]))
 					{
-						//case "pause": FlxG.switchState(new PauseMenu());
                         case "pause": openSubState(new PauseMenu());
 					}
 				}

@@ -16,7 +16,7 @@
 		<param type="string" value="close"/>
 	</button>
     
-	<button id="restart_btn" x="0pt" y="30pt" width="72pt" height="36pt" label="Restart">
+	<button id="restart_btn" x="0pt" y="30pt" width="90pt" height="46pt" label="Restart">
         <anchor x="background.center" y="background.top" x-flush="center" />
 		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
 			<scale_src scale="0.5"/>
