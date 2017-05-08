@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<data>		
+<data>
+	<include id="ui_globals"/>
 	<sprite id="background" src="ui/gameplay" center_x="true" center_y="true" group="back">
         <scale to_height="100%"/>
     </sprite>
 	
-	<button id="pause_btn" center_x="false" x="390" y="10" group="top" width="36" height="36">
+	<button id="pause_btn" center_x="false" x="385pt" y="10pt" group="top" width="36pt" height="36pt">
 		<text use_def="sans14c"/>
 		<graphic id="all" image="ui/pause_button" slice9="24,24,48,48">
-			<scale_src scale="screen.height/1200"/>
+			<scale_src scale="0.5"/>
 		</graphic>
 		<param type="string" value="pause"/>
 	</button>

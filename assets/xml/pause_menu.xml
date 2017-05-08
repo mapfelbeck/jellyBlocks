@@ -1,21 +1,25 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
-	<chrome id="background" src="ui/popup_background" x="0" y="screen.height*.35" width="screen.width*.9" height="35%">
+	<include id="ui_globals"/>
+    
+    <sprite id="black" x="0" y="0" width="100%" height="100%" color="0x88000000"/>
+    
+	<chrome id="background" src="ui/popup_background" x="0" y="210pt" width="405pt" height="35%">
 		<anchor x="center" x-flush="center" y="top" y-flush="center"/>
 	</chrome>
     
-	<button id="close_btn" x="-8" y="5" width="36" height="36">
+	<button id="close_btn" x="-8pt" y="5pt" width="36pt" height="36pt">
         <anchor x="background.right" y="background.top" x-flush="right" />
 		<graphic id="all" image="ui/close_button" slice9="24,24,48,48">
-			<scale_src scale="screen.height/1200"/>
+			<scale_src scale="0.5"/>
 		</graphic>
 		<param type="string" value="close"/>
 	</button>
     
-	<button id="restart_btn" x="0" y="30" width="72" height="36" label="Restart">
+	<button id="restart_btn" x="0pt" y="30pt" width="72pt" height="36pt" label="Restart">
         <anchor x="background.center" y="background.top" x-flush="center" />
 		<graphic id="all" image="ui/blank_button" slice9="24,24,48,48">
-			<scale_src scale="screen.height/1200"/>
+			<scale_src scale="0.5"/>
 		</graphic>
 		<param type="string" value="restart"/>
 		<text use_def="sans16c" color="0xffffff">
