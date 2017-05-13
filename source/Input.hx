@@ -1,8 +1,10 @@
 package;
 import enums.PressType;
 import flixel.FlxG;
+import flixel.input.FlxInput.FlxInputState;
+import flixel.input.gamepad.FlxGamepad;
+import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
-import haxe.Constraints.Function;
 
 /**
  * ...
@@ -10,79 +12,134 @@ import haxe.Constraints.Function;
  */
 
 typedef KeyboardInputCallback = FlxKey->PressType->Void;
-typedef GamepadInputCallback = Dynamic->String->Array<Dynamic>->Void;
+typedef GamepadButtonCallback = FlxGamepadInputID->PressType->Void;
+typedef GamepadAnalogCallback = FlxGamepadInputID->Float->Void;
 
 class Input
 {
-    private var downKeys:Array<FlxKey>;
-    private var pressedKeys:Array<FlxKey>;
-    private var upKeys:Array<FlxKey>;
-    private var actionDownMap:Map<FlxKey, Array<Function>>;
-    private var actionPressedMap:Map<FlxKey, Array<Function>>;
-    private var actionUpMap:Map<FlxKey, Array<Function>>;
+    private var keyDownMap:Map<FlxKey, Array<KeyboardInputCallback>>;
+    private var keyPressedMap:Map<FlxKey, Array<KeyboardInputCallback>>;
+    private var keyUpMap:Map<FlxKey, Array<KeyboardInputCallback>>;
+    
+    private var analogMap:Map<FlxGamepadInputID, Array<GamepadAnalogCallback>>;
+    
+    private var buttonDownMap:Map<FlxGamepadInputID, Array<GamepadButtonCallback>>;
+    private var buttonPressedMap:Map<FlxGamepadInputID, Array<GamepadButtonCallback>>;
+    private var buttonUpMap:Map<FlxGamepadInputID, Array<GamepadButtonCallback>>;
+    
+    private var gamepad:FlxGamepad;
+    
     public function new() 
     {
-        downKeys = new Array<FlxKey>();
-        pressedKeys = new Array<FlxKey>();
-        upKeys = new Array<FlxKey>();
-        actionDownMap = new Map<FlxKey, Array<Function>>();
-        actionPressedMap = new Map<FlxKey, Array<Function>>();
-        actionUpMap = new Map<FlxKey, Array<Function>>();
+        keyDownMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
+        keyPressedMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
+        keyUpMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
+
+        analogMap = new Map<FlxGamepadInputID, Array<GamepadAnalogCallback>>();
+
+        buttonDownMap = new Map<FlxGamepadInputID, Array<GamepadButtonCallback>>();
+        buttonPressedMap = new Map<FlxGamepadInputID, Array<GamepadButtonCallback>>();
+        buttonUpMap = new Map<FlxGamepadInputID, Array<GamepadButtonCallback>>();
     }
     
     public function Update(elapsed:Float) 
     {
         #if (html5 || neko || flash || windows)
-        for (key in downKeys){
-            if (FlxG.keys.anyJustPressed([key])){
-                for (action in actionDownMap.get(key)){
+        
+        for (key in keyDownMap.keys()){
+            if (FlxG.keys.checkStatus(key, FlxInputState.JUST_PRESSED)){
+                for (action in keyDownMap.get(key)){
                     action(key, PressType.Down);
                 }
             }
         }
-        for (key in pressedKeys){
-            if (FlxG.keys.anyPressed([key])){
-                for (action in actionPressedMap.get(key)){
+        for (key in keyPressedMap.keys()){
+            if (FlxG.keys.checkStatus(key, FlxInputState.PRESSED)){
+                for (action in keyPressedMap.get(key)){
                     action(key, PressType.Pressed);
                 }
             }
         }
-        for (key in upKeys){
-            if (FlxG.keys.anyJustReleased([key])){
-                for (action in actionUpMap.get(key)){
+        for (key in keyUpMap.keys()){
+            if (FlxG.keys.checkStatus(key, FlxInputState.JUST_RELEASED)){
+                for (action in keyUpMap.get(key)){
                     action(key, PressType.Up);
+                }
+            }
+        }
+        
+        gamepad = FlxG.gamepads.lastActive;
+		
+		if (gamepad == null)
+			return;
+        
+        for (button in buttonDownMap.keys()){
+            if (gamepad.checkStatus(button, FlxInputState.JUST_PRESSED)){
+                for (action in buttonDownMap.get(button)){
+                    action(button, PressType.Down);
+                }
+            }
+        }
+        for (button in buttonPressedMap.keys()){
+            if (gamepad.checkStatus(button, FlxInputState.PRESSED)){
+                for (action in buttonPressedMap.get(button)){
+                    action(button, PressType.Pressed);
+                }
+            }
+        }
+        for (button in buttonUpMap.keys()){
+            if (gamepad.checkStatus(button, FlxInputState.JUST_RELEASED)){
+                for (action in buttonUpMap.get(button)){
+                    action(button, PressType.Up);
                 }
             }
         }
         #end
     }
     
-    public function AddInputCommand(key:FlxKey, action:KeyboardInputCallback, pressType:PressType) 
+    public function AddKeyboardInput(key:FlxKey, action:KeyboardInputCallback, pressType:PressType) 
     {
-        var keys:Array<FlxKey> = null;
-        var actionMap:Map<FlxKey, Array<Function>> = null;
+        var actionMap:Map<FlxKey, Array<KeyboardInputCallback>> = null;
         switch(pressType){
             case PressType.Down:
-                keys = downKeys;
-                actionMap = actionDownMap;
+                actionMap = keyDownMap;
             case PressType.Pressed:
-                keys = pressedKeys;
-                actionMap = actionPressedMap;
+                actionMap = keyPressedMap;
             case PressType.Up:
-                keys = upKeys;
-                actionMap = actionUpMap;
+                actionMap = keyUpMap;
         }
         
-        var actionArray:Array<Function> = null;
+        var actionArray:Array<KeyboardInputCallback> = null;
         if (actionMap.exists(key)){
             actionArray = actionMap.get(key);
         }else{
-            keys.push(key);
-            actionArray = new Array<Function>();
+            actionArray = new Array<KeyboardInputCallback>();
             actionMap.set(key, actionArray);
         }
         
         actionArray.push(action);
     }
     
+    public function AddGamepadButtonInput(button:FlxGamepadInputID, action:GamepadButtonCallback, pressType:PressType) 
+    {
+        var actionMap:Map<FlxGamepadInputID, Array<GamepadButtonCallback>> = null;
+        switch(pressType){
+            case PressType.Down:
+                actionMap = buttonDownMap;
+            case PressType.Pressed:
+                actionMap = buttonPressedMap;
+            case PressType.Up:
+                actionMap = buttonUpMap;
+        }
+        
+        var actionArray:Array<GamepadButtonCallback> = null;
+        if (actionMap.exists(button)){
+            actionArray = actionMap.get(button);
+        }else{
+            actionArray = new Array<GamepadButtonCallback>();
+            actionMap.set(button, actionArray);
+        }
+        
+        actionArray.push(action);
+    }
 }

@@ -6,6 +6,7 @@ import builders.GamePieceBuilder;
 import builders.ShapeBuilder;
 import constants.GameConstants;
 import constants.PhysicsDefaults;
+import flixel.input.gamepad.FlxGamepadInputID;
 import enums.*;
 import events.*;
 import flash.events.*;
@@ -102,15 +103,15 @@ class PlayState extends FlxUIState
         */
         
         input = new Input();
-        input.AddInputCommand(FlxKey.A, pushPieceLeft, PressType.Pressed);
-        input.AddInputCommand(FlxKey.D, pushPieceRight, PressType.Pressed);
-        input.AddInputCommand(FlxKey.W, pushPieceUp, PressType.Pressed);
-        input.AddInputCommand(FlxKey.S, pushPieceDown, PressType.Pressed);
-        input.AddInputCommand(FlxKey.LEFT, rotatePieceCCW, PressType.Pressed);
-        input.AddInputCommand(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
-        input.AddInputCommand(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
-        input.AddInputCommand(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
-        input.AddInputCommand(FlxKey.F, unfreeze, PressType.Down);
+        input.AddKeyboardInput(FlxKey.A, pushPieceLeft, PressType.Pressed);
+        input.AddKeyboardInput(FlxKey.D, pushPieceRight, PressType.Pressed);
+        input.AddKeyboardInput(FlxKey.W, pushPieceUp, PressType.Pressed);
+        input.AddKeyboardInput(FlxKey.S, pushPieceDown, PressType.Pressed);
+        input.AddKeyboardInput(FlxKey.LEFT, rotatePieceCCW, PressType.Pressed);
+        input.AddKeyboardInput(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
+        input.AddKeyboardInput(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
+        input.AddKeyboardInput(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
+        input.AddKeyboardInput(FlxKey.F, unfreeze, PressType.Down);
 
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;

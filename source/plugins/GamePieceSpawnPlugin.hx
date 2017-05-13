@@ -90,7 +90,7 @@ class GamePieceSpawnPlugin extends PluginBase
         parent.add(previewBar);
         
         input = new Input();
-        input.AddInputCommand(FlxKey.SPACE, spawnPiece, PressType.Down);
+        input.AddKeyboardInput(FlxKey.SPACE, spawnPiece, PressType.Down);
         
         spawnTimerInc = spawnTimerMax / timeTillFirstSpawn;
     }
