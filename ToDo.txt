@@ -22,6 +22,8 @@ task: [1.0.7]
 
 ToDo:
     Controller support
+        add ability to delete input mapping
+        make gamepad actually functional
     Fix piece preview colors do not rotate bug
     Resolution independence
     Figure out how to keep the physics sim from blowing up when intersections are too deep.

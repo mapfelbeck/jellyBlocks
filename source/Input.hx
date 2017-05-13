@@ -29,6 +29,8 @@ class Input
     
     private var gamepad:FlxGamepad;
     
+    public var analogThreshhold:Float = 0.01;
+    
     public function new() 
     {
         keyDownMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
@@ -72,7 +74,7 @@ class Input
 		
 		if (gamepad == null)
 			return;
-        
+
         for (button in buttonDownMap.keys()){
             if (gamepad.checkStatus(button, FlxInputState.JUST_PRESSED)){
                 for (action in buttonDownMap.get(button)){
@@ -91,6 +93,14 @@ class Input
             if (gamepad.checkStatus(button, FlxInputState.JUST_RELEASED)){
                 for (action in buttonUpMap.get(button)){
                     action(button, PressType.Up);
+                }
+            }
+        }
+        for (button in analogMap.keys()){
+            var analogValue:Float = gamepad.getAxis(button);
+            if(analogValue >= analogThreshhold){
+                for (action in analogMap.get(button)){
+                    action(button, analogValue);
                 }
             }
         }
@@ -138,6 +148,19 @@ class Input
         }else{
             actionArray = new Array<GamepadButtonCallback>();
             actionMap.set(button, actionArray);
+        }
+        
+        actionArray.push(action);
+    }
+    
+    public function AddGamepadAnalogInput(button:FlxGamepadInputID, action:GamepadAnalogCallback) 
+    {   
+        var actionArray:Array<GamepadAnalogCallback> = null;
+        if (analogMap.exists(button)){
+            actionArray = analogMap.get(button);
+        }else{
+            actionArray = new Array<GamepadAnalogCallback>();
+            analogMap.set(button, actionArray);
         }
         
         actionArray.push(action);

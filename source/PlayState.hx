@@ -107,6 +107,16 @@ class PlayState extends FlxUIState
         input.AddKeyboardInput(FlxKey.D, pushPieceRight, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.W, pushPieceUp, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.S, pushPieceDown, PressType.Pressed);
+        input.AddGamepadButtonInput(FlxGamepadInputID.A, buttonCmd, PressType.Pressed);
+        input.AddGamepadButtonInput(FlxGamepadInputID.B, buttonCmd, PressType.Pressed);
+        input.AddGamepadButtonInput(FlxGamepadInputID.X, buttonCmd, PressType.Down);
+        input.AddGamepadButtonInput(FlxGamepadInputID.Y, buttonCmd, PressType.Up);
+        
+        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Down);
+        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Pressed);
+        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Up);
+        
+        input.AddGamepadAnalogInput(FlxGamepadInputID.LEFT_TRIGGER, buttonAnalog);
         input.AddKeyboardInput(FlxKey.LEFT, rotatePieceCCW, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
@@ -150,6 +160,16 @@ class PlayState extends FlxUIState
         
         EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
 	}
+    
+    function buttonCmd(button:FlxGamepadInputID, type:PressType): Void
+    {
+        trace("Button " + button.toString() + " is " + type.getName());
+    }
+    
+    function buttonAnalog(button:FlxGamepadInputID, value:Float): Void
+    {
+        trace("Button " + button.toString() + " is " + value);
+    }
     
     private function loadPlugins():Void
     {
