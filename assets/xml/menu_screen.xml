@@ -5,7 +5,7 @@
         <scale to_height="100%"/>
     </sprite>
     
-	<button id="play_btn" center_x="true" center_y="true" width="144pt" height="72pt" label="Play!">
+	<button id="play_btn" center_x="true" center_y="true" y="-50pt" width="144pt" height="72pt" label="Play!">
 		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
 			<scale_src scale="0.5"/>
 		</graphic>

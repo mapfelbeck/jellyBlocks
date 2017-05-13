@@ -178,7 +178,7 @@ class GamePieceSpawnPlugin extends PluginBase
         }
     }
     
-    private function spawnPiece():Void{
+    private function spawnPiece(key:FlxKey, type:PressType):Void{
         if (timeSinceSpawn > minLifeTime){
             spawnTimer = spawnTimerMax;
         }

@@ -22,8 +22,6 @@ task: [1.0.7]
 
 ToDo:
     Controller support
-    TUrn off mouse cusor in HTML5 mobile
-    Fix Android version
     Resolution independence
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
     Improve match-3 collision detection.

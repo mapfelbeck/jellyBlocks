@@ -7,6 +7,7 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 import flixel.addons.ui.FlxUIState;
 import flixel.graphics.FlxGraphic;
+import util.Capabilities;
 
 class MenuState extends FlxUIState
 {
@@ -18,6 +19,13 @@ class MenuState extends FlxUIState
 	}
     
     private function init(){
+        
+        #if (html5)
+        if (Capabilities.IsMobileBrowser()){
+            FlxG.mouse.visible = false;
+        }
+        #end
+        
         FlxTransitionableState.defaultTransIn = new TransitionData();
         FlxTransitionableState.defaultTransOut = new TransitionData();
         
@@ -40,6 +48,8 @@ class MenuState extends FlxUIState
 	override public function update(elapsed:Float):Void
 	{
 		super.update(elapsed);
+        /*if (FlxG.keys.justPressed.ENTER)
+            FlxG.fullscreen = !FlxG.fullscreen;*/
 	}
     
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void

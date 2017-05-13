@@ -8,6 +8,10 @@ import haxe.Constraints.Function;
  * ...
  * @author ...
  */
+
+typedef KeyboardInputCallback = FlxKey->PressType->Void;
+typedef GamepadInputCallback = Dynamic->String->Array<Dynamic>->Void;
+
 class Input
 {
     private var downKeys:Array<FlxKey>;
@@ -32,31 +36,29 @@ class Input
         for (key in downKeys){
             if (FlxG.keys.anyJustPressed([key])){
                 for (action in actionDownMap.get(key)){
-                    action();
+                    action(key, PressType.Down);
                 }
             }
         }
         for (key in pressedKeys){
             if (FlxG.keys.anyPressed([key])){
                 for (action in actionPressedMap.get(key)){
-                    action();
+                    action(key, PressType.Pressed);
                 }
             }
         }
         for (key in upKeys){
             if (FlxG.keys.anyJustReleased([key])){
                 for (action in actionUpMap.get(key)){
-                    action();
+                    action(key, PressType.Up);
                 }
             }
         }
         #end
     }
     
-    public function AddInputCommand(key:FlxKey, action:Function, pressType:PressType) 
-    {/*
-    private var upKeys:Array<FlxKey>;
-    private var actionDownMap:Map<FlxKey, Array<Function>>;*/
+    public function AddInputCommand(key:FlxKey, action:KeyboardInputCallback, pressType:PressType) 
+    {
         var keys:Array<FlxKey> = null;
         var actionMap:Map<FlxKey, Array<Function>> = null;
         switch(pressType){

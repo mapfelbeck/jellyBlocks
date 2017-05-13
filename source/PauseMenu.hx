@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxG;
 import flixel.addons.ui.FlxUIPopup;
 
 /**
@@ -40,6 +41,9 @@ class PauseMenu extends FlxUIPopup
                         case "restart":
                             castParent().getEvent("RELOAD", this, null);
                             close();
+                        case "main_menu":
+                            close();
+                            FlxG.switchState(new MenuState());
 					}
 				}
 		}

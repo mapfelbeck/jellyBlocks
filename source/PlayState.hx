@@ -135,7 +135,7 @@ class PlayState extends FlxUIState
         render.setGameGround(ground);
         
         #if (html5)
-        var r:EReg = new EReg("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini", "i");
+        //var r:EReg = new EReg("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini", "i");
         if (Capabilities.IsMobileBrowser()){
             settings.showTouchControls = true;
         }
@@ -348,45 +348,45 @@ class PlayState extends FlxUIState
         pieceDown = false;
     }
     
-    private function pushPieceLeft():Void{
+    private function pushPieceLeft(key: FlxKey, type:PressType):Void{
         pieceLeft = true;
     }
     
-    private function pushPieceRight():Void{
+    private function pushPieceRight(key: FlxKey, type:PressType):Void{
         pieceRight = true;
     }
     
-    private function pushPieceUp():Void{
+    private function pushPieceUp(key: FlxKey, type:PressType):Void{
         pieceUp = true;
     }
     
-    private function pushPieceDown():Void{
+    private function pushPieceDown(key: FlxKey, type:PressType):Void{
         pieceDown = true;
     }
     
-    private function rotatePieceCCW():Void{
+    private function rotatePieceCCW(key: FlxKey, type:PressType):Void{
         pieceCCW = true;
     }
     
-    private function rotatePieceCW():Void{
+    private function rotatePieceCW(key: FlxKey, type:PressType):Void{
         pieceCW = true;
     }
     
     private function OnColorRotated(sender:Dynamic, event:String, params:Dynamic){
-        unfreeze();
+        unfreeze(FlxKey.F, PressType.Down);
     }
     
-    private function adjustColorUp():Void{
+    private function adjustColorUp(key: FlxKey, type:PressType):Void{
         colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.05) % 1.0;
         EventManager.Trigger(this, Events.COLOR_ROTATE);
     }
     
-    private function adjustColorDown():Void{
+    private function adjustColorDown(key: FlxKey, type:PressType):Void{
         colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.95) % 1.0;
         EventManager.Trigger(this, Events.COLOR_ROTATE);
     }
     
-    private function unfreeze():Void{
+    private function unfreeze(key: FlxKey, type:PressType):Void{
         for (i in 0...physicsWorld.NumberBodies){
             var body:Body = physicsWorld.GetBody(i);
             if (!body.IsStatic){

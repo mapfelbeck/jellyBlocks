@@ -27,7 +27,7 @@ class BlockPopEffectPlugin extends PluginBase
     
     private var poolSize:Int = 200;
     private var rand:FlxRandom = new FlxRandom();
-    private var particleSizes:Array<Int> = [1, 2, 2, 2, 4, 4, 8];
+    private var particleSizes:Array<Int> = [2, 3, 3, 3, 5, 5, 8];
     private var emitterColor:Int = 0;
     
     private var effectQueue:List<PopEffect> = new List<PopEffect>();
