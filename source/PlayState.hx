@@ -139,9 +139,9 @@ class PlayState extends FlxUIState
         settings.showTouchControls = true;
         #end
         
-        //if (settings.showTouchControls){
+        if (settings.showTouchControls){
             addButtons();
-        //}
+        }
         
         EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
 	}
