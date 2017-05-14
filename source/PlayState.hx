@@ -104,25 +104,7 @@ class PlayState extends FlxUIState
         */
         
         input = new Input();
-        input.AddKeyboardInput(FlxKey.A, pushPieceLeft, PressType.Pressed);
-        input.AddKeyboardInput(FlxKey.D, pushPieceRight, PressType.Pressed);
-        input.AddKeyboardInput(FlxKey.W, pushPieceUp, PressType.Pressed);
-        input.AddKeyboardInput(FlxKey.S, pushPieceDown, PressType.Pressed);
         
-        input.AddGamepadButtonInput(FlxGamepadInputID.A, buttonCmd, PressType.Pressed);
-        input.AddGamepadButtonInput(FlxGamepadInputID.B, buttonCmd, PressType.Pressed);
-        input.AddGamepadButtonInput(FlxGamepadInputID.X, buttonCmd, PressType.Down);
-        input.AddGamepadButtonInput(FlxGamepadInputID.Y, buttonCmd, PressType.Up);
-        
-        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Down);
-        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Pressed);
-        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Up);
-                
-        input.AddGamepadStickInput(FlxGamepadInputID.LEFT_ANALOG_STICK, stickInput);
-        input.AddGamepadStickInput(FlxGamepadInputID.RIGHT_ANALOG_STICK, stickInput);
-        
-        input.AddKeyboardInput(FlxKey.LEFT, rotatePieceCCW, PressType.Pressed);
-        input.AddKeyboardInput(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
         input.AddKeyboardInput(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
         input.AddKeyboardInput(FlxKey.F, unfreeze, PressType.Down);
@@ -165,21 +147,6 @@ class PlayState extends FlxUIState
         EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
 	}
     
-    function buttonCmd(button:FlxGamepadInputID, type:PressType): Void
-    {
-        trace("Button " + button.toString() + " is " + type.getName());
-    }
-    
-    function buttonAnalog(button:FlxGamepadInputID, value:Float): Void
-    {
-        trace("Button " + button.toString() + " is " + value);
-    }
-    
-    function stickInput(stick:FlxGamepadInputID, xValue:Float, yValue:Float): Void
-    {
-        trace("Stick " + stick.toString() + " is (" + xValue+", " + yValue+")");
-    }
-    
     private function loadPlugins():Void
     {
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
@@ -190,11 +157,13 @@ class PlayState extends FlxUIState
         add(colorRotatePlugin);
         plugins.add(colorRotatePlugin);
         
-        spawnPlugin = new GamePieceSpawnPlugin(this, colorSource, physicsWorld, pieceBuilder);
-        add(spawnPlugin);
-        plugins.add(spawnPlugin);
-        
         controlPlugin = new GamePieceControlPlugin(this, input);
+        physicsWorld.externalAccumulator = controlPlugin.MoveAccumulator;
+        add(controlPlugin);
+        plugins.add(controlPlugin);
+        
+        spawnPlugin = new GamePieceSpawnPlugin(this, colorSource, physicsWorld, pieceBuilder);
+        spawnPlugin.controlPlugin = controlPlugin;
         add(spawnPlugin);
         plugins.add(spawnPlugin);
         
@@ -373,37 +342,6 @@ class PlayState extends FlxUIState
         input.Update(elapsed);
         
         physicsWorld.Update(elapsed);
-        
-        pieceCCW = false;
-        pieceCW = false;
-        pieceLeft = false;
-        pieceRight = false;
-        pieceUp = false;
-        pieceDown = false;
-    }
-    
-    private function pushPieceLeft(key: FlxKey, type:PressType):Void{
-        pieceLeft = true;
-    }
-    
-    private function pushPieceRight(key: FlxKey, type:PressType):Void{
-        pieceRight = true;
-    }
-    
-    private function pushPieceUp(key: FlxKey, type:PressType):Void{
-        pieceUp = true;
-    }
-    
-    private function pushPieceDown(key: FlxKey, type:PressType):Void{
-        pieceDown = true;
-    }
-    
-    private function rotatePieceCCW(key: FlxKey, type:PressType):Void{
-        pieceCCW = true;
-    }
-    
-    private function rotatePieceCW(key: FlxKey, type:PressType):Void{
-        pieceCW = true;
     }
     
     private function OnColorRotated(sender:Dynamic, event:String, params:Dynamic){
@@ -544,12 +482,8 @@ class PlayState extends FlxUIState
                     colLoc += bottomRowOffset;
                 }
                 spawnPlugin.addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false, false);
-                //addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false);
             }
         }
-        
-        //hack, make the game piece preview by adding a static game piece at the right spot
-        //spawnPlugin.addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false, true);
     }
     
     function createGamePiece(pieceBuilder:GamePieceBuilder, location:Vector2) :GamePiece
@@ -557,16 +491,6 @@ class PlayState extends FlxUIState
         pieceBuilder = pieceBuilder.setLocation(location);
         return pieceBuilder.create();
     }
-    
-    /*function addGamePiece(newGamePiece:GamePiece, controlled:Bool, kinematic:Bool) 
-    {
-        physicsWorld.addGamePiece(newGamePiece, controlled, kinematic);
-    }
-    
-    function addStaticGamePiece(newGamePiece:GamePiece, controlled:Bool) 
-    {
-        physicsWorld.addGamePiece(newGamePiece, controlled, true);
-    }*/
     
     private function getBigSquareShape(size:Float):Array<Vector2>{
         var bigSquareShape:Array<Vector2> = new Array<Vector2>();
@@ -591,72 +515,12 @@ class PlayState extends FlxUIState
         
         physicsWorld = new JellyBlocksWorld(matrix.Count, matrix, matrix.DefaultMaterial, penetrationThreshhold, bounds);
         physicsWorld.SetBodyDamping(0.60);
-        physicsWorld.externalAccumulator = PhysicsAccumulator;
         if(Capabilities.IsMobileBrowser()){
             physicsWorld.PhysicsIter = 2;
         }else{
             physicsWorld.PhysicsIter = 2;
         }
     }
-
-    private function PhysicsAccumulator(elapsed:Float){
-        MoveAccumulator(elapsed);
-    }
     
-    private function MoveAccumulator(elapsed:Float){
-        if (spawnPlugin.controlledGamePiece == null){
-            return;
-        }
-        var rotationAmount:Float = 0;
-        var pushAmount:Vector2 = new Vector2(0, 0);
-        
-        var rotateForce:Float = 2;
-        var moveForce:Float = 16;
-        
-        if (pieceCCW || ccwHeld)
-        {
-            rotationAmount -= rotateForce;
-        }
-        if (pieceCW || cwHeld)
-        {
-            rotationAmount += rotateForce;
-        }
-        
-        //If no player input then counteract the game pieces rotation
-        //makes piece much easier to control. Length check is here so
-        //the piece doesn't go wonky when one of the pieces pops.
-        if (rotationAmount == 0 && spawnPlugin.controlledGamePiece.Blocks.length == 3){
-            rotationAmount = -clampValue(spawnPlugin.controlledGamePiece.RotationSpeed, -1, 1);
-        }
-
-        if (pieceLeft || leftHeld){
-            pushAmount.x -= moveForce;
-        }
-        if (pieceRight || rightHeld){
-            pushAmount.x += moveForce;
-        }
-        if (pieceUp){
-            pushAmount.y -= moveForce;
-        }
-        if (pieceDown){
-            pushAmount.y += moveForce;
-        }
-        if (pushAmount.x != 0 || pushAmount.y !=0){
-            spawnPlugin.controlledGamePiece.ApplyForce(pushAmount);
-        }
-        if (rotationAmount != 0 && Math.abs(spawnPlugin.controlledGamePiece.Omega()) < 6.0){
-            spawnPlugin.controlledGamePiece.ApplyTorque(rotationAmount);
-        }
-    }
     
-    function clampValue(value:Float, low:Float, high:Float) 
-    {
-        var result:Float = value;
-        if (result < low){
-            result = low;
-        }else if (result > high){
-            result = high;
-        }
-       return result; 
-    }
 }

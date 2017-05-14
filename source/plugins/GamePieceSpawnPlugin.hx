@@ -21,6 +21,8 @@ import patterns.TriominoPatterns;
  */
 class GamePieceSpawnPlugin extends PluginBase 
 {
+    public var controlPlugin:GamePieceControlPlugin;
+    
     private var timeSinceSpawn:Float = 0;
     private var spawnTimer:Float = 0.0;
     private var spawnTimerMax:Float = 10.0;
@@ -39,8 +41,8 @@ class GamePieceSpawnPlugin extends PluginBase
     private var world:JellyBlocksWorld;
     private var builder:GamePieceBuilder;
         
-    public var previewGamePiece:GamePiece = null;
-    public var controlledGamePiece:GamePiece = null;
+    private var nextGamePiece:GamePiece = null;
+    private var currGamePiece:GamePiece = null;
     
     private var previewBackgroundSize:Int = 70;
     
@@ -100,27 +102,30 @@ class GamePieceSpawnPlugin extends PluginBase
         super.update(elapsed);
         input.Update(elapsed);
         
-        if (previewGamePiece == null){
-            previewGamePiece = createGamePiece(builder, spawnPos);
+        if (nextGamePiece == null){
+            nextGamePiece = createGamePiece(builder, spawnPos);
             previewOverlay.makeGraphic(previewBackgroundSize, previewBackgroundSize, FlxColor.MAGENTA);
             makePreviewOverlay();
         }
         
         timeSinceSpawn += elapsed;
         
-        if (controlledGamePiece!= null && controlledGamePiece.HasEverCollided){
+        if (currGamePiece!= null && currGamePiece.HasEverCollided){
             spawnTimerInc = spawnTimerMax / minLifeTime;
         }
         
         spawnTimer += spawnTimerInc * elapsed;
         if (spawnTimer > spawnTimerMax){
-            if (controlledGamePiece != null){
-                controlledGamePiece.IsControlled = false;
+            if (currGamePiece != null){
+                currGamePiece.IsControlled = false;
             }
-            controlledGamePiece = previewGamePiece;
+            currGamePiece = nextGamePiece;
+            if (controlPlugin != null){
+                controlPlugin.controlled = currGamePiece;
+            }
             //trace("new game piece is: " + controlledGamePiece.Shape);
-            addGamePiece(controlledGamePiece, true, false);
-            previewGamePiece = createGamePiece(builder, spawnPos);
+            addGamePiece(currGamePiece, true, false);
+            nextGamePiece = createGamePiece(builder, spawnPos);
             makePreviewOverlay();
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
@@ -131,22 +136,22 @@ class GamePieceSpawnPlugin extends PluginBase
     private function makePreviewOverlay(){
         
         var blockSize:Int = Std.int(previewBackgroundSize / 3.5);
-        var blockPattern:Array<Vector2> = TriominoPatterns.getPattern(previewGamePiece.Shape);
+        var blockPattern:Array<Vector2> = TriominoPatterns.getPattern(nextGamePiece.Shape);
         var overLaybitmap:Sprite = new Sprite();
         overLaybitmap.cacheAsBitmap = true;
         overLaybitmap.graphics.lineStyle(1, FlxColor.BLACK, 0.5);
-        for (i in 0...previewGamePiece.Blocks.length){
+        for (i in 0...nextGamePiece.Blocks.length){
             var blockPos:Vector2 = blockPattern[i];
             var xOff:Float = 0;
             var yOff:Float = 0;
-            if (previewGamePiece.Shape == TriominoShape.Line){
+            if (nextGamePiece.Shape == TriominoShape.Line){
                 xOff = (previewBackgroundSize-(blockSize * 3)) / 2;
                 yOff = (previewBackgroundSize-blockSize) / 2;
-            }else if (previewGamePiece.Shape == TriominoShape.Corner){
+            }else if (nextGamePiece.Shape == TriominoShape.Corner){
                 xOff = (previewBackgroundSize-(blockSize * 2)) / 2;
                 yOff = (previewBackgroundSize-(blockSize * 2)) / 2;
             }
-            overLaybitmap.graphics.beginFill(colorSource.getColor(previewGamePiece.Blocks[i].Material));
+            overLaybitmap.graphics.beginFill(colorSource.getColor(nextGamePiece.Blocks[i].Material));
             overLaybitmap.graphics.moveTo(xOff+(blockPos.x * blockSize), yOff+(blockPos.y * blockSize));
             overLaybitmap.graphics.lineTo(xOff+((blockPos.x+1) * blockSize), yOff+(blockPos.y * blockSize));
             overLaybitmap.graphics.lineTo(xOff+((blockPos.x+1) * blockSize), yOff+((blockPos.y+1) * blockSize));
@@ -171,8 +176,8 @@ class GamePieceSpawnPlugin extends PluginBase
         world.addGamePiece(newGamePiece, controlled, kinematic);
         
         if (controlled){
-            if(controlledGamePiece != null){
-                controlledGamePiece.IsControlled = false;
+            if(currGamePiece != null){
+                currGamePiece.IsControlled = false;
             }
             newGamePiece.IsControlled = true;
         }
