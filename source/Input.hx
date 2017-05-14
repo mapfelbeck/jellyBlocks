@@ -14,6 +14,7 @@ import flixel.input.keyboard.FlxKey;
 typedef KeyboardInputCallback = FlxKey->PressType->Void;
 typedef GamepadButtonCallback = FlxGamepadInputID->PressType->Void;
 typedef GamepadAnalogCallback = FlxGamepadInputID->Float->Void;
+typedef GamepadStickCallback = FlxGamepadInputID->Float->Float->Void;
 
 class Input
 {
@@ -22,6 +23,8 @@ class Input
     private var keyUpMap:Map<FlxKey, Array<KeyboardInputCallback>>;
     
     private var analogMap:Map<FlxGamepadInputID, Array<GamepadAnalogCallback>>;
+    
+    private var stickMap:Map<FlxGamepadInputID, Array<GamepadStickCallback>>;
     
     private var buttonDownMap:Map<FlxGamepadInputID, Array<GamepadButtonCallback>>;
     private var buttonPressedMap:Map<FlxGamepadInputID, Array<GamepadButtonCallback>>;
@@ -38,6 +41,8 @@ class Input
         keyUpMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
 
         analogMap = new Map<FlxGamepadInputID, Array<GamepadAnalogCallback>>();
+        
+        stickMap = new Map<FlxGamepadInputID, Array<GamepadStickCallback>>();
 
         buttonDownMap = new Map<FlxGamepadInputID, Array<GamepadButtonCallback>>();
         buttonPressedMap = new Map<FlxGamepadInputID, Array<GamepadButtonCallback>>();
@@ -104,6 +109,16 @@ class Input
                 }
             }
         }
+        for (stick in stickMap.keys()){
+            var xValue:Float = gamepad.getXAxis(stick);
+            var yValue:Float = gamepad.getYAxis(stick);
+            
+            if(Math.abs(xValue) >= analogThreshhold || Math.abs(yValue) >= analogThreshhold){
+                for (action in stickMap.get(stick)){
+                    action(stick, xValue, yValue);
+                }
+            }
+        }
         #end
     }
     
@@ -161,6 +176,19 @@ class Input
         }else{
             actionArray = new Array<GamepadAnalogCallback>();
             analogMap.set(button, actionArray);
+        }
+        
+        actionArray.push(action);
+    }
+    
+    public function AddGamepadStickInput(button:FlxGamepadInputID, action:GamepadStickCallback) 
+    {   
+        var actionArray:Array<GamepadStickCallback> = null;
+        if (analogMap.exists(button)){
+            actionArray = stickMap.get(button);
+        }else{
+            actionArray = new Array<GamepadStickCallback>();
+            stickMap.set(button, actionArray);
         }
         
         actionArray.push(action);

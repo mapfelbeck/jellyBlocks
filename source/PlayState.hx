@@ -67,6 +67,7 @@ class PlayState extends FlxUIState
     
     private var plugins:List<PluginBase> = new List<PluginBase>();
     private var spawnPlugin:GamePieceSpawnPlugin;
+    private var controlPlugin:GamePieceControlPlugin;
 
 	override public function create():Void
 	{
@@ -107,6 +108,7 @@ class PlayState extends FlxUIState
         input.AddKeyboardInput(FlxKey.D, pushPieceRight, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.W, pushPieceUp, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.S, pushPieceDown, PressType.Pressed);
+        
         input.AddGamepadButtonInput(FlxGamepadInputID.A, buttonCmd, PressType.Pressed);
         input.AddGamepadButtonInput(FlxGamepadInputID.B, buttonCmd, PressType.Pressed);
         input.AddGamepadButtonInput(FlxGamepadInputID.X, buttonCmd, PressType.Down);
@@ -115,8 +117,10 @@ class PlayState extends FlxUIState
         input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Down);
         input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Pressed);
         input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Up);
+                
+        input.AddGamepadStickInput(FlxGamepadInputID.LEFT_ANALOG_STICK, stickInput);
+        input.AddGamepadStickInput(FlxGamepadInputID.RIGHT_ANALOG_STICK, stickInput);
         
-        input.AddGamepadAnalogInput(FlxGamepadInputID.LEFT_TRIGGER, buttonAnalog);
         input.AddKeyboardInput(FlxKey.LEFT, rotatePieceCCW, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
@@ -171,6 +175,11 @@ class PlayState extends FlxUIState
         trace("Button " + button.toString() + " is " + value);
     }
     
+    function stickInput(stick:FlxGamepadInputID, xValue:Float, yValue:Float): Void
+    {
+        trace("Stick " + stick.toString() + " is (" + xValue+", " + yValue+")");
+    }
+    
     private function loadPlugins():Void
     {
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
@@ -182,6 +191,10 @@ class PlayState extends FlxUIState
         plugins.add(colorRotatePlugin);
         
         spawnPlugin = new GamePieceSpawnPlugin(this, colorSource, physicsWorld, pieceBuilder);
+        add(spawnPlugin);
+        plugins.add(spawnPlugin);
+        
+        controlPlugin = new GamePieceControlPlugin(this, input);
         add(spawnPlugin);
         plugins.add(spawnPlugin);
         
