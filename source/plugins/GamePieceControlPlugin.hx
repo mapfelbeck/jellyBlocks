@@ -1,4 +1,5 @@
 package plugins;
+
 import enums.PressType;
 import gamepieces.GamePiece;
 import plugins.PluginBase;
@@ -7,6 +8,8 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
 import jellyPhysics.math.Vector2;
+import flixel.ui.FlxButton;
+
 /**
  * ...
  * @author Michael Apfelbeck
@@ -33,6 +36,64 @@ class GamePieceControlPlugin extends PluginBase
         horizontalPush = 0;
         verticalPush = 0;
         rotatateAmount = 0;
+    }
+    
+    public function addLeftButton(button: FlxButton):Void{
+        button.onUp.callback = OnLeftDown;
+        button.onDown.callback = OnLeftUp;
+    }
+    
+    public function addRightButton(button: FlxButton):Void{
+        button.onDown.callback = OnRightDown;
+        button.onUp.callback = OnRightUp;
+    }
+    
+    public function addCCWButton(button: FlxButton):Void{
+        button.onDown.callback = OnCCWDown;
+        button.onUp.callback = OnCCWUp;
+    }
+    
+    public function addCWButton(button: FlxButton):Void{
+        button.onDown.callback = OnCWDown;
+        button.onUp.callback = OnCWUp;
+    }
+    
+    private var leftHeld:Bool = false;
+    private var rightHeld:Bool = false;
+    private var ccwHeld:Bool = false;
+    private var cwHeld:Bool = false;
+    
+    function OnLeftDown() 
+    {
+        leftHeld = true;
+    }
+    function OnLeftUp() 
+    {
+        leftHeld = false;
+    }
+    function OnRightDown() 
+    {
+        rightHeld = true;
+    }
+    function OnRightUp() 
+    {
+        rightHeld = false;
+    }
+    function OnCWDown() 
+    {
+        cwHeld = true;
+    }
+    function OnCWUp() 
+    {
+        cwHeld = false;
+    }
+    function OnCCWDown() 
+    {
+        ccwHeld = true;
+    }
+    function OnCCWUp() 
+    {
+        ccwHeld = false;
     }
     
     private function connectInput():Void{
@@ -80,6 +141,21 @@ class GamePieceControlPlugin extends PluginBase
         rotatateAmount = 1.0;
     }
     
+    private function buttonCheck():Void{
+        if (leftHeld){
+            horizontalPush = -1;
+        }
+        if (rightHeld){
+            horizontalPush = 1;
+        }
+        if (ccwHeld){
+            rotatateAmount = -1;
+        }
+        if (cwHeld){
+            rotatateAmount = 1;
+        }
+    }
+    
     /*function buttonCmd(button:FlxGamepadInputID, type:PressType): Void
     {
         trace("Button " + button.toString() + " is " + type.getName());
@@ -110,6 +186,8 @@ class GamePieceControlPlugin extends PluginBase
         if (controlled == null){
             return;
         }
+        
+        buttonCheck();
         
         var pushAmount:Vector2 = new Vector2(0, 0);
         

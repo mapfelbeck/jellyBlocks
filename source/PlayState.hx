@@ -132,7 +132,6 @@ class PlayState extends FlxUIState
         render.setGameGround(ground);
         
         #if (html5)
-        //var r:EReg = new EReg("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini", "i");
         if (Capabilities.IsMobileBrowser()){
             settings.showTouchControls = true;
         }
@@ -140,9 +139,9 @@ class PlayState extends FlxUIState
         settings.showTouchControls = true;
         #end
         
-        if (settings.showTouchControls){
+        //if (settings.showTouchControls){
             addButtons();
-        }
+        //}
         
         EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
 	}
@@ -233,85 +232,40 @@ class PlayState extends FlxUIState
         var rightButtonHoriz:Float = 0.8;
         
         leftButton = new FlxButton(buttonSize, buttonSize, null, null);
-        leftButton.onDown.callback = OnLeftDown;
-        leftButton.onUp.callback = OnLeftUp;
-        leftButton.onOut.callback = OnLeftUp;
         leftButton.loadGraphic("assets/images/LeftSprite.png", true, spriteSize, spriteSize);
         leftButton.alpha = buttonTrans;
         leftButton.scale.set(buttonScale, buttonScale);
         leftButton.x = WINDOW_WIDTH * leftButtonHoriz;
         leftButton.y = WINDOW_HEIGHT * dirButtonVert;
+        controlPlugin.addLeftButton(leftButton);
         add(leftButton);
         
         rightButton = new FlxButton(buttonSize, buttonSize, null, null);
-        rightButton.onDown.callback = OnRightDown;
-        rightButton.onUp.callback = OnRightUp;
-        rightButton.onOut.callback = OnRightUp;
         rightButton.loadGraphic("assets/images/RightSprite.png", true, spriteSize, spriteSize);
         rightButton.alpha = buttonTrans;
         rightButton.scale.set(buttonScale, buttonScale);
         rightButton.x = WINDOW_WIDTH * rightButtonHoriz;
         rightButton.y = WINDOW_HEIGHT * dirButtonVert;
+        controlPlugin.addRightButton(rightButton);
         add(rightButton);
         
         ccwButton = new FlxButton(buttonSize, buttonSize, null, null);
-        ccwButton.onDown.callback = OnCCWDown;
-        ccwButton.onUp.callback = OnCCWUp;
-        ccwButton.onOut.callback = OnCCWUp;
         ccwButton.loadGraphic("assets/images/RotateCCWSprite.png", true, spriteSize, spriteSize);
         ccwButton.alpha = buttonTrans;
         ccwButton.scale.set(buttonScale, buttonScale);
         ccwButton.x = WINDOW_WIDTH * leftButtonHoriz;
         ccwButton.y = WINDOW_HEIGHT * turnButtonVert;
+        controlPlugin.addCCWButton(ccwButton);
         add(ccwButton);
         
         cwButton = new FlxButton(buttonSize, buttonSize, null, null);
-        cwButton.onDown.callback = OnCWDown;
-        cwButton.onUp.callback = OnCWUp;
-        cwButton.onOut.callback = OnCWUp;
         cwButton.loadGraphic("assets/images/RotateCWSprite.png", true, spriteSize, spriteSize);
         cwButton.alpha = buttonTrans;
         cwButton.scale.set(buttonScale, buttonScale);
         cwButton.x = WINDOW_WIDTH * rightButtonHoriz;
         cwButton.y = WINDOW_HEIGHT * turnButtonVert;
+        controlPlugin.addCWButton(cwButton);
         add(cwButton);
-    }
-    
-    private var leftHeld:Bool = false;
-    private var rightHeld:Bool = false;
-    private var ccwHeld:Bool = false;
-    private var cwHeld:Bool = false;
-    function OnLeftDown() 
-    {
-        leftHeld = true;
-    }
-    function OnLeftUp() 
-    {
-        leftHeld = false;
-    }
-    function OnRightDown() 
-    {
-        rightHeld = true;
-    }
-    function OnRightUp() 
-    {
-        rightHeld = false;
-    }
-    function OnCWDown() 
-    {
-        cwHeld = true;
-    }
-    function OnCWUp() 
-    {
-        cwHeld = false;
-    }
-    function OnCCWDown() 
-    {
-        ccwHeld = true;
-    }
-    function OnCCWUp() 
-    {
-        ccwHeld = false;
     }
     
     private function createDrawSurface():Sprite
