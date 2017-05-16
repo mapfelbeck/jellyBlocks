@@ -1,12 +1,13 @@
 package;
 
 import flixel.FlxG;
-import flixel.util.FlxColor;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
+import flixel.addons.ui.FlxUICursor;
 import flixel.addons.ui.FlxUIState;
 import flixel.graphics.FlxGraphic;
+import flixel.util.FlxColor;
 import util.Capabilities;
 
 class MenuState extends FlxUIState
@@ -14,8 +15,10 @@ class MenuState extends FlxUIState
 	override public function create():Void
 	{
 		_xml_id = "menu_screen";
+		_makeCursor = true;
 		super.create();
         init();
+        
 	}
     
     private function init(){
@@ -25,6 +28,10 @@ class MenuState extends FlxUIState
             FlxG.mouse.visible = false;
         }
         #end
+        
+        //cursor.loadGraphic("assets/gfx/ui/1px_trans.png");
+        cursor.setDefaultKeys(FlxUICursor.KEYS_ARROWS | FlxUICursor.GAMEPAD_DPAD | FlxUICursor.GAMEPAD_LEFT_STICK);
+        cursor.visible = false;
         
         FlxTransitionableState.defaultTransIn = new TransitionData();
         FlxTransitionableState.defaultTransOut = new TransitionData();

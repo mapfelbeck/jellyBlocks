@@ -1,7 +1,10 @@
 package;
 
+import enums.PressType;
 import flixel.FlxG;
+import flixel.addons.ui.FlxUICursor;
 import flixel.addons.ui.FlxUIPopup;
+import flixel.input.gamepad.FlxGamepadInputID;
 
 /**
  * ...
@@ -9,7 +12,7 @@ import flixel.addons.ui.FlxUIPopup;
  */
 class PauseMenu extends FlxUIPopup
 {
-
+    private var input:Input;
     public function new() 
     {
         super();
@@ -17,7 +20,16 @@ class PauseMenu extends FlxUIPopup
     
     override public function create(){
 		_xml_id = "pause_menu";
+        _makeCursor = true;
         super.create();
+        
+        cursor.setDefaultKeys(FlxUICursor.KEYS_ARROWS | FlxUICursor.GAMEPAD_DPAD | FlxUICursor.GAMEPAD_LEFT_STICK);
+        cursor.visible = false;
+        
+        
+        input = new Input();
+        
+        input.AddGamepadButtonInput(FlxGamepadInputID.B, closeBtn, PressType.Down);
     }
     
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
@@ -48,4 +60,16 @@ class PauseMenu extends FlxUIPopup
 				}
 		}
 	}
+    
+    override public function update(elapsed:Float):Void
+    {
+        super.update(elapsed);
+
+        input.Update(elapsed);
+    }
+    
+    private function closeBtn(button:FlxGamepadInputID, type:PressType){
+        trace("close gamepad button");
+        close();
+    }
 }

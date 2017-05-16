@@ -3,17 +3,18 @@ package plugins;
 import builders.GamePieceBuilder;
 import enums.*;
 import events.*;
-import openfl.display.*;
 import flixel.FlxSprite;
 import flixel.addons.ui.FlxUIState;
+import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
 import jellyPhysics.math.Vector2;
-import render.IColorSource;
+import openfl.display.*;
 import patterns.TriominoPatterns;
+import render.IColorSource;
 
 /**
  * ...
@@ -92,8 +93,9 @@ class GamePieceSpawnPlugin extends PluginBase
         parent.add(previewBar);
         
         input = new Input();
-        input.AddKeyboardInput(FlxKey.SPACE, spawnPiece, PressType.Down);
-        
+        input.AddKeyboardInput(FlxKey.SPACE, spawnPieceKey, PressType.Down);
+        input.AddGamepadButtonInput(FlxGamepadInputID.A, spawnPieceBtn, PressType.Down);
+
         spawnTimerInc = spawnTimerMax / timeTillFirstSpawn;
     }
     
@@ -183,10 +185,18 @@ class GamePieceSpawnPlugin extends PluginBase
         }
     }
     
-    private function spawnPiece(key:FlxKey, type:PressType):Void{
+    private function spawnPiece():Void{
         if (timeSinceSpawn > minLifeTime){
             spawnTimer = spawnTimerMax;
         }
+    }
+    
+    private function spawnPieceKey(key:FlxKey, type:PressType):Void{
+        spawnPiece();
+    }
+    
+    private function spawnPieceBtn(button:FlxGamepadInputID, type:PressType):Void{
+        spawnPiece();
     }
     
 }

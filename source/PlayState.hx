@@ -6,13 +6,14 @@ import builders.GamePieceBuilder;
 import builders.ShapeBuilder;
 import constants.GameConstants;
 import constants.PhysicsDefaults;
-import flixel.input.gamepad.FlxGamepadInputID;
 import enums.*;
 import events.*;
 import flash.events.*;
 import flixel.*;
 import flixel.addons.ui.FlxUIState;
+import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
+import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
@@ -105,9 +106,14 @@ class PlayState extends FlxUIState
         
         input = new Input();
         
+        input.AddGamepadButtonInput(FlxGamepadInputID.START, pauseBtn, PressType.Down);
+        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_SHOULDER, unfreezeBtn, PressType.Down);
+        input.AddGamepadButtonInput(FlxGamepadInputID.RIGHT_SHOULDER, scrambleColorsBtn, PressType.Down);
         input.AddKeyboardInput(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
         input.AddKeyboardInput(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
-        input.AddKeyboardInput(FlxKey.F, unfreeze, PressType.Down);
+        input.AddKeyboardInput(FlxKey.F, unfreezeKey, PressType.Down);
+        input.AddKeyboardInput(FlxKey.S, scrambleColorsKey, PressType.Down);
+        input.AddKeyboardInput(FlxKey.ESCAPE, pauseKey, PressType.Down);
 
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -191,26 +197,30 @@ class PlayState extends FlxUIState
         return render;
     }
 
-	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
-	{
-		var str:String = "";
-		
-		switch (name)
-		{
-			case "finish_load":
-			case "click_button":
+    public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
+    {
+        var str:String = "";
+
+        switch (name)
+        {
+            case "finish_load":
+            case "click_button":
                 trace("Button click.");
-				if (params != null && params.length > 0)
-				{
-					switch (Std.string(params[0]))
-					{
-                        case "pause": openSubState(new PauseMenu());
-					}
-				}
-                case "RELOAD":
-                    FlxG.resetState();
-		}
-	}
+            if (params != null && params.length > 0)
+            {
+                switch (Std.string(params[0]))
+                {
+                    case "pause": pauseGame();
+                }
+            }
+            case "RELOAD":
+                FlxG.resetState();
+        }
+    }
+    
+    private function pauseGame():Void{
+        openSubState(new PauseMenu());
+    }
     
     /*override public function onResize(Width:Int, Height:Int):Void 
     {
@@ -299,7 +309,7 @@ class PlayState extends FlxUIState
     }
     
     private function OnColorRotated(sender:Dynamic, event:String, params:Dynamic){
-        unfreeze(FlxKey.F, PressType.Down);
+        unfreezeKey(FlxKey.F, PressType.Down);
     }
     
     private function adjustColorUp(key: FlxKey, type:PressType):Void{
@@ -312,7 +322,11 @@ class PlayState extends FlxUIState
         EventManager.Trigger(this, Events.COLOR_ROTATE);
     }
     
-    private function unfreeze(key: FlxKey, type:PressType):Void{
+    private function unfreezeKey(key: FlxKey, type:PressType):Void{
+        unfreeze();
+    }
+    
+    private function unfreeze():Void{
         for (i in 0...physicsWorld.NumberBodies){
             var body:Body = physicsWorld.GetBody(i);
             if (!body.IsStatic){
@@ -320,6 +334,38 @@ class PlayState extends FlxUIState
                 if (freezingBlock != null){
                     freezingBlock.UnFreezeFor(5.0);
                 }
+            }
+        }
+    }
+    
+    private function unfreezeBtn(button: FlxGamepadInputID, type:PressType):Void{
+        unfreezeKey(FlxKey.F, PressType.Pressed);
+    }
+    
+    private function scrambleColorsBtn(button: FlxGamepadInputID, type:PressType):Void{
+        scrambleColors();
+    }
+    
+    private function scrambleColorsKey(key:FlxKey, type:PressType):Void{
+        scrambleColors();
+    }
+    
+    private function pauseBtn(button: FlxGamepadInputID, type:PressType):Void{
+        pauseGame();
+    }
+    
+    private function pauseKey(key:FlxKey, type:PressType):Void{
+        pauseGame();
+    }
+    
+    private function scrambleColors():Void{
+        trace("scrambling colors...");
+        var random:FlxRandom = new FlxRandom();
+        for (i in 0...physicsWorld.NumberBodies){
+            var body:Body = physicsWorld.GetBody(i);
+            if (!body.IsStatic){
+                body.Material = random.int(0, GameConstants.UniqueColors - 1);
+                trace("new material: " + body.Material);
             }
         }
     }

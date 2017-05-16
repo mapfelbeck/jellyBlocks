@@ -23,8 +23,6 @@ task: [1.0.7]
 ToDo:
     Controller support
         add ability to delete input mapping
-        make gamepad actually functional
-        make touch controls work again
     Fix piece preview colors do not rotate bug
     Resolution independence
     push up jellyPhysics updates
