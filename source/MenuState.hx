@@ -30,8 +30,11 @@ class MenuState extends FlxUIState
         #end
         
         //cursor.loadGraphic("assets/gfx/ui/1px_trans.png");
+        
+        #if !mobile
         cursor.setDefaultKeys(FlxUICursor.KEYS_ARROWS | FlxUICursor.GAMEPAD_DPAD | FlxUICursor.GAMEPAD_LEFT_STICK);
         cursor.visible = false;
+        #end
         
         FlxTransitionableState.defaultTransIn = new TransitionData();
         FlxTransitionableState.defaultTransOut = new TransitionData();

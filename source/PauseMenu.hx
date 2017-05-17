@@ -23,9 +23,10 @@ class PauseMenu extends FlxUIPopup
         _makeCursor = true;
         super.create();
         
+        #if !mobile
         cursor.setDefaultKeys(FlxUICursor.KEYS_ARROWS | FlxUICursor.GAMEPAD_DPAD | FlxUICursor.GAMEPAD_LEFT_STICK);
         cursor.visible = false;
-        
+        #end
         
         input = new Input();
         
