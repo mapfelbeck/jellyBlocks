@@ -26,12 +26,12 @@ class GamePieceSpawnPlugin extends PluginBase
     
     private var timeSinceSpawn:Float = 0;
     private var spawnTimer:Float = 0.0;
-    private var spawnTimerMax:Float = 10.0;
+    private var spawnTimerMax:Float = 9.0;
     private var spawnTimerInc:Float = 0.0;
     //timer starts spawning pieces 3 seconds after game loads.
     private var timeTillFirstSpawn:Float = 3.0;
     //don't spaw pieces at less than this interval
-    private var minLifeTime:Float = 4.0;
+    private var minLifeTime:Float = 3.5;
     //spawn pieces at at least this interval
     private var maxLifeTime:Float = 8.0;
     

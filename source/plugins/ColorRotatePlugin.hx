@@ -20,7 +20,7 @@ class ColorRotatePlugin extends PluginBase
     private var timeSincePop:Float = 0.0;
     
     //how much to accumulate before colors stuff shift
-    private static var accumulateThreshold:Float = 6.0;
+    private static var accumulateThreshold:Float = 6.5;
     //amount per block pop
     private static var popAccumulate:Float = 1.0;
     //amount per second

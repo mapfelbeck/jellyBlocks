@@ -70,6 +70,8 @@ class PlayState extends FlxUIState
     private var spawnPlugin:GamePieceSpawnPlugin;
     private var controlPlugin:GamePieceControlPlugin;
 
+    private var physicsPaused:Bool = false;
+    
 	override public function create():Void
 	{
 		_xml_id = "play_state";
@@ -112,8 +114,10 @@ class PlayState extends FlxUIState
         input.AddKeyboardInput(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
         input.AddKeyboardInput(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
         input.AddKeyboardInput(FlxKey.F, unfreezeKey, PressType.Down);
-        input.AddKeyboardInput(FlxKey.S, scrambleColorsKey, PressType.Down);
+        input.AddKeyboardInput(FlxKey.R, scrambleColorsKey, PressType.Down);
         input.AddKeyboardInput(FlxKey.ESCAPE, pauseKey, PressType.Down);
+        input.AddKeyboardInput(FlxKey.P, pausePhysics, PressType.Down);
+        
 
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -210,7 +214,7 @@ class PlayState extends FlxUIState
             {
                 switch (Std.string(params[0]))
                 {
-                    case "pause": pauseGame();
+                    case "pause": pauseMenu();
                 }
             }
             case "RELOAD":
@@ -218,7 +222,7 @@ class PlayState extends FlxUIState
         }
     }
     
-    private function pauseGame():Void{
+    private function pauseMenu():Void{
         openSubState(new PauseMenu());
     }
     
@@ -305,7 +309,42 @@ class PlayState extends FlxUIState
 
         input.Update(elapsed);
         
-        physicsWorld.Update(elapsed);
+        if(!physicsPaused){
+            physicsWorld.Update(elapsed);
+        }
+        
+        if (FlxG.mouse.justPressed){
+            //trace("mouse click: ("+FlxG.mouse.screenX+", "+FlxG.mouse.screenY+")");
+            var localX:Float = worldToLocalX(FlxG.mouse.screenX);
+            var localY:Float = worldToLocalY(FlxG.mouse.screenY);
+            //trace("as world coordinate:: (" + localX + ", " + localY + ")");
+            var underCursor:Body = physicsWorld.GetBodyContaining(new Vector2(localX, localY));
+            if (underCursor != null){
+                trace("clicked body id: " + underCursor.BodyNumber);
+                var otherBodies:List<Body> = physicsWorld.BodiesThatIntersect(underCursor);
+                for (body in otherBodies){
+                    trace("Body "+underCursor.BodyNumber+" intersects body " + body.BodyNumber);
+                }
+            }
+        }
+    }
+    public var off:Vector2 = new Vector2(225, 300);
+    public var sc:Vector2 = new Vector2(17.916666666666668, 17.916666666666668);       
+    private function localToWorldX(x:Float):Int{
+        return Std.int((x * sc.x) + off.x);
+    }
+    
+    private function localToWorldY(y:Float):Int{
+        return Std.int((y * sc.y) + off.y);
+    }    
+    private function worldToLocalX(x:Int):Float{
+        var worldX:Float = x;
+        return (worldX - off.x) / sc.x;
+    }
+    
+    private function worldToLocalY(y:Int):Float{
+        var worldY:Float = y;
+        return (worldY - off.y) / sc.y;
     }
     
     private function OnColorRotated(sender:Dynamic, event:String, params:Dynamic){
@@ -351,11 +390,15 @@ class PlayState extends FlxUIState
     }
     
     private function pauseBtn(button: FlxGamepadInputID, type:PressType):Void{
-        pauseGame();
+        pauseMenu();
     }
     
     private function pauseKey(key:FlxKey, type:PressType):Void{
-        pauseGame();
+        pauseMenu();
+    }
+    
+    private function pausePhysics(key:FlxKey, type:PressType):Void{
+        physicsPaused = !physicsPaused;
     }
     
     private function scrambleColors():Void{
@@ -365,7 +408,6 @@ class PlayState extends FlxUIState
             var body:Body = physicsWorld.GetBody(i);
             if (!body.IsStatic){
                 body.Material = random.int(0, GameConstants.UniqueColors - 1);
-                trace("new material: " + body.Material);
             }
         }
     }
