@@ -225,9 +225,8 @@ class QuadTreeCollider implements ColliderBase
             var w:Float = body.BoundingBox.Width;
             var h:Float = body.BoundingBox.Height;
 
-            //var treeObject = new FlxObject(x - w * 0.05, y - h * 0.05, w * 1.1, h * 1.1);
-            var treeObject = new QuadColliderObject(x - w * 0.05, y - h * 0.05, w * 1.1, h * 1.1,
-                                                    body);
+            var treeObject = new QuadColliderObject(x - 0.05, y - 0.05, w + 0.05, h + 0.05, body);
+            //var treeObject = new QuadColliderObject(x - w, y - h, w, h, body);
             treeObject.ID = body.BodyNumber;
             tree.load(treeObject, null, AddCollisionCallback, FilterCallback);
         }

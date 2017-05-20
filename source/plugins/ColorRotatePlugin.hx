@@ -16,6 +16,11 @@ import render.IColorSource;
  */
 class ColorRotatePlugin extends PluginBase 
 {
+    public var Accumulated(get, null):Float;
+    public function get_Accumulated(){
+        return accumulated;
+    }
+    
     private var accumulated:Float = 0.0;
     private var timeSincePop:Float = 0.0;
     
@@ -57,7 +62,7 @@ class ColorRotatePlugin extends PluginBase
         emptyBar = new FlxSprite(0, 0, emptyBarSpriteAssetPath);
         fullBar = new FlxSprite(0, 0, fullBarSpriteAssetPath);
         
-        chargeBar = new FlxBar(0, yPos, null, Std.int(emptyBar.width), Std.int(emptyBar.height), this, "accumulated", 0, accumulateThreshold, false);
+        chargeBar = new FlxBar(0, yPos, null, Std.int(emptyBar.width), Std.int(emptyBar.height), this, "Accumulated", 0, accumulateThreshold, false);
         chargeBar.createImageBar(emptyBar.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(chargeBar);
         

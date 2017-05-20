@@ -35,3 +35,4 @@ ToDo:
     Sound FX
     Expand color generator to make complimentry colors as well
     rotate backgrounds when colors rotate
+    fix flash alpha ref bug

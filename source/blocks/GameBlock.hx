@@ -13,8 +13,12 @@ import jellyPhysics.PressureBody;
  * ...
  * @author 
  */
+typedef SameMaterialCollisionCallback = GameBlock->GameBlock->Void;
+
 class GameBlock extends PressureBody
 {
+    public var sameMarerialCollisionCallback:SameMaterialCollisionCallback;
+    
     private var freezeable:Bool;
     public var Freezeable(get, set):Bool;
     public function get_Freezeable(){ return freezeable; }
@@ -69,7 +73,7 @@ class GameBlock extends PressureBody
     //delete if the block falls below this treshhold
     private var deleteRange:Float;
     
-    public var CollisionList:Array<GameBlock>;
+    //public var CollisionList:Array<GameBlock>;
         
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2, 
     angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool, 
@@ -80,7 +84,7 @@ class GameBlock extends PressureBody
     
         config = blockConfig;
         CollisionCallback = CollideWith;
-        CollisionList = new Array<GameBlock>();
+        //CollisionList = new Array<GameBlock>();
         moveForce = new Vector2(0, 0);
         rotateCenter = new Vector2(0, 0);
         rotateAmount = 0.0;
@@ -90,26 +94,30 @@ class GameBlock extends PressureBody
         poppable = true;
     }
     
-    function CollideWith(otherBlock:Body):Void
+    function CollideWith(otherBody:Body):Void
     {
-        if (GroupNumber != otherBlock.GroupNumber)
+        if (GroupNumber != otherBody.GroupNumber)
         {
             hasEverCollided = true;
         }
 
-        if (GroupNumber != otherBlock.GroupNumber && !otherBlock.IsStatic ||
-            hasEverCollided && !otherBlock.IsStatic)
+        //WTF is this logic for?
+        if (GroupNumber != otherBody.GroupNumber && !otherBody.IsStatic ||
+            hasEverCollided && !otherBody.IsStatic)
         {
             collidedThisFrame = true;
         }
         
-        if (Material == otherBlock.Material)
+        if (Material == otherBody.Material)
         {
-            var other:GameBlock = Std.instance(otherBlock, GameBlock);
-            if (CollisionList.indexOf(other) == -1)
+            var other:GameBlock = Std.instance(otherBody, GameBlock);
+            if (sameMarerialCollisionCallback != null){
+                sameMarerialCollisionCallback(this, other);
+            }
+            /*if (CollisionList.indexOf(other) == -1)
             {
                 CollisionList.push(other);
-            }
+            }*/
         }
     }
     
@@ -141,7 +149,7 @@ class GameBlock extends PressureBody
         //if a block has collided with 2 or more others of it's color we know
         //that at least 3 of the same color are touching, so mark this block and
         //every block in it's collision list as collided so they inflate and pop
-        if (CollisionList.length >= 2 && Poppable && !IsStatic)
+        /*if (CollisionList.length >= 2 && Poppable && !IsStatic)
         {
             popping = true;
             
@@ -150,7 +158,7 @@ class GameBlock extends PressureBody
             }
         }
 
-        CollisionList = new Array<GameBlock>();
+        CollisionList = new Array<GameBlock>();*/
 
         if (popping)
         {

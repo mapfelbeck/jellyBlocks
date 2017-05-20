@@ -24,6 +24,11 @@ class GamePieceSpawnPlugin extends PluginBase
 {
     public var controlPlugin:GamePieceControlPlugin;
     
+    public var SpawnTimer(get, null):Float;
+    public function get_SpawnTimer(){
+        return spawnTimer;
+    }
+    
     private var timeSinceSpawn:Float = 0;
     private var spawnTimer:Float = 0.0;
     private var spawnTimerMax:Float = 9.0;
@@ -60,6 +65,8 @@ class GamePieceSpawnPlugin extends PluginBase
     
     private var colorSource:IColorSource;
     
+    private var spawnPaused:Bool = false;
+    
     public function new(parent:FlxUIState, colorSource:IColorSource, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
     {
         super(parent, X, Y, SimpleGraphic);
@@ -88,12 +95,13 @@ class GamePieceSpawnPlugin extends PluginBase
         emptyPreviewBar = new FlxSprite(0, 0, emptyPreviewBarAssetPath);
         fullPreviewBar = new FlxSprite(0, 0, fullPreviewBarAssetPath);
         
-        previewBar = new FlxBar(xPos, yPos+previewBackgroundSize, FlxBarFillDirection.TOP_TO_BOTTOM, Std.int(emptyPreviewBar.width), Std.int(emptyPreviewBar.height), this, "spawnTimer", 0, spawnTimerMax, true);
+        previewBar = new FlxBar(xPos, yPos+previewBackgroundSize, FlxBarFillDirection.TOP_TO_BOTTOM, Std.int(emptyPreviewBar.width), Std.int(emptyPreviewBar.height), this, "SpawnTimer", 0, spawnTimerMax, true);
         previewBar.createImageBar(emptyPreviewBar.pixels, fullPreviewBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(previewBar);
         
         input = new Input();
         input.AddKeyboardInput(FlxKey.SPACE, spawnPieceKey, PressType.Down);
+        input.AddKeyboardInput(FlxKey.P, pauseSpawn, PressType.Down);
         input.AddGamepadButtonInput(FlxGamepadInputID.A, spawnPieceBtn, PressType.Down);
 
         spawnTimerInc = spawnTimerMax / timeTillFirstSpawn;
@@ -104,6 +112,9 @@ class GamePieceSpawnPlugin extends PluginBase
         super.update(elapsed);
         input.Update(elapsed);
         
+        if (spawnPaused){
+            return;
+        }
         if (nextGamePiece == null){
             nextGamePiece = createGamePiece(builder, spawnPos);
             previewOverlay.makeGraphic(previewBackgroundSize, previewBackgroundSize, FlxColor.MAGENTA);
@@ -199,4 +210,7 @@ class GamePieceSpawnPlugin extends PluginBase
         spawnPiece();
     }
     
+    private function pauseSpawn(key:FlxKey, type:PressType):Void{
+        spawnPaused = !spawnPaused;
+    }
 }

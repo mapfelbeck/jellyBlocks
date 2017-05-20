@@ -47,6 +47,7 @@ class FreezingGameBlock extends DeflatingGameBlock
                 if (!IsFrozen && CanFreeze())
                 {
                     FreezeBlock();
+                    UpdateAABB(elapsed, true);
                 }
                 else
                 {
@@ -98,7 +99,7 @@ class FreezingGameBlock extends DeflatingGameBlock
             pointMassDirectionFromDerived = VectorTools.Subtract(mass.Position, DerivedPos);
             pointMassDirectionFromDerived.normalize();
 
-            mass.Position=VectorTools.Add(mass.Position, VectorTools.Multiply( pointMassDirectionFromDerived, .10));
+            mass.Position=VectorTools.Add(mass.Position, VectorTools.Multiply( pointMassDirectionFromDerived, .1));
             ///End Hack
 
             mass.Mass = Math.POSITIVE_INFINITY;

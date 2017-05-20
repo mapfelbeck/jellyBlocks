@@ -35,7 +35,8 @@ class MenuState extends FlxUIState
         cursor.setDefaultKeys(FlxUICursor.KEYS_ARROWS | FlxUICursor.GAMEPAD_DPAD | FlxUICursor.GAMEPAD_LEFT_STICK);
         cursor.visible = false;
         #end
-        
+
+        #if !flash
         FlxTransitionableState.defaultTransIn = new TransitionData();
         FlxTransitionableState.defaultTransOut = new TransitionData();
         
@@ -53,6 +54,7 @@ class MenuState extends FlxUIState
         FlxTransitionableState.defaultTransOut.color = FlxColor.GRAY;
 
         transOut = FlxTransitionableState.defaultTransOut;
+        #end
     }
 
 	override public function update(elapsed:Float):Void

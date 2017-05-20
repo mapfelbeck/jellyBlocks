@@ -286,7 +286,7 @@ class DebugDrawWorld extends BaseDrawWorld
         this.DrawingAABB = false;
         this.DrawingGlobalBody = false;
         this.DrawingPointMasses = false;
-        this.DrawingLabels = false;
+        this.DrawingLabels = true;
         this.SetMaterialDrawOptions(constants.GameConstants.MATERIAL_GROUND, BaseDrawWorld.COLOR_WHITE, false);
         for (i in 0...constants.GameConstants.UniqueColors){
             this.SetMaterialDrawOptions(i, colorSource.getColor(i), true);

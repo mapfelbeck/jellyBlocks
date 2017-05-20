@@ -135,7 +135,8 @@ class PlayState extends FlxUIState
         setupConfigForSpawingBlocks();
         
         //#if (html5)
-        render = setupSolidColorRender();
+        //render = setupSolidColorRender();
+        render = setupDebugRender();
         //#else
         //render = setupTexturedRender();
         //#end
@@ -320,13 +321,31 @@ class PlayState extends FlxUIState
             //trace("as world coordinate:: (" + localX + ", " + localY + ")");
             var underCursor:Body = physicsWorld.GetBodyContaining(new Vector2(localX, localY));
             if (underCursor != null){
+                trace("********************");
                 trace("clicked body id: " + underCursor.BodyNumber);
-                var otherBodies:List<Body> = physicsWorld.BodiesThatIntersect(underCursor);
-                for (body in otherBodies){
-                    trace("Body "+underCursor.BodyNumber+" intersects body " + body.BodyNumber);
+                var instersectResult:String = "";
+                var aabbBodies:List<Body> = physicsWorld.BodiesThatIntersectAABB(underCursor);
+                if (aabbBodies.length > 0){
+                    for (body in aabbBodies){
+                        instersectResult = instersectResult + body.BodyNumber + " ";
+                    }
+                    trace("AABBs that intersect " + underCursor.BodyNumber + ": " + instersectResult);
                 }
+                var otherBodies:List<Body> = physicsWorld.BodiesThatIntersect(underCursor);
+                if (otherBodies.length > 0){
+                    instersectResult = "";
+                    for (body in otherBodies){
+                        instersectResult = instersectResult + body.BodyNumber + " ";
+                    }
+                    trace("Bodies that intersect " + underCursor.BodyNumber + ": " + instersectResult);
+                }
+                /*for (body in otherBodies){
+                    trace("Body "+underCursor.BodyNumber+" intersects body " + body.BodyNumber);
+                }*/
             }
         }
+        
+        clearColliding();
     }
     public var off:Vector2 = new Vector2(225, 300);
     public var sc:Vector2 = new Vector2(17.916666666666668, 17.916666666666668);       
@@ -470,7 +489,10 @@ class PlayState extends FlxUIState
         
         //new up the builders
         shapeBuilder = new ShapeBuilder().type(ShapeType.Rectangle).size(1.0);
-        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY).setPressure(PhysicsDefaults.InitialBlockPressure).setMaterial(constants.GameConstants.MATERIAL_GROUND);
+        blockBuilder = new GameBlockBuilder().setKinematic(true).setMass(Math.POSITIVE_INFINITY)
+                            .setPressure(PhysicsDefaults.InitialBlockPressure)
+                            .setMaterial(constants.GameConstants.MATERIAL_GROUND)
+                            .setSameMaterialCallback(sameMaterialCallback);
         pieceBuilder = new GamePieceBuilder().setBlockBuilder(blockBuilder).setShapeBuilder(shapeBuilder);
         return pieceBuilder;
     }
@@ -564,5 +586,50 @@ class PlayState extends FlxUIState
         }
     }
     
-    
+    private function clearColliding():Void{
+        for (list in collidingBlocks){
+            if (list.length > 2){
+                //trace("Merp");
+                for (block in list){
+                    var freezingBlock = Std.instance(block, FreezingGameBlock);
+                    if (freezingBlock != null){
+                        
+                    }
+                    block.Popping = true;
+                }
+            }
+            list = null;
+        }
+        collidingBlocks = new Array<Array<GameBlock>>();
+    }
+    private var collidingBlocks:Array<Array<GameBlock>> = new Array<Array<GameBlock>>();
+    private function sameMaterialCallback(block1:GameBlock, block2:GameBlock):Void{
+        if (block1.IsStatic || block2.IsStatic){
+            return;
+        }
+        
+        //trace("Block " + block1.BodyNumber + " collided with " + block2.BodyNumber);
+        var added:Bool = false;
+        for (list in collidingBlocks){
+            //trace("Burp");
+            var block1Index:Int = list.indexOf(block1);
+            var block2Index:Int = list.indexOf(block2);
+            if (block1Index == -1 && block2Index == -1){
+                continue;
+            }else{
+                if (block1Index == -1){
+                    list.push(block1);
+                }
+                if (block2Index == -1){
+                    list.push(block2);
+                }
+                added = true;
+            }
+        }
+        
+        if(!added){
+            var newList:Array<GameBlock> = [block1, block2];
+            collidingBlocks.push(newList);
+        }
+    }
 }

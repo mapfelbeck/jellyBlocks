@@ -1,6 +1,6 @@
 package builders;
 import blocks.*;
-import blocks.BlockConfig;
+import blocks.GameBlock.SameMaterialCollisionCallback;
 import builders.GameBlockBuilder;
 import constants.PhysicsDefaults;
 import enums.BlockType;
@@ -29,6 +29,7 @@ class GameBlockBuilder
     var label:String = null;
     var config:BlockConfig;
     var collisionCallback:Function;
+    var sameMaterialCallback:SameMaterialCollisionCallback;
     
     public function new() 
     {
@@ -54,6 +55,7 @@ class GameBlockBuilder
             default:
         }
         finalBlock.Material = material;
+        finalBlock.sameMarerialCollisionCallback = sameMaterialCallback;
         
         //finalBlock.CollisionCallback = collisionCallback;
         if (label != null){
@@ -76,6 +78,12 @@ class GameBlockBuilder
     public function setBlockConfig(blockConfig:BlockConfig):GameBlockBuilder
     {
         config = blockConfig;
+        return this;
+    }
+    
+    public function setSameMaterialCallback(callback:SameMaterialCollisionCallback):GameBlockBuilder
+    {
+        sameMaterialCallback = callback;
         return this;
     }
     
