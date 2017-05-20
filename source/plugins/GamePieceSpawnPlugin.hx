@@ -101,9 +101,12 @@ class GamePieceSpawnPlugin extends PluginBase
         
         input = new Input();
         input.AddKeyboardInput(FlxKey.SPACE, spawnPieceKey, PressType.Down);
-        input.AddKeyboardInput(FlxKey.P, pauseSpawn, PressType.Down);
         input.AddGamepadButtonInput(FlxGamepadInputID.A, spawnPieceBtn, PressType.Down);
-
+        
+        #if debug
+        input.AddKeyboardInput(FlxKey.P, pauseSpawn, PressType.Down);
+        #end
+        
         spawnTimerInc = spawnTimerMax / timeTillFirstSpawn;
     }
     

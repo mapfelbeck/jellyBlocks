@@ -116,8 +116,9 @@ class PlayState extends FlxUIState
         input.AddKeyboardInput(FlxKey.F, unfreezeKey, PressType.Down);
         input.AddKeyboardInput(FlxKey.R, scrambleColorsKey, PressType.Down);
         input.AddKeyboardInput(FlxKey.ESCAPE, pauseKey, PressType.Down);
+        #if debug
         input.AddKeyboardInput(FlxKey.P, pausePhysics, PressType.Down);
-        
+        #end
 
         defaultMaterial = new MaterialPair();
         defaultMaterial.Collide = true;
@@ -135,11 +136,12 @@ class PlayState extends FlxUIState
         setupConfigForSpawingBlocks();
         
         //#if (html5)
-        //render = setupSolidColorRender();
-        render = setupDebugRender();
+        render = setupSolidColorRender();
         //#else
         //render = setupTexturedRender();
         //#end
+        //render = setupDebugRender();
+        
         render.setGameGround(ground);
         
         #if (html5)
@@ -314,6 +316,7 @@ class PlayState extends FlxUIState
             physicsWorld.Update(elapsed);
         }
         
+        #if debug
         if (FlxG.mouse.justPressed){
             //trace("mouse click: ("+FlxG.mouse.screenX+", "+FlxG.mouse.screenY+")");
             var localX:Float = worldToLocalX(FlxG.mouse.screenX);
@@ -339,11 +342,9 @@ class PlayState extends FlxUIState
                     }
                     trace("Bodies that intersect " + underCursor.BodyNumber + ": " + instersectResult);
                 }
-                /*for (body in otherBodies){
-                    trace("Body "+underCursor.BodyNumber+" intersects body " + body.BodyNumber);
-                }*/
             }
         }
+        #end
         
         clearColliding();
     }
@@ -589,7 +590,6 @@ class PlayState extends FlxUIState
     private function clearColliding():Void{
         for (list in collidingBlocks){
             if (list.length > 2){
-                //trace("Merp");
                 for (block in list){
                     var freezingBlock = Std.instance(block, FreezingGameBlock);
                     if (freezingBlock != null){
@@ -608,10 +608,8 @@ class PlayState extends FlxUIState
             return;
         }
         
-        //trace("Block " + block1.BodyNumber + " collided with " + block2.BodyNumber);
         var added:Bool = false;
         for (list in collidingBlocks){
-            //trace("Burp");
             var block1Index:Int = list.indexOf(block1);
             var block2Index:Int = list.indexOf(block2);
             if (block1Index == -1 && block2Index == -1){
