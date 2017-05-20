@@ -39,8 +39,8 @@ class GamePieceControlPlugin extends PluginBase
     }
     
     public function addLeftButton(button: FlxButton):Void{
-        button.onUp.callback = OnLeftDown;
-        button.onDown.callback = OnLeftUp;
+        button.onDown.callback = OnLeftDown;
+        button.onUp.callback = OnLeftUp;
     }
     
     public function addRightButton(button: FlxButton):Void{

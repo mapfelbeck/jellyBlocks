@@ -45,13 +45,6 @@ class PlayState extends FlxUIState
     private var rightButton:FlxButton;
     private var cwButton:FlxButton;
     private var ccwButton:FlxButton;
-    
-    private var pieceLeft:Bool = false;
-    private var pieceRight:Bool = false;
-    private var pieceUp:Bool = false;
-    private var pieceDown:Bool = false;
-    private var pieceCCW:Bool = false;
-    private var pieceCW:Bool = false;
         
     private var input:Input;
     
