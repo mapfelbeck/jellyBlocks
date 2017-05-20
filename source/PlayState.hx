@@ -11,6 +11,7 @@ import events.*;
 import flash.events.*;
 import flixel.*;
 import flixel.addons.ui.FlxUIState;
+import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 import flixel.math.FlxRandom;
@@ -72,6 +73,8 @@ class PlayState extends FlxUIState
 
     private var physicsPaused:Bool = false;
     
+    private var drawGroup:FlxGroup = new FlxGroup();
+    
 	override public function create():Void
 	{
 		_xml_id = "play_state";
@@ -127,14 +130,6 @@ class PlayState extends FlxUIState
         
         createWorld();
         
-        createPieceBuilder();
-        
-        loadPlugins();
-        
-        addInitialBodiesToWorld();
-        
-        setupConfigForSpawingBlocks();
-        
         //#if (html5)
         render = setupSolidColorRender();
         //#else
@@ -142,8 +137,15 @@ class PlayState extends FlxUIState
         //#end
         //render = setupDebugRender();
         
+        createPieceBuilder();
+        
+        addInitialBodiesToWorld();
         render.setGameGround(ground);
         
+        loadPlugins();
+        
+        setupConfigForSpawingBlocks();
+
         #if (html5)
         if (Capabilities.IsMobileBrowser()){
             settings.showTouchControls = true;
@@ -164,7 +166,6 @@ class PlayState extends FlxUIState
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
         add(blockPopPlugin);
         plugins.add(blockPopPlugin);
-        
         var colorRotatePlugin = new ColorRotatePlugin(this, colorSource);
         add(colorRotatePlugin);
         plugins.add(colorRotatePlugin);
@@ -546,7 +547,7 @@ class PlayState extends FlxUIState
                 if (j % 2 == 1){
                     colLoc += bottomRowOffset;
                 }
-                spawnPlugin.addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false, false);
+                physicsWorld.addGamePiece(createGamePiece(pieceBuilder, new Vector2(colLoc, rowLoc)), false, false);
             }
         }
     }
