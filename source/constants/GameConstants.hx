@@ -64,5 +64,6 @@ class GameConstants
     public static inline var ExitDisplayTime:Float = 6;
     public static inline var ExitSkippable:Bool = true;
     public static inline var ExitTimesOut:Bool = true;
-    
+ 
+    public static inline var GamePadDeadZone:Float = 0.2;
 }

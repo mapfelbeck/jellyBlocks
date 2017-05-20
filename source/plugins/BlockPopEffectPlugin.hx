@@ -45,6 +45,10 @@ class BlockPopEffectPlugin extends PluginBase
         emitter.launchMode = FlxEmitterMode.CIRCLE;
         emitter.speed.set(50, 100);
         emitter.lifespan.set(1.0, 3.0);
+        
+        #if windows
+        emitter.alpha.set(1, 1, 0, 0);
+        #else
         if(Capabilities.IsMobileBrowser()){
             emitter.alpha.set(1, 1, 1, 1);
         }else{
@@ -52,6 +56,7 @@ class BlockPopEffectPlugin extends PluginBase
             //emitter.alpha.set(1, 1, 0, 0);
             emitter.alpha.set(1, 1, 1, 1);
         }
+        #end
     }
     
     override function createEventSet():Void 

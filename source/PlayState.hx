@@ -110,6 +110,7 @@ class PlayState extends FlxUIState
         */
         
         input = new Input();
+        input.GamePadDeadZone = GameConstants.GamePadDeadZone;
         
         input.AddGamepadButtonInput(FlxGamepadInputID.START, pauseBtn, PressType.Down);
         input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_SHOULDER, unfreezeBtn, PressType.Down);

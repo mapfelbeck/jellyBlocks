@@ -18,6 +18,25 @@ typedef GamepadStickCallback = FlxGamepadInputID->Float->Float->Void;
 
 class Input
 {
+    public var GamePadDeadZone(get, set):Float;
+    public function get_GamePadDeadZone():Float{
+        return gamePadDeadZone;
+    }
+    public function set_GamePadDeadZone(value:Float):Float{
+        gamePadDeadZone = value;
+        FlxG.gamepads.globalDeadZone = gamePadDeadZone;
+        return gamePadDeadZone;
+    }
+    
+    public var AnalogThreshhold(get, set):Float;
+    public function get_AnalogThreshhold():Float{
+        return analogThreshhold;
+    }
+    public function set_AnalogThreshhold(value:Float):Float{
+        analogThreshhold = value;
+        return analogThreshhold;
+    }
+    
     private var keyDownMap:Map<FlxKey, Array<KeyboardInputCallback>>;
     private var keyPressedMap:Map<FlxKey, Array<KeyboardInputCallback>>;
     private var keyUpMap:Map<FlxKey, Array<KeyboardInputCallback>>;
@@ -32,10 +51,13 @@ class Input
     
     private var gamepad:FlxGamepad;
     
-    public var analogThreshhold:Float = 0.01;
+    private var analogThreshhold:Float = 0.01;
+    private var gamePadDeadZone:Float = 0.15;
     
     public function new() 
     {
+        FlxG.gamepads.globalDeadZone = gamePadDeadZone;
+        
         keyDownMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
         keyPressedMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
         keyUpMap = new Map<FlxKey, Array<KeyboardInputCallback>>();
@@ -76,7 +98,7 @@ class Input
         }
         
         gamepad = FlxG.gamepads.lastActive;
-		
+        
 		if (gamepad == null)
 			return;
 

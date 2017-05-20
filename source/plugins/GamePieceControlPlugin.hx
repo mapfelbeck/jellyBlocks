@@ -106,12 +106,7 @@ class GamePieceControlPlugin extends PluginBase
         input.AddKeyboardInput(FlxKey.E, rotatePieceCW, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.LEFT, rotatePieceCCW, PressType.Pressed);
         input.AddKeyboardInput(FlxKey.RIGHT, rotatePieceCW, PressType.Pressed);
-        
-        /*
-        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Down);
-        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Pressed);
-        input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_TRIGGER, buttonCmd, PressType.Up);
-                */
+
         input.AddGamepadStickInput(FlxGamepadInputID.LEFT_ANALOG_STICK, stickPush);
         input.AddGamepadStickInput(FlxGamepadInputID.RIGHT_ANALOG_STICK, stickRotate);
         
@@ -155,21 +150,6 @@ class GamePieceControlPlugin extends PluginBase
             rotatateAmount = 1;
         }
     }
-    
-    /*function buttonCmd(button:FlxGamepadInputID, type:PressType): Void
-    {
-        trace("Button " + button.toString() + " is " + type.getName());
-    }
-    
-    function buttonAnalog(button:FlxGamepadInputID, value:Float): Void
-    {
-        trace("Button " + button.toString() + " is " + value);
-    }
-    
-    function stickInput(stick:FlxGamepadInputID, xValue:Float, yValue:Float): Void
-    {
-        trace("Stick " + stick.toString() + " is (" + xValue+", " + yValue+")");
-    }*/
     
     function stickPush(stick:FlxGamepadInputID, xValue:Float, yValue:Float): Void
     {
