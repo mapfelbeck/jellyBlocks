@@ -1,0 +1,31 @@
+**Jelly Blocks v0.40**
+New features:
+* Gamepad support in HTML5 and Windows
+
+Bugs fixed:
+* The glitch where sometimes matches aren't detected and cleared
+* Minor physics optimizations
+* Resolution scaling in Android and Windows
+
+**Jelly Blocks v0.36**
+New features:
+* Created an Android build
+* Moved the HTML5 build to the Itch.io web player 
+* New main menu
+* New font
+* Resolution independent graphics
+
+
+**Jelly Blocks v0.35**
+New features:
+* Created a Windows build
+* Added a next piece preview to the screen
+* Added a meter that shows when the next piece spawns
+
+
+**Jelly Blocks v0.30**
+New features:
+* Mobile browser performance dramatically improved
+* New block pop meter that ticks up when you match blocks, when this meter fills the color pallet shifts and all frozen blocks unfreeze.
+* The pieces you control get a dark black outline
+* Popping blocks are translucent.

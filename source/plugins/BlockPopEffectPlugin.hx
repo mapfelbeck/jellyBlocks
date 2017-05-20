@@ -46,7 +46,7 @@ class BlockPopEffectPlugin extends PluginBase
         emitter.speed.set(50, 100);
         emitter.lifespan.set(1.0, 3.0);
         
-        #if windows
+        #if (windows || android)
         emitter.alpha.set(1, 1, 0, 0);
         #else
         if(Capabilities.IsMobileBrowser()){
@@ -97,8 +97,6 @@ class BlockPopEffectPlugin extends PluginBase
             var x:Int = localToWorldX(block.DerivedPos.x);
             var y:Int = localToWorldY(block.DerivedPos.y);
             effectQueue.add(new PopEffect(new FlxPoint(x, y), colorSource.getColor(block.Material)));
-        }else{
-            trace("wat?");
         }
     }
     public var off:Vector2 = new Vector2(225, 300);
