@@ -1,12 +1,15 @@
 package;
 
+import constants.SoundAssets;
 import flixel.FlxG;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
 import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
+import flixel.addons.ui.FlxUIButton;
 import flixel.addons.ui.FlxUICursor;
 import flixel.addons.ui.FlxUIState;
 import flixel.graphics.FlxGraphic;
+import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import util.Capabilities;
 
@@ -55,6 +58,11 @@ class MenuState extends FlxUIState
 
         transOut = FlxTransitionableState.defaultTransOut;
         #end
+        
+        var ui_play:FlxUIButton = cast _ui.getAsset("play_btn");
+        if (ui_play != null){
+            ui_play.onDown.sound = FlxG.sound.load(SoundAssets.MenuSelect1);
+        }
     }
 
 	override public function update(elapsed:Float):Void

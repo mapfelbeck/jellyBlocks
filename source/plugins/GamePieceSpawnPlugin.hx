@@ -1,5 +1,7 @@
 package plugins;
 
+import constants.SoundAssets;
+import flixel.FlxG;
 import builders.GamePieceBuilder;
 import enums.*;
 import events.*;
@@ -9,6 +11,7 @@ import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
+import flixel.system.FlxSound;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
 import jellyPhysics.math.Vector2;
@@ -110,6 +113,7 @@ class GamePieceSpawnPlugin extends PluginBase
         spawnTimerInc = spawnTimerMax / timeTillFirstSpawn;
     }
     
+    private var soundCreate:FlxSound;
     override public function update(elapsed:Float):Void 
     {
         super.update(elapsed);
