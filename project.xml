@@ -41,8 +41,10 @@
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
 	<assets path="assets" />
-    <assets path="assets/audio" rename="audio" type="audio" />
-
+    
+    <asset path="assets/audio" rename="audio" include="*.ogg" unless="flash" />
+    <asset path="assets/audio" rename="audio" include="*.wav" if="flash" />
+    
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="jellyPhysics" />

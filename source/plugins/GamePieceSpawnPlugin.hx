@@ -1,7 +1,5 @@
 package plugins;
 
-import constants.SoundAssets;
-import flixel.FlxG;
 import builders.GamePieceBuilder;
 import enums.*;
 import events.*;
@@ -10,8 +8,8 @@ import flixel.addons.ui.FlxUIState;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxAssets.FlxGraphicAsset;
-import flixel.ui.FlxBar;
 import flixel.system.FlxSound;
+import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
 import jellyPhysics.math.Vector2;

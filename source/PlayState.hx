@@ -157,6 +157,10 @@ class PlayState extends FlxUIState
     
     private function loadPlugins():Void
     {
+        var soundEffectsPlugin = new GameplaySoundsPlugin(this);
+        add(soundEffectsPlugin);
+        plugins.add(soundEffectsPlugin);
+        
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
         add(blockPopPlugin);
         plugins.add(blockPopPlugin);
