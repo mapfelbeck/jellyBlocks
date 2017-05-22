@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
 	<include id="ui_globals"/>
-	<sprite id="background" src="ui/gameplay" center_x="true" center_y="true" group="back">
+	<sprite id="background" src="ui/gameplay1" center_x="true" center_y="true" group="back">
         <scale to_height="100%"/>
     </sprite>
 	
