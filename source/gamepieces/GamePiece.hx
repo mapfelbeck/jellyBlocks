@@ -1,6 +1,8 @@
 package gamepieces;
 import blocks.GameBlock;
 import constants.GameConstants;
+import events.EventManager;
+import events.Events;
 import jellyPhysics.Body;
 import jellyPhysics.ExternalSpring;
 import jellyPhysics.math.Vector2;
@@ -167,6 +169,9 @@ class GamePiece
             //has or has not?...
             if (block.HasEverCollided)
             {
+                if (!hasEverCollided){
+                    EventManager.Trigger(this, Events.PIECE_HIT, null);
+                }
                 hasEverCollided = true;
                 for (j in 0...blocks.length)
                 {

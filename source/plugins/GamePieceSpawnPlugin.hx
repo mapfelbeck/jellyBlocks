@@ -144,6 +144,7 @@ class GamePieceSpawnPlugin extends PluginBase
             //trace("new game piece is: " + controlledGamePiece.Shape);
             addGamePiece(currGamePiece, true, false);
             nextGamePiece = createGamePiece(builder, spawnPos);
+            EventManager.Trigger(this, Events.PIECE_CREATE, null);
             makePreviewOverlay();
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;

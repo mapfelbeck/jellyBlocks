@@ -18,7 +18,7 @@ class GameplaySoundsPlugin extends PluginBase
     private var eventAssetTable:Map<String, String> =[
       Events.BLOCK_POP=>SoundAssets.BlockPop,
       Events.COLOR_ROTATE=>SoundAssets.Unfreeze,
-      Events.PIECE_CREATE=>SoundAssets.PieceHit,
+      Events.PIECE_CREATE=>SoundAssets.PieceCreate,
       Events.PIECE_HIT=>SoundAssets.PieceHit,
     ];
     
@@ -31,10 +31,15 @@ class GameplaySoundsPlugin extends PluginBase
     }
     
     private function init():Void{
-        /*for (event in eventAssetTable.keys()){
+        for (event in eventAssetTable.keys()){
             eventSoundTable.set(event, FlxG.sound.load(eventAssetTable[event]));
-        }*/
+            EventManager.Register(playSoundEvent, event);
+        }
         
         trace("done!");
+    }
+    
+    function playSoundEvent(sender:Dynamic, event:String, params:Dynamic) :Void{
+        eventSoundTable[event].play();
     }
 }
