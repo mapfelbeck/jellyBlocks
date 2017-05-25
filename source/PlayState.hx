@@ -11,6 +11,7 @@ import events.*;
 import flash.events.*;
 import flixel.*;
 import flixel.addons.ui.FlxUIState;
+import flixel.addons.ui.FlxUISprite;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
@@ -67,6 +68,15 @@ class PlayState extends FlxUIState
     private var physicsPaused:Bool = false;
     
     private var drawGroup:FlxGroup = new FlxGroup();
+    
+    private var background:FlxUISprite;
+    private var backgroundIndex:Int = 0;
+    private var backgroundAssets:Array<String> = [
+        "assets/gfx/ui/gameplay1.png",
+        "assets/gfx/ui/gameplay2.png",
+        "assets/gfx/ui/gameplay3.png",
+        "assets/gfx/ui/gameplay4.png"
+    ];
     
 	override public function create():Void
 	{
@@ -151,6 +161,9 @@ class PlayState extends FlxUIState
         if (settings.showTouchControls){
             addButtons();
         }
+        
+        var derp = _ui.getAsset("background");
+        background = cast _ui.getAsset("background");
         
         EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
 	}
@@ -368,6 +381,21 @@ class PlayState extends FlxUIState
     
     private function OnColorRotated(sender:Dynamic, event:String, params:Dynamic){
         unfreezeKey(FlxKey.F, PressType.Down);
+        
+        if (background != null){
+            backgroundIndex = (backgroundIndex + 1) % backgroundAssets.length;
+            background.loadGraphic(backgroundAssets[backgroundIndex]);
+            //background.resize_ratio = FlxUISprite.RESIZE_RATIO_X;
+            
+            trace("sprite height "+background.height);
+            trace("screen height " + FlxG.height);
+            var scaleRatio:Float = FlxG.height / background.height;
+            trace("Scale ratio: " + scaleRatio);
+            //background.scale.y = scaleRatio;
+            background.scale.set(scaleRatio, scaleRatio);
+            //background.scale.set(backgroundScale, backgroundScale);
+            background.updateHitbox();
+        }
     }
     
     private function adjustColorUp(key: FlxKey, type:PressType):Void{

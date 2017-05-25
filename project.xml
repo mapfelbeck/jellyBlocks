@@ -44,7 +44,7 @@
     
     <asset path="assets/audio" rename="audio" include="*.ogg" unless="flash" />
     <asset path="assets/audio" rename="audio" include="*.wav" if="flash" />
-    
+    <assets path="assets/fonts" rename="fonts" />
 	<!-- _______________________________ Libraries ______________________________ -->
 
 	<haxelib name="jellyPhysics" />

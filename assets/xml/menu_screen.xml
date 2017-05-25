@@ -5,7 +5,9 @@
         <scale to_height="100%"/>
     </sprite>
     
-	<button id="play_btn" center_x="true" center_y="true" y="-50pt" width="144pt" height="72pt" label="Play!">
+    <text name="title_text" use_def="title64" center_x="true" y="60pt" text="Jelly Blocks" width="550pt" />
+    
+	<button id="play_btn" center_x="true" center_y="true" y="-30pt" width="144pt" height="72pt" label="Play!">
 		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
 			<scale_src scale="0.5"/>
 		</graphic>

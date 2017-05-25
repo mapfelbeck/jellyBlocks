@@ -28,7 +28,6 @@ ToDo:
     push up jellyPhysics updates
         update samples
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
-    Improve match-3 collision detection.
     Improve touch screen controls.
     Fix frozen blocks in mid air bug.
     Fill out pause Menu
