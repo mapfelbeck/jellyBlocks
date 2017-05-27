@@ -1,9 +1,13 @@
-**Jelly Blocks v0.41**
+**Jelly Blocks v0.45**
 New features:
-* Gameplay and menu sound effects
+* Improved title screen
+* Gamepad support in HTML5 and Windows
+* Vastly improved match detection
+* Sound fx manager and placeholder sounds
+* Music player and placeholder music track
 
 Bugs fixed:
-* Touchscreen input bug in HTML5 adn Android
+* Touchscreen input bug in HTML5 and Android
 
 
 **Jelly Blocks v0.40**
