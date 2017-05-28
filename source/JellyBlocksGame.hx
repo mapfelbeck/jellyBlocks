@@ -21,7 +21,7 @@ class JellyBlocksGame extends FlxGame
     override function update():Void 
     {
         super.update();
-
+        
         if (FlxG.sound.music == null) // don't restart the music if it's already playing
         {
             FlxG.sound.playMusic(SoundAssets.MainTrack, 1, true);

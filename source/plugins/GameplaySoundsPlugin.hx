@@ -35,8 +35,6 @@ class GameplaySoundsPlugin extends PluginBase
             eventSoundTable.set(event, FlxG.sound.load(eventAssetTable[event]));
             EventManager.Register(playSoundEvent, event);
         }
-        
-        trace("done!");
     }
     
     function playSoundEvent(sender:Dynamic, event:String, params:Dynamic) :Void{

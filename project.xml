@@ -39,24 +39,9 @@
 
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
-	<!--<assets path="assets" />-->
+    
     <assets path="assets" unless="flash" exclude="*.mp3|*.wav" />
-    <assets path="assets" if="flash" exclude="*.ogg" />
-
-    <!--<asset path="assets/audio" rename="audio" include="*.ogg" exclude="*.mp3|*.wav" unless="flash" />-->
-    <!--<asset path="assets/audio" rename="audio" include="*.wav" if="flash" />
-    <asset path="assets/audio" rename="audio" include="*.mp3" if="flash" />
-    <assets path="assets/fonts" rename="fonts" />-->
-	<!-- _______________________________ Libraries ______________________________ -->
-    <!--<assets path="assets" include="*" />-->
-	<!--<assets path="../../assets" rename="assets" include="*" />
-	<assets path="assets/images" rename="images" include="*.jpg|*.png" exclude="example.jpg" />-->
-	
-    <!--<assets path="assets">
-		<assets path="images" include="*.png" type="image" />
-		<assets path="audio/soundFX" include="*.ogg" type="sound" />
-		<assets path="audio/music" include="*.ogg" type="music" />
-	</assets>-->
+    <assets path="assets" if="flash" exclude="*.ogg|*.wav" />
     
 	<haxelib name="jellyPhysics" />
 	<haxelib name="flixel" />
