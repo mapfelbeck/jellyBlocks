@@ -22,9 +22,11 @@ class MusicPlugin extends GlobalPluginBase
     {
         super.update(elapsed);
 
-        if (FlxG.sound.music == null) // don't restart the music if it's already playing
+        if (FlxG.sound.music == null && GameSettings.musicEnabled) // don't restart the music if it's already playing
         {
-            FlxG.sound.playMusic(SoundAssets.MainTrack, 1, true);
+            FlxG.sound.playMusic(SoundAssets.MainTrack, GameSettings.musicVolume, true);
+        }else if (FlxG.sound.music != null){
+            FlxG.sound.music.stop;
         }
     }
 }

@@ -1,5 +1,6 @@
-package;
+package screens;
 
+import screens.SettingsMenu;
 import constants.SoundAssets;
 import flixel.FlxG;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
@@ -84,7 +85,8 @@ class MenuState extends FlxUIState
 				{
 					switch (Std.string(params[0]))
 					{
-                        case "play": FlxG.switchState(new PlayState());
+                        case "play": FlxG.switchState(new screens.PlayState());
+                        case "settings": openSubState(new SettingsMenu());
 					}
 				}
 		}

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+    <include id="ui_globals"/>
+
+    <sprite id="black" x="0" y="0" width="100%" height="100%" color="0x88000000"/>
+
+    <chrome id="background" src="ui/settings_background" slice9="64,64,448,448" center_x="true" center_y="true" width="80%" height="80%">
+        <scale_src scale="0.5"/>
+    </chrome>
+
+    <button id="close_btn" x="-15pt" y="10pt" width="36pt" height="36pt">
+        <anchor x="background.right" y="background.top" x-flush="right" />
+        <graphic id="all" image="ui/close_button" slice9="24,24,50,50">
+            <scale_src scale="0.5"/>
+        </graphic>
+        <param type="string" value="close"/>
+    </button>
+
+    <!--<slider object="onValueChange" varString="Foo" minValue="0.0" maxValue="1.0" x="20" y="10" label="#####" 
+                width="100pt" height="15pt" thickness="3" color="0xFF000000" handleColor="0xFF828282"/>-->
+	<checkbox id="music_enabled" label="Music Enabled"/>
+	<numeric_stepper id="music_volume" step="0.1" value="0.5" min="0.0" max="1.0" decimals="1" />
+    
+    <checkbox id="sfx_enabled" label="Sounds Enabled"/>
+    <numeric_stepper id="sfx_volume" step="0.1" value="0.5" min="0.0" max="1.0" decimals="1" />
+    
+	<button id="controls_btn" center_x="true" width="100pt" height="36pt" label="Controls">
+		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
+			<scale_src scale="0.5"/>
+		</graphic>
+		<param type="string" value="controls"/>
+		<text use_def="sans16c" color="0xffffff">
+			<color id="up" value="0xffffff"/>
+			<color id="over" value="0xffff00"/>
+			<color id="down" value="0xffff00"/>
+		</text>
+	</button>
+    
+    <align axis="vertical" spacing="2">
+        <anchor x="background.left+50%" x-flush="left" />
+		<objects value="music_enabled,music_volume,sfx_enabled,sfx_volume,controls_btn"/>
+		<!--<bounds top="background.top+15pt" bottom="background.bottom-15pt"/>-->
+		<bounds top="background.top+65pt" bottom="background.bottom-250pt" />
+	</align>
+    
+	<text id="music_volume_label" x="music_volume.right+5" y="music_volume.y" text="Music Volume" color="white"/>
+	<text id="sfx_volume_label" x="sfx_volume.right+5" y="sfx_volume.y" text="Sound Volume" color="white"/>
+</data>

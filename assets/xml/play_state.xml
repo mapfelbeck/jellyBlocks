@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <data>
-	<include id="ui_globals"/>
-	<sprite id="background" src="ui/gameplay1" center_x="true" center_y="true" group="back">
-        <scale to_height="100%"/>
+    <include id="ui_globals" />
+    <sprite id="background" src="ui/gameplay1" center_x="true" center_y="true" group="back">
+        <scale to_height="100%" />
     </sprite>
-	
-	<button id="pause_btn" center_x="false" x="385pt" y="10pt" group="top" width="36pt" height="36pt">
-		<text use_def="sans14c"/>
-		<graphic id="all" image="ui/pause_button" slice9="24,24,50,50">
-			<scale_src scale="0.5"/>
-		</graphic>
-		<param type="string" value="pause"/>
-	</button>
+
+    <button id="pause_btn" center_x="false" x="385pt" y="10pt" group="top" width="36pt" height="36pt">
+        <text use_def="sans14c" />
+        <graphic id="all" image="ui/pause_button" slice9="24,24,50,50">
+            <scale_src scale="0.5" />
+        </graphic>
+        <param type="string" value="pause" />
+    </button>
 </data>

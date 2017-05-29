@@ -1,4 +1,4 @@
-package;
+package screens;
 
 import enums.PressType;
 import flixel.FlxG;
@@ -8,10 +8,39 @@ import flixel.input.gamepad.FlxGamepadInputID;
 
 /**
  * ...
- * @author 
+ * @author Michael Apfelbeck
  */
-class PauseMenu extends FlxUIPopup
+class SettingsMenu extends FlxUIPopup 
 {
+    /*private var foo:Float = 0.4;
+    public var Foo(get, set):Float;
+    public function get_Foo(){
+        trace("Foo get");
+        return foo;
+    }
+    public function set_Foo(value:Float):Float{
+        trace("Foo set");
+        foo = value;
+        return foo;
+    }
+    
+    private var bar:Float = 0.6;
+    public var Bar(get, set):Float;
+    public function get_Bar(){
+        trace("3");
+        return bar;
+    }
+    public function set_Bar(value:Float):Float{
+        trace("4");
+        bar = value;
+        return bar;
+    }
+    
+    function onValueChange (newValue:Float)
+    {
+    	trace("new value: " + newValue);
+    }*/
+
     private var input:Input;
     public function new() 
     {
@@ -19,7 +48,7 @@ class PauseMenu extends FlxUIPopup
     }
     
     override public function create(){
-		_xml_id = "pause_menu";
+		_xml_id = "settings_menu";
         _makeCursor = true;
         super.create();
         
@@ -70,7 +99,7 @@ class PauseMenu extends FlxUIPopup
     }
     
     private function closeBtn(button:FlxGamepadInputID, type:PressType){
-        trace("close gamepad button");
         close();
     }
+    
 }

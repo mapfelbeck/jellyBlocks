@@ -1,4 +1,4 @@
-package;
+package screens;
 
 import blocks.*;
 import builders.GameBlockBuilder;
@@ -28,8 +28,6 @@ import util.Capabilities;
 
 class PlayState extends FlxUIState
 {
-    private static var settings:GameSettings = new GameSettings();
-    
     var render:BaseDrawWorld;
     var debugDrawSurface:Sprite;
     var flxDrawSurface:FlxSprite;
@@ -152,13 +150,13 @@ class PlayState extends FlxUIState
 
         #if (html5)
         if (Capabilities.IsMobileBrowser()){
-            settings.showTouchControls = true;
+            GameSettings.showTouchControls = true;
         }
         #elseif  (mobile)
-        settings.showTouchControls = true;
+        GameSettings.showTouchControls = true;
         #end
         
-        if (settings.showTouchControls){
+        if (GameSettings.showTouchControls){
             addButtons();
         }
         
@@ -225,13 +223,13 @@ class PlayState extends FlxUIState
             case "finish_load":
             case "click_button":
                 trace("Button click.");
-            if (params != null && params.length > 0)
-            {
-                switch (Std.string(params[0]))
+                if (params != null && params.length > 0)
                 {
-                    case "pause": pauseMenu();
+                    switch (Std.string(params[0]))
+                    {
+                        case "pause": pauseMenu();
+                    }
                 }
-            }
             case "RELOAD":
                 FlxG.resetState();
         }
@@ -385,15 +383,9 @@ class PlayState extends FlxUIState
         if (background != null){
             backgroundIndex = (backgroundIndex + 1) % backgroundAssets.length;
             background.loadGraphic(backgroundAssets[backgroundIndex]);
-            //background.resize_ratio = FlxUISprite.RESIZE_RATIO_X;
             
-            trace("sprite height "+background.height);
-            trace("screen height " + FlxG.height);
             var scaleRatio:Float = FlxG.height / background.height;
-            trace("Scale ratio: " + scaleRatio);
-            //background.scale.y = scaleRatio;
             background.scale.set(scaleRatio, scaleRatio);
-            //background.scale.set(backgroundScale, backgroundScale);
             background.updateHitbox();
         }
     }

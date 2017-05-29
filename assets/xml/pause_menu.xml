@@ -16,8 +16,7 @@
 		<param type="string" value="close"/>
 	</button>
     
-	<button id="restart_btn" x="0pt" y="25pt" width="120pt" height="46pt" label="Restart">
-        <anchor x="background.center" y="background.top" x-flush="center" />
+	<button id="restart_btn" width="120pt" height="46pt" label="Restart">
 		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
 			<scale_src scale="0.5"/>
 		</graphic>
@@ -29,8 +28,7 @@
 		</text>
 	</button>
     
-	<button id="main_menu_btn" x="0pt" y="80pt" width="120pt" height="46pt" label="Main Menu">
-        <anchor x="background.center" y="background.top" x-flush="center" />
+	<button id="main_menu_btn"width="120pt" height="46pt" label="Main Menu">
 		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
 			<scale_src scale="0.5"/>
 		</graphic>
@@ -42,16 +40,21 @@
 		</text>
 	</button>
     
-	<button id="main_menu_btn" x="0pt" y="135pt" width="120pt" height="46pt" label="Controls">
-        <anchor x="background.center" y="background.top" x-flush="center" />
+	<button id="settings_btn"width="120pt" height="46pt" label="Settings">
 		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
 			<scale_src scale="0.5"/>
 		</graphic>
-		<param type="string" value="controls"/>
+		<param type="string" value="settings"/>
 		<text use_def="sans16c" color="0xffffff">
 			<color id="up" value="0xffffff"/>
 			<color id="over" value="0xffff00"/>
 			<color id="down" value="0xffff00"/>
 		</text>
 	</button>
+    
+    <align axis="vertical">
+        <anchor x="background.center" x-flush="center" />
+		<objects value="restart_btn,main_menu_btn,settings_btn"/>
+		<bounds top="background.top+15pt" bottom="background.bottom-15pt"/>
+	</align>
 </data>
