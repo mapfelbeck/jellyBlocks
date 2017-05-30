@@ -1,4 +1,4 @@
-package screenPlugins;
+package globalPlugins;
 
 import flixel.FlxG;
 import constants.SoundAssets;
@@ -15,7 +15,7 @@ import screenPlugins.ScreenPluginBase;
  * ...
  * @author Michael Apfelbeck
  */
-class SoundsEffectsPlugin extends ScreenPluginBase 
+class SoundsEffectsPlugin extends GlobalPluginBase 
 {
     private var eventAssetTable:Map<String, String> =[
       Events.BLOCK_POP=>SoundAssets.BlockPop,
@@ -26,9 +26,9 @@ class SoundsEffectsPlugin extends ScreenPluginBase
     
     private var eventSoundTable:Map<String, FlxSound> = new Map<String, FlxSound>();
     
-    public function new(parent:FlxUIState, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
+    public function new() 
     {
-        super(parent, X, Y, SimpleGraphic);
+        super();
 		init();
     }
     

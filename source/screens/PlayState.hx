@@ -19,7 +19,7 @@ import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
-import screenPlugins.SoundsEffectsPlugin;
+import globalPlugins.SoundsEffectsPlugin;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
@@ -175,9 +175,8 @@ class PlayState extends FlxUIState
     
     private function loadPlugins():Void
     {
-        var soundPlugin = new SoundsEffectsPlugin(this);
-        add(soundPlugin);
-        plugins.add(soundPlugin);
+        var soundPlugin = new SoundsEffectsPlugin();
+        FlxG.plugins.add(soundPlugin);
         
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
         add(blockPopPlugin);
