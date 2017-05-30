@@ -1,8 +1,8 @@
-package plugins;
+package screenPlugins;
 
 import enums.PressType;
 import gamepieces.GamePiece;
-import plugins.PluginBase;
+import screenPlugins.ScreenPluginBase;
 import flixel.addons.ui.FlxUIState;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.input.keyboard.FlxKey;
@@ -14,7 +14,7 @@ import flixel.ui.FlxButton;
  * ...
  * @author Michael Apfelbeck
  */
-class GamePieceControlPlugin extends PluginBase 
+class GamePieceControlPlugin extends ScreenPluginBase 
 {
     public var controlled:GamePiece = null;
     

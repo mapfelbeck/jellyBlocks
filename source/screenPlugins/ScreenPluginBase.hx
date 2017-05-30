@@ -1,4 +1,4 @@
-package plugins;
+package screenPlugins;
 
 import events.EventAndAction;
 import events.EventManager;
@@ -10,7 +10,7 @@ import flixel.system.FlxAssets.FlxGraphicAsset;
  * ...
  * @author Michael Apfelbeck
  */
-class PluginBase extends FlxSprite 
+class ScreenPluginBase extends FlxSprite 
 {
     private var parent:FlxUIState;
     private var eventSet:Array<EventAndAction> = new Array<EventAndAction>();

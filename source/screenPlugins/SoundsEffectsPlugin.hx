@@ -1,4 +1,4 @@
-package plugins;
+package screenPlugins;
 
 import flixel.FlxG;
 import constants.SoundAssets;
@@ -7,13 +7,15 @@ import events.EventManager;
 import flixel.system.FlxSound;
 import flixel.addons.ui.FlxUIState;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import globalPlugins.GlobalPluginBase;
 import haxe.macro.MacroStringTools;
+import screenPlugins.ScreenPluginBase;
 
 /**
  * ...
  * @author Michael Apfelbeck
  */
-class GameplaySoundsPlugin extends PluginBase 
+class SoundsEffectsPlugin extends ScreenPluginBase 
 {
     private var eventAssetTable:Map<String, String> =[
       Events.BLOCK_POP=>SoundAssets.BlockPop,
@@ -38,7 +40,7 @@ class GameplaySoundsPlugin extends PluginBase
     }
     
     function playSoundEvent(sender:Dynamic, event:String, params:Dynamic) :Void{
-        if(GameSettings.soundEffectsEnabled){
+        if (GameSettings.soundEffectsEnabled && eventSoundTable.exists(event)){
             eventSoundTable[event].volume = GameSettings.soundEffectsVolume;
             eventSoundTable[event].play();
         }

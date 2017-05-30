@@ -20,6 +20,8 @@ nme: [5.7.1]
 openfl: [3.6.1]
 task: [1.0.7]
 
+private function _loadBar(data:Fast):FlxUIBar
+
 ToDo:
     Controller support
         add ability to delete input mapping

@@ -1,4 +1,4 @@
-package plugins;
+package screenPlugins;
 
 import blocks.GameBlock;
 import events.EventAndAction;
@@ -21,7 +21,7 @@ import util.Capabilities;
  * ...
  * @author Michael Apfelbeck
  */
-class BlockPopEffectPlugin extends PluginBase 
+class BlockPopEffectPlugin extends ScreenPluginBase 
 {
     private var emitter:FlxEmitter;
     

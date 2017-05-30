@@ -1,4 +1,4 @@
-package plugins;
+package screenPlugins;
 
 import builders.GamePieceBuilder;
 import enums.*;
@@ -21,7 +21,7 @@ import render.IColorSource;
  * ...
  * @author Michael Apfelbeck
  */
-class GamePieceSpawnPlugin extends PluginBase 
+class GamePieceSpawnPlugin extends ScreenPluginBase 
 {
     public var controlPlugin:GamePieceControlPlugin;
     

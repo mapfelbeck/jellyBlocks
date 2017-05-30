@@ -1,4 +1,4 @@
-package plugins;
+package globalPlugins;
 
 import flixel.FlxG;
 import globalPlugins.GlobalPluginBase;

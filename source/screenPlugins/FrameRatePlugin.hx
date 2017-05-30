@@ -1,4 +1,4 @@
-package plugins;
+package screenPlugins;
 
 import flixel.addons.text.FlxTextField;
 import flixel.addons.ui.FlxUIState;
@@ -8,7 +8,7 @@ import flixel.util.FlxColor;
  * ...
  * @author Michael Apfelbeck
  */
-class FrameRatePlugin extends PluginBase 
+class FrameRatePlugin extends ScreenPluginBase 
 {
     //how many samples/second
     private var samplesPerSecond:Int = 1;

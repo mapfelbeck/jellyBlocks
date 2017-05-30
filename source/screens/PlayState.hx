@@ -10,8 +10,8 @@ import enums.*;
 import events.*;
 import flash.events.*;
 import flixel.*;
-import flixel.addons.ui.FlxUIState;
 import flixel.addons.ui.FlxUISprite;
+import flixel.addons.ui.FlxUIState;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
@@ -19,11 +19,18 @@ import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
+import screenPlugins.SoundsEffectsPlugin;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import plugins.*;
 import render.*;
+import screenPlugins.BlockPopEffectPlugin;
+import screenPlugins.ColorRotatePlugin;
+import screenPlugins.FrameRatePlugin;
+import screenPlugins.GamePieceControlPlugin;
+import screenPlugins.GamePieceSpawnPlugin;
+import screenPlugins.ScreenPluginBase;
 import util.Capabilities;
 
 class PlayState extends FlxUIState
@@ -59,7 +66,7 @@ class PlayState extends FlxUIState
     //spawn pieces at at least this interval
     private var maxLifeTime:Float = 7.0;
     
-    private var plugins:List<PluginBase> = new List<PluginBase>();
+    private var plugins:List<ScreenPluginBase> = new List<ScreenPluginBase>();
     private var spawnPlugin:GamePieceSpawnPlugin;
     private var controlPlugin:GamePieceControlPlugin;
 
@@ -168,13 +175,14 @@ class PlayState extends FlxUIState
     
     private function loadPlugins():Void
     {
-        var soundEffectsPlugin = new GameplaySoundsPlugin(this);
-        add(soundEffectsPlugin);
-        plugins.add(soundEffectsPlugin);
+        var soundPlugin = new SoundsEffectsPlugin(this);
+        add(soundPlugin);
+        plugins.add(soundPlugin);
         
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
         add(blockPopPlugin);
         plugins.add(blockPopPlugin);
+        
         var colorRotatePlugin = new ColorRotatePlugin(this, colorSource);
         add(colorRotatePlugin);
         plugins.add(colorRotatePlugin);

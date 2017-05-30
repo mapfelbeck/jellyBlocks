@@ -2,8 +2,11 @@ package screens;
 
 import enums.PressType;
 import flixel.FlxG;
+import flixel.addons.ui.FlxUICheckBox;
 import flixel.addons.ui.FlxUICursor;
+import flixel.addons.ui.FlxUINumericStepper;
 import flixel.addons.ui.FlxUIPopup;
+import flixel.addons.ui.FlxUISlider;
 import flixel.input.gamepad.FlxGamepadInputID;
 
 /**
@@ -12,6 +15,11 @@ import flixel.input.gamepad.FlxGamepadInputID;
  */
 class SettingsMenu extends FlxUIPopup 
 {
+    private var musicCheckbox:FlxUICheckBox;
+    private var soundCheckbox:FlxUICheckBox;
+    
+    private var musicStepper:FlxUINumericStepper;
+    private var soundStepper:FlxUINumericStepper;
     /*private var foo:Float = 0.4;
     public var Foo(get, set):Float;
     public function get_Foo(){
@@ -41,6 +49,16 @@ class SettingsMenu extends FlxUIPopup
     	trace("new value: " + newValue);
     }*/
 
+    public var MusicEnabled(get, set):Bool;
+    public function get_MusicEnabled(){
+        trace("MusicEnabled get");
+        return GameSettings.musicEnabled;
+    }
+    public function set_MusicEnabled(value:Bool):Bool{
+        GameSettings.musicEnabled = value;
+        trace("MusicEnabled set");
+        return GameSettings.musicEnabled;
+    }
     private var input:Input;
     public function new() 
     {
@@ -60,6 +78,26 @@ class SettingsMenu extends FlxUIPopup
         input = new Input();
         
         input.AddGamepadButtonInput(FlxGamepadInputID.B, closeBtn, PressType.Down);
+        
+        musicCheckbox = cast _ui.getAsset("music_enabled");
+        if (musicCheckbox != null){
+            musicCheckbox.checked = GameSettings.musicEnabled;
+        }
+        
+        musicStepper = cast _ui.getAsset("music_volume");
+        if (musicStepper != null){
+            musicStepper.value = GameSettings.musicVolume;
+        }
+        
+        soundCheckbox = cast _ui.getAsset("sfx_enabled");
+        if (soundCheckbox != null){
+            soundCheckbox.checked = GameSettings.soundEffectsEnabled;
+        }
+
+        soundStepper = cast _ui.getAsset("sfx_volume");
+        if (soundStepper != null){
+            soundStepper.value = GameSettings.soundEffectsVolume;
+        }
     }
     
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void

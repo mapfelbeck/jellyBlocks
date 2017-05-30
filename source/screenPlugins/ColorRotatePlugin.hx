@@ -1,4 +1,4 @@
-package plugins;
+package screenPlugins;
 
 import events.*;
 import flixel.FlxSprite;
@@ -14,7 +14,7 @@ import render.IColorSource;
  * ...
  * @author Michael Apfelbeck
  */
-class ColorRotatePlugin extends PluginBase 
+class ColorRotatePlugin extends ScreenPluginBase 
 {
     public var Accumulated(get, null):Float;
     public function get_Accumulated(){
