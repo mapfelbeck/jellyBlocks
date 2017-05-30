@@ -40,8 +40,8 @@ class SoundsEffectsPlugin extends GlobalPluginBase
     }
     
     function playSoundEvent(sender:Dynamic, event:String, params:Dynamic) :Void{
-        if (GameSettings.soundEffectsEnabled && eventSoundTable.exists(event)){
-            eventSoundTable[event].volume = GameSettings.soundEffectsVolume;
+        if (GameSettings.SoundEffectsEnabled && eventSoundTable.exists(event)){
+            eventSoundTable[event].volume = GameSettings.SoundEffectsVolume;
             eventSoundTable[event].play();
         }
     }

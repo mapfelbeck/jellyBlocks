@@ -157,13 +157,13 @@ class PlayState extends FlxUIState
 
         #if (html5)
         if (Capabilities.IsMobileBrowser()){
-            GameSettings.showTouchControls = true;
+            GameSettings.ShowTouchControls = true;
         }
         #elseif  (mobile)
-        GameSettings.showTouchControls = true;
+        GameSettings.ShowTouchControls = true;
         #end
         
-        if (GameSettings.showTouchControls){
+        if (GameSettings.ShowTouchControls){
             addButtons();
         }
         

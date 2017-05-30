@@ -49,16 +49,16 @@ class SettingsMenu extends FlxUIPopup
     	trace("new value: " + newValue);
     }*/
 
-    public var MusicEnabled(get, set):Bool;
+    /*public var MusicEnabled(get, set):Bool;
     public function get_MusicEnabled(){
         trace("MusicEnabled get");
-        return GameSettings.musicEnabled;
+        return GameSettings.MusicEnabled;
     }
     public function set_MusicEnabled(value:Bool):Bool{
-        GameSettings.musicEnabled = value;
+        GameSettings.MusicEnabled = value;
         trace("MusicEnabled set");
-        return GameSettings.musicEnabled;
-    }
+        return GameSettings.MusicEnabled;
+    }*/
     private var input:Input;
     public function new() 
     {
@@ -81,36 +81,45 @@ class SettingsMenu extends FlxUIPopup
         
         musicCheckbox = cast _ui.getAsset("music_enabled");
         if (musicCheckbox != null){
-            musicCheckbox.checked = GameSettings.musicEnabled;
+            musicCheckbox.checked = GameSettings.MusicEnabled;
         }
         
         musicStepper = cast _ui.getAsset("music_volume");
         if (musicStepper != null){
-            musicStepper.value = GameSettings.musicVolume;
+            musicStepper.value = GameSettings.MusicVolume;
         }
         
         soundCheckbox = cast _ui.getAsset("sfx_enabled");
         if (soundCheckbox != null){
-            soundCheckbox.checked = GameSettings.soundEffectsEnabled;
+            soundCheckbox.checked = GameSettings.SoundEffectsEnabled;
         }
 
         soundStepper = cast _ui.getAsset("sfx_volume");
         if (soundStepper != null){
-            soundStepper.value = GameSettings.soundEffectsVolume;
+            soundStepper.value = GameSettings.SoundEffectsVolume;
         }
     }
     
 	public override function getEvent(name:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>):Void
-	{
-        //trace("PlayState.getEvent(" + name+")");
-		var str:String = "";
-		
+	{		
 		switch (name)
 		{
-			case "finish_load":
-                trace("Popup loaded");
+			case FlxUICheckBox.CLICK_EVENT:
+                var check:FlxUICheckBox = cast sender;
+                if (check.name == "music_enabled"){
+                    GameSettings.MusicEnabled = check.checked;
+                }else if (check.name == "sfx_enabled"){
+                    GameSettings.SoundEffectsEnabled = check.checked;
+                }
+			case FlxUINumericStepper.CHANGE_EVENT:
+                var stepper:FlxUINumericStepper = cast sender;
+                var value:Float = stepper.value;
+                if (stepper.name == "music_volume"){
+                    GameSettings.MusicVolume = value;
+                }else if (stepper.name == "sfx_volume"){
+                    GameSettings.SoundEffectsVolume = value;
+                }
 			case "click_button":
-                trace("Button click.");
 				if (params != null && params.length > 0)
 				{
                     trace("click param: " + Std.string(params[0]));
