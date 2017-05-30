@@ -37,6 +37,8 @@ class SoundsEffectsPlugin extends GlobalPluginBase
             eventSoundTable.set(event, FlxG.sound.load(eventAssetTable[event]));
             EventManager.Register(playSoundEvent, event);
         }
+        //EventManager.Register(soundToggleCallback, Events.SOUND_ENABLED);
+        //EventManager.Register(soundVolumeCallback, Events.SOUND_VOLUME);
     }
     
     function playSoundEvent(sender:Dynamic, event:String, params:Dynamic) :Void{
@@ -45,4 +47,12 @@ class SoundsEffectsPlugin extends GlobalPluginBase
             eventSoundTable[event].play();
         }
     }
+    
+    /*function soundToggleCallback(sender:Dynamic, event:String, params:Array<Dynamic>):Void
+    {
+    }
+    
+    function soundVolumeCallback(sender:Dynamic, event:String, params:Array<Dynamic>):Void
+    {
+    }*/
 }
