@@ -51,8 +51,8 @@ class Input
     
     private var gamepad:FlxGamepad;
     
-    private var analogThreshhold:Float = 0.01;
-    private var gamePadDeadZone:Float = 0.15;
+    private var analogThreshhold:Float = 0.2;
+    private var gamePadDeadZone:Float = 0.01;
     
     public function new() 
     {
