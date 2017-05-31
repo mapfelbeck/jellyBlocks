@@ -5,6 +5,7 @@ import flixel.FlxGame;
 import flixel.FlxState;
 import globalPlugins.SoundsEffectsPlugin;
 import globalPlugins.MusicPlugin;
+import util.Capabilities;
 
 /**
  * ...
@@ -19,6 +20,12 @@ class JellyBlocksGame extends FlxGame
     {
         super(GameWidth, GameHeight, InitialState, Zoom, UpdateFramerate, DrawFramerate, SkipSplash, StartFullscreen);
 		
+        #if html5
+        if (Capabilities.IsMobileBrowser()){
+            GameSettings.MusicEnabled = false;
+            GameSettings.SoundEffectsEnabled = false;
+        }
+        #end
         createPlugins();
     }
     

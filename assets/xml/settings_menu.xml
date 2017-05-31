@@ -18,10 +18,9 @@
 
     <!--<slider object="onValueChange" varString="Foo" minValue="0.0" maxValue="1.0" x="20" y="10" label="#####" 
                 width="100pt" height="15pt" thickness="3" color="0xFF000000" handleColor="0xFF828282"/>-->
-	<checkbox id="music_enabled" label="Music Enabled" checked="false"/>
+	<checkbox id="music_enabled" />
 	<numeric_stepper id="music_volume" step="0.05" defaultValue="0.2" min="0.0" max="1.0" decimals="2" />
-    
-    <checkbox id="sfx_enabled" label="Sounds Enabled"/>
+    <checkbox id="sfx_enabled" />
     <numeric_stepper id="sfx_volume" step="0.05" defaultValue="0.4" min="0.0" max="1.0" decimals="2" />
     
 	<button id="controls_btn" center_x="true" width="100pt" height="36pt" label="Controls">
@@ -39,10 +38,15 @@
     <align axis="vertical" spacing="2">
         <anchor x="background.left+50%" x-flush="left" />
 		<objects value="music_enabled,music_volume,sfx_enabled,sfx_volume,controls_btn"/>
-		<!--<bounds top="background.top+15pt" bottom="background.bottom-15pt"/>-->
 		<bounds top="background.top+65pt" bottom="background.bottom-250pt" />
 	</align>
     
-	<text id="music_volume_label" x="music_volume.right+5" y="music_volume.y" text="Music Volume" color="white"/>
-	<text id="sfx_volume_label" x="sfx_volume.right+5" y="sfx_volume.y" text="Sound Volume" color="white"/>
+	<text id="music_enabled_label" use_def="sans16c" x="music_enabled.right-50pt" y="music_enabled.y-2pt" 
+          text="Music Enabled" color="white" width="200pt" align="left" />
+	<text id="music_volume_label" use_def="sans16c" x="music_volume.right+10" y="music_volume.y-3pt" 
+          text="Music Volume" color="white" width="200pt" align="left"/>
+	<text id="sfx_enabled_label" use_def="sans16c" x="sfx_enabled.right-50pt" y="sfx_enabled.y-3pt" 
+          text="Sounds Enabled" color="white" width="200pt" align="left" />
+	<text id="sfx_volume_label" use_def="sans16c" x="sfx_volume.right+10" y="sfx_volume.y-3pt" 
+          text="Sound Volume" color="white" width="200pt" align="left" />
 </data>
