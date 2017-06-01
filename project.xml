@@ -14,8 +14,8 @@
 	<!-- ____________________________ Window Settings ___________________________ -->
     
     <!-- create size vars in project file -->
-    <set name="windowWidth" value="450" />
-    <set name="windowHeight" value="600" />-->
+    <set name="windowWidth" value="600" />
+    <set name="windowHeight" value="800" />-->
     <!-- make above var visible to compiler/show up as constants -->
     <haxedef name="windowWidth" value="${windowWidth}" />
     <haxedef name="windowHeight" value="${windowHeight}" />
