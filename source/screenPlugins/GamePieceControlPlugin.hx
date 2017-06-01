@@ -24,6 +24,9 @@ class GamePieceControlPlugin extends ScreenPluginBase
     private var verticalPush:Float = 0;
     private var rotatateAmount:Float = 0;
     
+    private var thumbstickInputScalar:Float = 0.5;
+    private var gamepieceFallThreshHold:Float = 0.25;
+    
     public function new(parent:FlxUIState, input:Input, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
@@ -157,13 +160,13 @@ class GamePieceControlPlugin extends ScreenPluginBase
     
     function stickPush(stick:FlxGamepadInputID, xValue:Float, yValue:Float): Void
     {
-        horizontalPush = xValue;
-        verticalPush = yValue;
+        horizontalPush = xValue * thumbstickInputScalar;
+        verticalPush = yValue * thumbstickInputScalar;
     }
     
     function stickRotate(stick:FlxGamepadInputID, xValue:Float, yValue:Float): Void
     {
-        rotatateAmount = xValue;
+        rotatateAmount = xValue * thumbstickInputScalar;
     }
 
     public function MoveAccumulator(elapsed:Float):Void{
@@ -187,6 +190,12 @@ class GamePieceControlPlugin extends ScreenPluginBase
             rotationAmount = -clampValue(controlled.RotationSpeed, -1, 1);
         }
         
+        var velocity:Vector2 = controlled.DerivedVelocity;
+        if (velocity.y < gamepieceFallThreshHold){
+            verticalPush = 0;
+        }
+        trace("controlled piece velocity: " + velocity.x + ", " + velocity.y);
+
         pushAmount.x = horizontalPush * moveForce;
         pushAmount.y = verticalPush * moveForce;
 

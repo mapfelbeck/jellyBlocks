@@ -141,14 +141,14 @@ class PlayState extends FlxUIState
         input.GamePadDeadZone = GameConstants.GamePadDeadZone;
         
         input.AddGamepadButtonInput(FlxGamepadInputID.START, pauseBtn, PressType.Down);
+        input.AddKeyboardInput(FlxKey.ESCAPE, pauseKey, PressType.Down);
+        #if debug
         input.AddGamepadButtonInput(FlxGamepadInputID.LEFT_SHOULDER, unfreezeBtn, PressType.Down);
         input.AddGamepadButtonInput(FlxGamepadInputID.RIGHT_SHOULDER, scrambleColorsBtn, PressType.Down);
         input.AddKeyboardInput(FlxKey.PAGEUP, adjustColorUp, PressType.Down);
         input.AddKeyboardInput(FlxKey.PAGEDOWN, adjustColorDown, PressType.Down);
         input.AddKeyboardInput(FlxKey.F, unfreezeKey, PressType.Down);
         input.AddKeyboardInput(FlxKey.R, scrambleColorsKey, PressType.Down);
-        input.AddKeyboardInput(FlxKey.ESCAPE, pauseKey, PressType.Down);
-        #if debug
         input.AddKeyboardInput(FlxKey.P, pausePhysics, PressType.Down);
         #end
 

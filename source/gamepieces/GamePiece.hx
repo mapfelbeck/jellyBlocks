@@ -123,7 +123,21 @@ class GamePiece
     private var rotationLastFrame:Float;
     private var rotationSpeed:Float = 0;
     public var RotationSpeed(get, null):Float;    
-    public function get_RotationSpeed():Float{return rotationSpeed;}
+    public function get_RotationSpeed():Float{return rotationSpeed; }
+   
+    public var DerivedVelocity(get, null):Vector2;
+    function get_DerivedVelocity():Vector2{
+        var derived:Vector2 = new Vector2(0, 0);
+        for (block in blocks){
+            if (block.DerivedVel == null){
+                continue;
+            }
+            derived.add(block.DerivedVel);
+        }
+        derived.x /= blocks.length;
+        derived.y /= blocks.length;
+        return derived;
+    }
     
     public function new(theBlocks:Array<GameBlock>, theSprings:Array<ExternalSpring>,
             gravityScalar:Float, id:Int) 
