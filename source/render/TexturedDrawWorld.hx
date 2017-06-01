@@ -11,6 +11,7 @@ import openfl.text.TextField;
 import render.BaseDrawWorld;
 import render.DebugDrawBodyOption;
 import util.UtilClass;
+import util.ScreenWorldTransform;
 import events.*;
 
 /**
@@ -33,10 +34,6 @@ class TexturedDrawWorld extends BaseDrawWorld
     
     private var labels:Array<TextField>;
     
-    public var width:Int = 0;
-    public var height:Int = 0;
-    public var overscan:Int = 0;
-    
     public var ColorOfBackground:Int = BaseDrawWorld.COLOR_BLACK;
     public var ColorOfGlobalVerts:Int = BaseDrawWorld.COLOR_YELLOW;
     public var ColorOfGlobalBody:Int = BaseDrawWorld.COLOR_YELLOW;
@@ -50,9 +47,9 @@ class TexturedDrawWorld extends BaseDrawWorld
 	var indices:Array<Int> = null;
 	var uvtData:Array<Float> = null;
 
-    public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, width:Int, height:Int, overscan:Int) 
+    public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, screenWorldTransform:ScreenWorldTransform) 
     {
-        super(colorSource);
+        super(colorSource, screenWorldTransform);
     
         this.parentState = parentState;
         renderTarget = sprite;
@@ -60,8 +57,6 @@ class TexturedDrawWorld extends BaseDrawWorld
         world = physicsWorld;
         
         setupDrawParam();
-        
-        setRenderAndOffset(width, height, overscan);
         
         EventManager.Register(onColorRotate, Events.COLOR_ROTATE);
     }
@@ -99,8 +94,8 @@ class TexturedDrawWorld extends BaseDrawWorld
 
 		var center:Vector2 = new Vector2(0, 0);
 		var borderSize:Vector2 = new Vector2(ground.Border, ground.Border);
-		var centerAsScreen:Vector2 = new Vector2(center.x * scale.x + offset.x, center.y * scale.y + offset.y);
-		var borderSizeAsScreen:Vector2 = new Vector2(borderSize.x * scale.x + offset.x, borderSize.y * scale.y + offset.y);
+		var centerAsScreen:Vector2 = new Vector2(center.x * transform.scale.x + transform.offset.x, center.y * transform.scale.y + transform.offset.y);
+		var borderSizeAsScreen:Vector2 = new Vector2(borderSize.x * transform.scale.x + transform.offset.x, borderSize.y * transform.scale.y + transform.offset.y);
 		var diff:Vector2 = VectorTools.Subtract(borderSizeAsScreen, centerAsScreen);
 		diff.x *= 0.5;
 		diff.y *= 0.5;
@@ -109,28 +104,9 @@ class TexturedDrawWorld extends BaseDrawWorld
 
 		gameArenaSprite.setGraphicSize(arenaWidth, arenaHeight);
 		gameArenaSprite.updateHitbox();
-		gameArenaSprite.x = Std.int((width - arenaWidth) / 2);
-		gameArenaSprite.y = Std.int((height - arenaHeight) / 2);
+		gameArenaSprite.x = Std.int((transform.screenWidth - arenaWidth) / 2);
+		gameArenaSprite.y = Std.int((transform.screenHeight - arenaHeight) / 2);
 		parentState.add(gameArenaSprite);
-    }
-    
-    private var worldWidth:Float;
-    private var worldHeight:Float;
-    private function setRenderAndOffset(width:Int, height:Int, overscan:Int):Void{
-        worldBounds = world.WorldBounds;
-        worldWidth = worldBounds.LR.x - worldBounds.UL.x;
-        worldHeight = worldBounds.LR.y - worldBounds.UL.y;
-        this.overscan = overscan;
-        this.width = width;
-        this.height = height;
-        backgroundSize = new Vector2(width - (2 * overscan), height - (2 * overscan));
-        offset.x = width / 2;
-        offset.y = height / 2;
-        
-        var hScale:Float = backgroundSize.x / worldWidth;
-        var wScale:Float = backgroundSize.y / worldHeight;
-        scale.x = Math.min(hScale, wScale);
-        scale.y = Math.min(hScale, wScale);
     }
     
     function createTextLabels(count:Int) 
@@ -172,17 +148,17 @@ class TexturedDrawWorld extends BaseDrawWorld
             
             var vertexIndex:Int = bodyIndex * vertexesPerBlock * elementsPerEntry;
             
-            vertices[vertexIndex + 0] = body.PointMasses[0].Position.x * scale.x + offset.x;
-            vertices[vertexIndex + 1] = body.PointMasses[0].Position.y * scale.y + offset.y;
+            vertices[vertexIndex + 0] = body.PointMasses[0].Position.x * transform.scale.x + transform.offset.x;
+            vertices[vertexIndex + 1] = body.PointMasses[0].Position.y * transform.scale.y + transform.offset.y;
             
-            vertices[vertexIndex + 2] = body.PointMasses[1].Position.x * scale.x + offset.x;
-            vertices[vertexIndex + 3] = body.PointMasses[1].Position.y * scale.y + offset.y;
+            vertices[vertexIndex + 2] = body.PointMasses[1].Position.x * transform.scale.x + transform.offset.x;
+            vertices[vertexIndex + 3] = body.PointMasses[1].Position.y * transform.scale.y + transform.offset.y;
             
-            vertices[vertexIndex + 4] = body.PointMasses[2].Position.x * scale.x + offset.x;
-            vertices[vertexIndex + 5] = body.PointMasses[2].Position.y * scale.y + offset.y;
+            vertices[vertexIndex + 4] = body.PointMasses[2].Position.x * transform.scale.x + transform.offset.x;
+            vertices[vertexIndex + 5] = body.PointMasses[2].Position.y * transform.scale.y + transform.offset.y;
             
-            vertices[vertexIndex + 6] = body.PointMasses[3].Position.x * scale.x + offset.x;
-            vertices[vertexIndex + 7] = body.PointMasses[3].Position.y * scale.y + offset.y;
+            vertices[vertexIndex + 6] = body.PointMasses[3].Position.x * transform.scale.x + transform.offset.x;
+            vertices[vertexIndex + 7] = body.PointMasses[3].Position.y * transform.scale.y + transform.offset.y;
             
             bodyIndex++;
         }

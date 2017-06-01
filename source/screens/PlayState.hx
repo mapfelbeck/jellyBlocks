@@ -22,6 +22,7 @@ import gamepieces.GamePiece;
 import globalPlugins.SoundsEffectsPlugin;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
+import openfl.Lib;
 import openfl.display.*;
 import plugins.*;
 import render.*;
@@ -32,6 +33,7 @@ import screenPlugins.GamePieceControlPlugin;
 import screenPlugins.GamePieceSpawnPlugin;
 import screenPlugins.ScreenPluginBase;
 import util.Capabilities;
+import util.ScreenWorldTransform;
 
 class PlayState extends FlxUIState
 {
@@ -67,6 +69,7 @@ class PlayState extends FlxUIState
     private var maxLifeTime:Float = 7.0;
     
     private var plugins:List<ScreenPluginBase> = new List<ScreenPluginBase>();
+    private var rotatePlugin:ColorRotatePlugin;
     private var spawnPlugin:GamePieceSpawnPlugin;
     private var controlPlugin:GamePieceControlPlugin;
 
@@ -83,11 +86,23 @@ class PlayState extends FlxUIState
         "assets/gfx/ui/gameplay4.png"
     ];
     
+    /*public var RotateAccumulated(get, null):Float;
+    public function get_RotateAccumulated(){
+        if (rotatePlugin != null){
+            return rotatePlugin.Accumulated;
+        }
+        return 0.5;
+    }*/
+    
+    private var screenWorldTransform:ScreenWorldTransform;
+    
 	override public function create():Void
 	{
 		_xml_id = "play_state";
         persistentDraw = true;
         persistentUpdate = false;
+        
+        super.create();
         
         /*#if mobile
         WINDOW_WIDTH = Std.int(Lib.current.stage.width);
@@ -101,7 +116,12 @@ class PlayState extends FlxUIState
         
         //trace("Window width: " + WINDOW_WIDTH);
         //trace("Window height: " + WINDOW_HEIGHT);
-		super.create();
+        
+        trace("Std.int(Lib.current.stage.width): " + Std.int(Lib.current.stage.width));
+        //trace("Lib.application.window.width: " + Lib.application.window.width);
+        trace("WINDOW_WIDTH: " + WINDOW_WIDTH);
+        //trace("Std.parseInt(haxe.macro.Compiler.getDefine(\"windowWidth\")): " + Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
+		
         
         colorSource = new MultiColorSource(constants.GameConstants.UniqueColors);
         
@@ -138,6 +158,8 @@ class PlayState extends FlxUIState
         defaultMaterial.Elasticity = 0.8;
         
         createWorld();
+        
+        screenWorldTransform = new ScreenWorldTransform(physicsWorld.WorldBounds, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         
         //#if (html5)
         render = setupSolidColorRender();
@@ -178,13 +200,13 @@ class PlayState extends FlxUIState
         var soundPlugin = new SoundsEffectsPlugin();
         FlxG.plugins.add(soundPlugin);
         
-        var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource);
+        var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource, screenWorldTransform);
         add(blockPopPlugin);
         plugins.add(blockPopPlugin);
         
-        var colorRotatePlugin = new ColorRotatePlugin(this, colorSource);
-        add(colorRotatePlugin);
-        plugins.add(colorRotatePlugin);
+        rotatePlugin = new ColorRotatePlugin(this, colorSource);
+        add(rotatePlugin);
+        plugins.add(rotatePlugin);
         
         controlPlugin = new GamePieceControlPlugin(this, input);
         physicsWorld.externalAccumulator = controlPlugin.MoveAccumulator;
@@ -205,19 +227,19 @@ class PlayState extends FlxUIState
     
     function setupTexturedRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new TexturedDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        var render:BaseDrawWorld = new TexturedDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, screenWorldTransform);
         return render;
     }
     
     function setupSolidColorRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new SolidColorDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        var render:BaseDrawWorld = new SolidColorDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, screenWorldTransform);
         return render;
     }
     
     function setupDebugRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), colorSource, physicsWorld, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        var render:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), colorSource, physicsWorld, screenWorldTransform);
         return render;
     }
 

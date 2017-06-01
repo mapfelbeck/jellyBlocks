@@ -1,6 +1,7 @@
 package render;
 
 import jellyPhysics.math.Vector2;
+import util.ScreenWorldTransform;
 /**
  * ...
  * @author 
@@ -20,13 +21,14 @@ class BaseDrawWorld
     public static var COLOR_AQUA:Int = 0x00FFFF;
     
     private var ground:GameGround;
-    public var offset:Vector2 = new Vector2(0, 0);
-    public var scale:Vector2 = new Vector2(10.0, 10.0);
     
     private var colorSource:IColorSource;
     
-    public function new(colorSource:IColorSource){
+    public var transform:ScreenWorldTransform;
+    
+    public function new(colorSource:IColorSource, screenWorldTransform:ScreenWorldTransform){
         this.colorSource = colorSource;
+        transform = screenWorldTransform;
         setupDrawParam();
     }
     
@@ -42,8 +44,8 @@ class BaseDrawWorld
     
     private function worldToLocal(world:Vector2):Vector2{
         var local:Vector2 = new Vector2();
-        local.x = (world.x * scale.x) + offset.x;
-        local.y = (world.y * scale.y) + offset.y;
+        local.x = (world.x * transform.scale.x) + transform.offset.x;
+        local.y = (world.y * transform.scale.y) + transform.offset.y;
         return local;
     }
 }

@@ -7,6 +7,7 @@ import openfl.display.*;
 import openfl.events.*;
 import openfl.text.TextField;
 import render.DebugDrawBodyOption;
+import util.ScreenWorldTransform;
 
 /**
  * ...
@@ -25,10 +26,6 @@ class DebugDrawWorld extends BaseDrawWorld
     private var worldBounds:AABB;
     
     private var labels:Array<TextField>;
-    
-    public var width:Int = 0;
-    public var height:Int = 0;
-    public var overscan:Int = 0;
     
     public var ColorOfBounds:Int = BaseDrawWorld.COLOR_PURPLE;
     public var ColorOfText:Int = BaseDrawWorld.COLOR_GREY;
@@ -52,42 +49,19 @@ class DebugDrawWorld extends BaseDrawWorld
     public var DrawingInternalSprings:Bool = false;
     public var DrawingPointMasses:Bool = true;
     
-    public function new(sprite:Sprite, colorSource:IColorSource, physicsWorld:World, width:Int, height:Int, overscan:Int) 
+    public function new(sprite:Sprite, colorSource:IColorSource, physicsWorld:World, screenWorldTransform:ScreenWorldTransform) 
     {
-        super(colorSource);
+        super(colorSource, screenWorldTransform);
         drawGlobalBodyDefault = new DebugDrawBodyOption(0, ColorOfGlobalBody, false);
         drawPhysicsBodyDefault = new DebugDrawBodyOption(0, ColorOfPhysicsBody, false);
     
         renderTarget = sprite;
         graphics = renderTarget.graphics;
         world = physicsWorld;
-        
-        //setupDrawParam();
-        
-        setRenderAndOffset(width, height, overscan);
-        
+
         if (DrawingLabels){
             createTextLabels(world.NumberBodies);
         }
-    }
-    
-    private var worldWidth:Float;
-    private var worldHeight:Float;
-    private function setRenderAndOffset(width:Int, height:Int, overscan:Int):Void{
-        worldBounds = world.WorldBounds;
-        worldWidth = worldBounds.LR.x - worldBounds.UL.x;
-        worldHeight = worldBounds.LR.y - worldBounds.UL.y;
-        this.overscan = overscan;
-        this.width = width;
-        this.height = height;
-        backgroundSize = new Vector2(width - (2 * overscan), height - (2 * overscan));
-        offset.x = width / 2;
-        offset.y = height / 2;
-        
-        var hScale:Float = backgroundSize.x / worldWidth;
-        var wScale:Float = backgroundSize.y / worldHeight;
-        scale.x = Math.min(hScale, wScale);
-        scale.y = Math.min(hScale, wScale);
     }
     
     function createTextLabels(count:Int) 
@@ -116,7 +90,7 @@ class DebugDrawWorld extends BaseDrawWorld
         
         if(DrawingBackground){
             graphics.beginFill(ColorOfBackground);
-            graphics.drawRect(overscan, overscan, backgroundSize.x, backgroundSize.y);
+            graphics.drawRect(transform.overscan, transform.overscan, backgroundSize.x, backgroundSize.y);
             graphics.endFill();
         }
         
@@ -184,7 +158,7 @@ class DebugDrawWorld extends BaseDrawWorld
         
         for (i in 0...pointMasses.length){
             var vert:Vector2 = pointMasses[i].Position;
-            graphics.drawRect((vert.x * scale.x) + offset.x - (SizeOfVert / 2), (vert.y * scale.y) + offset.y - (SizeOfVert / 2), SizeOfVert, SizeOfVert);
+            graphics.drawRect((vert.x * transform.scale.x) + transform.offset.x - (SizeOfVert / 2), (vert.y * transform.scale.y) + transform.offset.y - (SizeOfVert / 2), SizeOfVert, SizeOfVert);
         }
         graphics.endFill();
     }
@@ -196,8 +170,8 @@ class DebugDrawWorld extends BaseDrawWorld
             var spring:InternalSpring = springBody.Springs[i];
             var pmA:PointMass = springBody.PointMasses[spring.pointMassA];
             var pmB:PointMass = springBody.PointMasses[spring.pointMassB];
-            graphics.moveTo((pmA.Position.x * scale.x) + offset.x, (pmA.Position.y * scale.y) + offset.y);
-            graphics.lineTo((pmB.Position.x * scale.x) + offset.x, (pmB.Position.y * scale.y) + offset.y);
+            graphics.moveTo((pmA.Position.x * transform.scale.x) + transform.offset.x, (pmA.Position.y * transform.scale.y) + transform.offset.y);
+            graphics.lineTo((pmB.Position.x * transform.scale.x) + transform.offset.x, (pmB.Position.y * transform.scale.y) + transform.offset.y);
         }
     }
     
@@ -207,7 +181,7 @@ class DebugDrawWorld extends BaseDrawWorld
         graphics.beginFill(ColorOfGlobalVerts, 1.0);
         for (i in 0...verts.length){
             var vert:Vector2 = verts[i];
-            graphics.drawRect((vert.x * scale.x) + offset.x - (SizeOfVert / 2), (vert.y * scale.y) + offset.y - (SizeOfVert / 2), SizeOfVert, SizeOfVert);
+            graphics.drawRect((vert.x * transform.scale.x) + transform.offset.x - (SizeOfVert / 2), (vert.y * transform.scale.y) + transform.offset.y - (SizeOfVert / 2), SizeOfVert, SizeOfVert);
         }
         graphics.endFill();
     }
@@ -255,7 +229,7 @@ class DebugDrawWorld extends BaseDrawWorld
         if (opts.IsSolid){
             graphics.beginFill(opts.Color, 1.0);
         }
-        graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
+        graphics.moveTo((start.x * transform.scale.x) + transform.offset.x , (start.y * transform.scale.y) + transform.offset.y );
         for (i in 0...shape.length){
             var next:Vector2;
             if (i == shape.length-1){
@@ -263,7 +237,7 @@ class DebugDrawWorld extends BaseDrawWorld
             }else{
                 next = shape[i+1];
             }
-            graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
+            graphics.lineTo((next.x * transform.scale.x) + transform.offset.x, (next.y * transform.scale.y) + transform.offset.y);
         }
         if (opts.IsSolid){
             graphics.endFill();
@@ -274,8 +248,8 @@ class DebugDrawWorld extends BaseDrawWorld
     {
         graphics.lineStyle(0, ColorOfAABB, 0.5);
                 
-        graphics.drawRect((box.UL.x * scale.x) + offset.x, (box.UL.y * scale.y) + offset.y, 
-                                 box.Width * scale.x, box.Height * scale.y);
+        graphics.drawRect((box.UL.x * transform.scale.x) + transform.offset.x, (box.UL.y * transform.scale.y) + transform.offset.y, 
+                                 box.Width * transform.scale.x, box.Height * transform.scale.y);
     }
     
     public override function setupDrawParam():Void
