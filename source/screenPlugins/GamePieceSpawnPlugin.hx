@@ -4,6 +4,7 @@ import builders.GamePieceBuilder;
 import enums.*;
 import events.*;
 import flixel.FlxSprite;
+import flixel.addons.ui.FlxUISprite;
 import flixel.addons.ui.FlxUIState;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
@@ -16,6 +17,7 @@ import jellyPhysics.math.Vector2;
 import openfl.display.*;
 import patterns.TriominoPatterns;
 import render.IColorSource;
+import screens.BaseScreen;
 
 /**
  * ...
@@ -51,14 +53,13 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
     private var nextGamePiece:GamePiece = null;
     private var currGamePiece:GamePiece = null;
     
-    private var previewBackgroundSize:Int = 70;
+    private var previewBackgroundSize:Int = 50;
     
     private static var fullPreviewBarAssetPath:String =  "assets/images/previewBarFull.png";
     private static var emptyPreviewBarAssetPath:String =  "assets/images/previewBarEmpty.png";
-    private static var backgroundAssetPath:String =  "assets/images/piecePreviewBackground.png";
     private var fullPreviewBar:FlxSprite;
     private var emptyPreviewBar:FlxSprite;
-    private var previewBackground:FlxSprite;
+    private var background:FlxUISprite;
     private var previewOverlay:FlxSprite;
     
     private var previewPos:Vector2 = new Vector2(-11, -15);
@@ -68,7 +69,7 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
     
     private var spawnPaused:Bool = false;
     
-    public function new(parent:FlxUIState, colorSource:IColorSource, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
+    public function new(parent:BaseScreen, colorSource:IColorSource, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
     {
         super(parent, X, Y, SimpleGraphic);
         
@@ -82,15 +83,13 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
         yPos -= 20;
         var xPos:Int = Std.int(WINDOW_WIDTH / 20);
         xPos -= 10;
+        
+        background = cast parent.getAsset("preview_background");
+        if (background != null){
+            previewBackgroundSize = Std.int(background.width);
+        }
 
-        previewBackground = new FlxSprite(0, 0, backgroundAssetPath);
-        var backgroundScale:Float = previewBackgroundSize / previewBackground.width;
-        previewBackground.scale.set(backgroundScale, backgroundScale);
-        previewBackground.updateHitbox();
-        previewBackground.x = xPos;
-        previewBackground.y = yPos;
-        parent.add(previewBackground);
-        previewOverlay = new FlxSprite(xPos, yPos);
+        previewOverlay = new FlxSprite(background.x, background.y);
         parent.add(previewOverlay);
         
         emptyPreviewBar = new FlxSprite(0, 0, emptyPreviewBarAssetPath);

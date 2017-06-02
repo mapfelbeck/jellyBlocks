@@ -14,7 +14,7 @@ import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import util.Capabilities;
 
-class MenuState extends FlxUIState
+class MenuState extends BaseScreen
 {
 	override public function create():Void
 	{

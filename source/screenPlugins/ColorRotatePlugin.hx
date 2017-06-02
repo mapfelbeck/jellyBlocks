@@ -2,6 +2,7 @@ package screenPlugins;
 
 import events.*;
 import flixel.FlxSprite;
+import flixel.addons.ui.FlxUISprite;
 import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxMath;
 import flixel.system.FlxAssets.FlxGraphicAsset;
@@ -9,6 +10,7 @@ import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import render.IColorSource;
+import screens.BaseScreen;
 
 /**
  * ...
@@ -39,17 +41,18 @@ class ColorRotatePlugin extends ScreenPluginBase
     
     private static var fullBarSpriteAssetPath:String =  "assets/images/chargeBarFull.png";
     private static var emptyBarSpriteAssetPath:String =  "assets/images/chargeBarEmpty.png";
-    private static var backgroundAssetPath:String =  "assets/images/chargeBarBackground.png";
+    //private static var backgroundAssetPath:String =  "assets/images/squareTile.png";
     private var fullBar:FlxSprite;
     private var emptyBar:FlxSprite;
-    private var background:FlxSprite;
+    private var background:FlxUISprite;
     
-    private var colorWheelBackgroundSize:Int = 40;
-    private var colorWheelSize:Int = 30;
+    private var backgroundSize:Int = 100;
+    private var colorWheelBackgroundRatio:Float = 0.8;
+    private var colorWheelSize:Int = 100;
     private var colorWheel:FlxSprite;
     private var colorWheelAlpha:FlxSprite;
     
-    public function new(parent:FlxUIState, colorSource:IColorSource, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
+    public function new(parent:BaseScreen, colorSource:IColorSource, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
         
@@ -66,23 +69,21 @@ class ColorRotatePlugin extends ScreenPluginBase
         chargeBar.createImageBar(emptyBar.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         parent.add(chargeBar);
         
-        background = new FlxSprite(0, 0, backgroundAssetPath);
-        var backgroundScale:Float = colorWheelBackgroundSize / background.width;
-        background.scale.set(backgroundScale, backgroundScale);
-        background.updateHitbox();
-        background.y = yPos;
-        parent.add(background);
+        background = cast parent.getAsset("rotate_background");
+        backgroundSize = Std.int(background.width);
+        colorWheelSize = Std.int(backgroundSize * colorWheelBackgroundRatio);
         
         colorWheel = makeColorWheel(new FlxSprite());
-        colorWheel.y = yPos + (colorWheelBackgroundSize-colorWheelSize)/2;
+        colorWheel.y = background.y + (backgroundSize-colorWheelSize)/2;
         parent.add(colorWheel);
 
         colorWheelAlpha = makeColorWheelApha();
         
-        var xPos:Int = Std.int((WINDOW_WIDTH - (chargeBar.width + colorWheelBackgroundSize)) / 2);
+        var xPos:Int = Std.int((WINDOW_WIDTH - (chargeBar.width + backgroundSize)) / 2);
         chargeBar.x = xPos;
-        background.x = xPos + chargeBar.width;
-        colorWheel.x = xPos + chargeBar.width+(colorWheelBackgroundSize-colorWheelSize)/2;
+        //background.x = xPos + chargeBar.width;
+        colorWheel.x = xPos + chargeBar.width+(backgroundSize-colorWheelSize)/2;
+        colorWheel.x = background.x + (backgroundSize-colorWheelSize)/2;
     }
     
     function makeColorWheel(sprite:FlxSprite):FlxSprite{

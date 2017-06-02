@@ -16,6 +16,7 @@ import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
 import jellyPhysics.math.Vector2;
 import render.IColorSource;
+import screens.BaseScreen;
 import util.Capabilities;
 import util.ScreenWorldTransform;
 /**
@@ -36,7 +37,7 @@ class BlockPopEffectPlugin extends ScreenPluginBase
     private var colorSource:IColorSource;
     private var transform:ScreenWorldTransform;
 
-    public function new(parent:FlxUIState, colorSource:IColorSource, screenWorldTransform:ScreenWorldTransform, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
+    public function new(parent:BaseScreen, colorSource:IColorSource, screenWorldTransform:ScreenWorldTransform, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
         this.colorSource = colorSource;

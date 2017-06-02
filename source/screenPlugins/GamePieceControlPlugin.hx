@@ -9,6 +9,7 @@ import flixel.input.keyboard.FlxKey;
 import flixel.input.gamepad.FlxGamepadInputID;
 import jellyPhysics.math.Vector2;
 import flixel.ui.FlxButton;
+import screens.BaseScreen;
 
 /**
  * ...
@@ -25,9 +26,9 @@ class GamePieceControlPlugin extends ScreenPluginBase
     private var rotatateAmount:Float = 0;
     
     private var thumbstickInputScalar:Float = 0.5;
-    private var gamepieceFallThreshHold:Float = 0.25;
+    private var gamepieceFallThreshHold:Float = 0.5;
     
-    public function new(parent:FlxUIState, input:Input, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
+    public function new(parent:BaseScreen, input:Input, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
         this.input = input;
@@ -194,7 +195,6 @@ class GamePieceControlPlugin extends ScreenPluginBase
         if (velocity.y < gamepieceFallThreshHold){
             verticalPush = 0;
         }
-        trace("controlled piece velocity: " + velocity.x + ", " + velocity.y);
 
         pushAmount.x = horizontalPush * moveForce;
         pushAmount.y = verticalPush * moveForce;

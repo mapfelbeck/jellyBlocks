@@ -4,6 +4,7 @@ import flixel.addons.text.FlxTextField;
 import flixel.addons.ui.FlxUIState;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxColor;
+import screens.BaseScreen;
 /**
  * ...
  * @author Michael Apfelbeck
@@ -13,7 +14,7 @@ class FrameRatePlugin extends ScreenPluginBase
     //how many samples/second
     private var samplesPerSecond:Int = 1;
     private var displayText:FlxTextField;
-    public function new(parent:FlxUIState, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
+    public function new(parent:BaseScreen, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
         super(parent, X, Y, SimpleGraphic);
 		sampleRate = 1.0 / samplesPerSecond;

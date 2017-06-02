@@ -35,7 +35,7 @@ import screenPlugins.ScreenPluginBase;
 import util.Capabilities;
 import util.ScreenWorldTransform;
 
-class PlayState extends FlxUIState
+class PlayState extends BaseScreen
 {
     var render:BaseDrawWorld;
     var debugDrawSurface:Sprite;
