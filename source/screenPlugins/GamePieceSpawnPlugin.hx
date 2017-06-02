@@ -5,7 +5,6 @@ import enums.*;
 import events.*;
 import flixel.FlxSprite;
 import flixel.addons.ui.FlxUISprite;
-import flixel.addons.ui.FlxUIState;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
 import flixel.system.FlxAssets.FlxGraphicAsset;
@@ -69,6 +68,8 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
     
     private var spawnPaused:Bool = false;
     
+    private var barToBackgroundSizeRatio:Float = 4.0;
+    
     public function new(parent:BaseScreen, colorSource:IColorSource, world:JellyBlocksWorld,builder:GamePieceBuilder, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset)
     {
         super(parent, X, Y, SimpleGraphic);
@@ -76,13 +77,6 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
         this.builder = builder;
         this.world = world;
         this.colorSource = colorSource;
-        
-        var WINDOW_WIDTH:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
-        var WINDOW_HEIGHT:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
-        var yPos:Int = Std.int(WINDOW_HEIGHT / 20);
-        yPos -= 20;
-        var xPos:Int = Std.int(WINDOW_WIDTH / 20);
-        xPos -= 10;
         
         background = cast parent.getAsset("preview_background");
         if (background != null){
@@ -95,8 +89,15 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
         emptyPreviewBar = new FlxSprite(0, 0, emptyPreviewBarAssetPath);
         fullPreviewBar = new FlxSprite(0, 0, fullPreviewBarAssetPath);
         
-        previewBar = new FlxBar(xPos, yPos+previewBackgroundSize, FlxBarFillDirection.TOP_TO_BOTTOM, Std.int(emptyPreviewBar.width), Std.int(emptyPreviewBar.height), this, "SpawnTimer", 0, spawnTimerMax, true);
+        previewBar = new FlxBar(0, 0, FlxBarFillDirection.TOP_TO_BOTTOM, Std.int(emptyPreviewBar.width), Std.int(emptyPreviewBar.height), this, "SpawnTimer", 0, spawnTimerMax, true);
         previewBar.createImageBar(emptyPreviewBar.pixels, fullPreviewBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
+        var previewBarHeight:Int = cast(previewBackgroundSize * barToBackgroundSizeRatio);
+        var heightToFinalRatio:Float = previewBarHeight / emptyPreviewBar.height;
+        var previewBarWidth:Int = cast(heightToFinalRatio * emptyPreviewBar.width);
+        previewBar.setGraphicSize(previewBarWidth, previewBarHeight);
+        previewBar.updateHitbox();
+        previewBar.x = background.x;
+        previewBar.y = background.y + previewBackgroundSize;
         parent.add(previewBar);
         
         input = new Input();

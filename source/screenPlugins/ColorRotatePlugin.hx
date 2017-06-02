@@ -3,7 +3,6 @@ package screenPlugins;
 import events.*;
 import flixel.FlxSprite;
 import flixel.addons.ui.FlxUISprite;
-import flixel.addons.ui.FlxUIState;
 import flixel.math.FlxMath;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
@@ -44,8 +43,9 @@ class ColorRotatePlugin extends ScreenPluginBase
     //private static var backgroundAssetPath:String =  "assets/images/squareTile.png";
     private var fullBar:FlxSprite;
     private var emptyBar:FlxSprite;
-    private var background:FlxUISprite;
+    private var barWidthRatio:Float = 0.5;
     
+    private var background:FlxUISprite;
     private var backgroundSize:Int = 100;
     private var colorWheelBackgroundRatio:Float = 0.8;
     private var colorWheelSize:Int = 100;
@@ -57,19 +57,26 @@ class ColorRotatePlugin extends ScreenPluginBase
         super(parent, X, Y, SimpleGraphic);
         
         var WINDOW_WIDTH:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
-        var WINDOW_HEIGHT:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowHeight"));
-        var yPos:Int = Std.int(WINDOW_HEIGHT / 20);
         
         this.colorSource = colorSource;
         
         emptyBar = new FlxSprite(0, 0, emptyBarSpriteAssetPath);
         fullBar = new FlxSprite(0, 0, fullBarSpriteAssetPath);
         
-        chargeBar = new FlxBar(0, yPos, null, Std.int(emptyBar.width), Std.int(emptyBar.height), this, "Accumulated", 0, accumulateThreshold, false);
+        chargeBar = new FlxBar(0, 0, null, Std.int(emptyBar.width), Std.int(emptyBar.height), this, "Accumulated", 0, accumulateThreshold, false);
         chargeBar.createImageBar(emptyBar.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
-        parent.add(chargeBar);
         
         background = cast parent.getAsset("rotate_background");
+        
+        var chargeBarWidth:Int = cast(WINDOW_WIDTH * barWidthRatio);
+        var heightToFinalRatio:Float = chargeBarWidth / emptyBar.width;
+        var chargeBarHeight:Int = cast(emptyBar.height * heightToFinalRatio);
+        chargeBar.setGraphicSize(chargeBarWidth, chargeBarHeight);
+        chargeBar.updateHitbox();
+        chargeBar.x = background.x - chargeBarWidth;
+        chargeBar.y = background.y + (background.height-chargeBarHeight)/2;
+        parent.add(chargeBar);
+        
         backgroundSize = Std.int(background.width);
         colorWheelSize = Std.int(backgroundSize * colorWheelBackgroundRatio);
         
@@ -79,10 +86,6 @@ class ColorRotatePlugin extends ScreenPluginBase
 
         colorWheelAlpha = makeColorWheelApha();
         
-        var xPos:Int = Std.int((WINDOW_WIDTH - (chargeBar.width + backgroundSize)) / 2);
-        chargeBar.x = xPos;
-        //background.x = xPos + chargeBar.width;
-        colorWheel.x = xPos + chargeBar.width+(backgroundSize-colorWheelSize)/2;
         colorWheel.x = background.x + (backgroundSize-colorWheelSize)/2;
     }
     

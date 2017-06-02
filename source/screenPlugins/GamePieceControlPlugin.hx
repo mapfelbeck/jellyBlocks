@@ -191,10 +191,12 @@ class GamePieceControlPlugin extends ScreenPluginBase
             rotationAmount = -clampValue(controlled.RotationSpeed, -1, 1);
         }
         
+        #if !debug
         var velocity:Vector2 = controlled.DerivedVelocity;
         if (velocity.y < gamepieceFallThreshHold){
             verticalPush = 0;
         }
+        #end
 
         pushAmount.x = horizontalPush * moveForce;
         pushAmount.y = verticalPush * moveForce;
