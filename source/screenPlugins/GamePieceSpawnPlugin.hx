@@ -109,6 +109,12 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
         #end
         
         spawnTimerInc = spawnTimerMax / timeTillFirstSpawn;
+        
+        EventManager.Register(onColorRotate, Events.COLOR_ROTATE);
+    }
+    
+    private function onColorRotate(sender:Dynamic, event:String, args:Dynamic){
+        makePreviewOverlay();
     }
     
     private var soundCreate:FlxSound;
