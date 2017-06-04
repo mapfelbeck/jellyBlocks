@@ -31,6 +31,7 @@ import screenPlugins.ColorRotatePlugin;
 import screenPlugins.FrameRatePlugin;
 import screenPlugins.GamePieceControlPlugin;
 import screenPlugins.GamePieceSpawnPlugin;
+import screenPlugins.ScorePlugin;
 import screenPlugins.ScreenPluginBase;
 import util.Capabilities;
 import util.ScreenWorldTransform;
@@ -117,9 +118,9 @@ class PlayState extends BaseScreen
         //trace("Window width: " + WINDOW_WIDTH);
         //trace("Window height: " + WINDOW_HEIGHT);
         
-        trace("Std.int(Lib.current.stage.width): " + Std.int(Lib.current.stage.width));
+        //trace("Std.int(Lib.current.stage.width): " + Std.int(Lib.current.stage.width));
         //trace("Lib.application.window.width: " + Lib.application.window.width);
-        trace("WINDOW_WIDTH: " + WINDOW_WIDTH);
+        //trace("WINDOW_WIDTH: " + WINDOW_WIDTH);
         //trace("Std.parseInt(haxe.macro.Compiler.getDefine(\"windowWidth\")): " + Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
 		
         
@@ -203,6 +204,10 @@ class PlayState extends BaseScreen
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource, screenWorldTransform);
         add(blockPopPlugin);
         plugins.add(blockPopPlugin);
+        
+        var scorePlugin:ScorePlugin = new ScorePlugin(this, colorSource);
+        add(scorePlugin);
+        plugins.add(scorePlugin);
         
         rotatePlugin = new ColorRotatePlugin(this, colorSource);
         add(rotatePlugin);

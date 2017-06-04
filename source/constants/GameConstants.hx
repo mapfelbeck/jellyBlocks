@@ -47,7 +47,7 @@ class GameConstants
     //How many unique colors are there
     public static inline var UniqueColors:Int = 7;
     //How many of the same color can be in a game piece
-    public static var MaxSameColorPerPiece:Int = 1;
+    public static var MaxSameColorPerPiece:Int = 2;
 
     //how long a block inflates before popping
     public static inline var BlockCollideTime:Float = 1;
