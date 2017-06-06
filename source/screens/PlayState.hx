@@ -69,7 +69,6 @@ class PlayState extends BaseScreen
     //spawn pieces at at least this interval
     private var maxLifeTime:Float = 7.0;
     
-    private var plugins:List<ScreenPluginBase> = new List<ScreenPluginBase>();
     private var rotatePlugin:ColorRotatePlugin;
     private var spawnPlugin:GamePieceSpawnPlugin;
     private var controlPlugin:GamePieceControlPlugin;
@@ -193,12 +192,12 @@ class PlayState extends BaseScreen
         var derp = _ui.getAsset("background");
         background = cast _ui.getAsset("background");
         
-        EventManager.Register(OnColorRotated, Events.COLOR_ROTATE);
+        registerEvent(OnColorRotated, Events.COLOR_ROTATE);
 	}
     
     private function loadPlugins():Void
     {
-        var soundPlugin = new SoundsEffectsPlugin();
+        var soundPlugin = new SoundsEffectsPlugin(this);
         FlxG.plugins.add(soundPlugin);
         
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource, screenWorldTransform);
@@ -228,6 +227,11 @@ class PlayState extends BaseScreen
         add(fpsPlugin);
         plugins.add(fpsPlugin);
         #end
+    }
+    
+    override function destroy():Void{
+        super.destroy();
+        render.destroy();
     }
     
     function setupTexturedRender() : BaseDrawWorld

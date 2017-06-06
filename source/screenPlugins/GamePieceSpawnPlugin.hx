@@ -109,8 +109,10 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
         #end
         
         spawnTimerInc = spawnTimerMax / timeTillFirstSpawn;
-        
-        EventManager.Register(onColorRotate, Events.COLOR_ROTATE);
+    }
+    
+    override public function createEventSet(){
+        eventSet.push(new EventAndAction(Events.COLOR_ROTATE, onColorRotate));
     }
     
     private function onColorRotate(sender:Dynamic, event:String, args:Dynamic){
@@ -147,7 +149,7 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
             if (controlPlugin != null){
                 controlPlugin.controlled = currGamePiece;
             }
-            //trace("new game piece is: " + controlledGamePiece.Shape);
+
             addGamePiece(currGamePiece, true, false);
             nextGamePiece = createGamePiece(builder, spawnPos);
             EventManager.Trigger(this, Events.PIECE_CREATE, null);

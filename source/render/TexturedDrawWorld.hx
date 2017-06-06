@@ -57,8 +57,11 @@ class TexturedDrawWorld extends BaseDrawWorld
         world = physicsWorld;
         
         setupDrawParam();
-        
-        EventManager.Register(onColorRotate, Events.COLOR_ROTATE);
+    }
+    
+    override public function createEventSet():Void{
+        super.createEventSet();
+        eventSet.push(new EventAndAction(Events.COLOR_ROTATE, onColorRotate));
     }
     
     function onColorRotate(sender:Dynamic, event:String, params:Dynamic) 

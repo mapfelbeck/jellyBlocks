@@ -64,7 +64,16 @@ class MultiColorSource implements IColorSource
         var iter:Float = 1.0 / count;
         var newColors:Array<FlxColor> = new Array<FlxColor>();
         for (i in 0...count){
-            newColors.push(new FlxColor(HSVtoRGB(((i * iter) + colorAdjust) % 1.0, saturation, value)));
+            var currSaturation:Float = saturation;
+            var currValue:Float = value;
+            /*if (i % 2 == 1){
+                currSaturation = 1.0;
+                currValue = 0.8;
+            }else{
+                currSaturation = 0.8;
+                currValue = 1.0;
+            }*/
+            newColors.push(new FlxColor(HSVtoRGB(((i * iter) + colorAdjust) % 1.0, currSaturation, currValue)));
         }
         return newColors;
     }

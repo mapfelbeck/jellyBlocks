@@ -1,6 +1,7 @@
 package screenPlugins;
 
 import blocks.GameBlock;
+import events.EventAndAction;
 import events.EventManager;
 import events.Events;
 import flixel.system.FlxAssets.FlxGraphicAsset;
@@ -29,7 +30,6 @@ class ScorePlugin extends ScreenPluginBase
     {
         super(parent, X, Y, SimpleGraphic);
         colors = colorSource;
-		init();
     }
     
     override public function update(elapsed:Float){
@@ -46,8 +46,10 @@ class ScorePlugin extends ScreenPluginBase
         }
     }
     
-    private function init():Void{
-        EventManager.Register(onBlockPop, Events.BLOCK_POP);
+    override function createEventSet():Void 
+    {
+        super.createEventSet();
+        eventSet.push(new EventAndAction(Events.BLOCK_POP, onBlockPop));
     }
     
     private function onBlockPop(sender:Dynamic, event:String, args:Array<Dynamic>):Void{

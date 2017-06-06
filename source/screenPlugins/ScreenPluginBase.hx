@@ -38,5 +38,5 @@ class ScreenPluginBase extends FlxSprite
         }
     }
     
-    private function createEventSet():Void{}
+    public function createEventSet():Void{}
 }

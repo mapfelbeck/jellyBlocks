@@ -1,5 +1,7 @@
 package render;
 
+import events.EventAndAction;
+import events.EventManager;
 import jellyPhysics.math.Vector2;
 import util.ScreenWorldTransform;
 /**
@@ -26,11 +28,31 @@ class BaseDrawWorld
     
     public var transform:ScreenWorldTransform;
     
+    private var eventSet:Array<EventAndAction> = new Array<EventAndAction>();
+    
     public function new(colorSource:IColorSource, screenWorldTransform:ScreenWorldTransform){
         this.colorSource = colorSource;
         transform = screenWorldTransform;
         setupDrawParam();
+		createEventSet();
+        registerEvents();
     }
+    
+    
+    public function destroy():Void 
+    {
+        for (i in 0...eventSet.length){
+            EventManager.UnRegister(eventSet[i].action, eventSet[i].event);
+        }
+    }
+    
+    private function registerEvents():Void{
+        for (i in 0...eventSet.length){
+            EventManager.Register(eventSet[i].action, eventSet[i].event);
+        }
+    }
+    
+    public function createEventSet():Void{}
     
     public function Draw(){}
     
