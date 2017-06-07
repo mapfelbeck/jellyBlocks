@@ -5,6 +5,13 @@
         <scale to_height="100%" />
     </sprite>
     
+    <text name="score_label" use_def="ui32" x="0pt" center_x="false" y="2pt" text="Score: " align="right" width="120pt" >
+        <anchor x="center" x-flush="right" y="top" y-flush="top"/>
+    </text>
+    <text name="score_number" use_def="ui32" x="0pt" center_x="false" y="score_label1.y" text="1234567" align="left" width="120pt" >
+        <anchor x="score_label.right" x-flush="left" y="score_label.top" y-flush="top"/>
+    </text>
+    
     <button id="pause_btn" width="36pt" height="36pt">
         <anchor x="right" x-flush="right" y="top" y-flush="top"/>
         <graphic id="all" image="ui/pause_button" slice9="24,24,50,50" x-flush="center">

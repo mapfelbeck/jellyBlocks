@@ -6,5 +6,9 @@
 	<definition id="sans16c" size="16" style="bold" color="0xffffff" outline="0x000000" align="center"/>
 	<definition id="sans32c" size="32" style="bold" color="0xffffff" outline="0x000000" align="center"/>
     
-	<definition id="title64" font="cartoonist" size="82" style="bold" color="0xFC5055" border="outline" border_color="white" border_size="1px" outline="0xFFFFF" align="center"/>
+	<definition id="ui16" font="cartoonist" size="16" style="bold" color="0xffffff" border="outline" border_color="0xC0C0C0" border_size="1px" align="center"/>
+	<definition id="ui24" font="cartoonist" size="24" style="bold" color="0xffffff" border="outline" border_color="0xC0C0C0" border_size="1px" align="center"/>
+	<definition id="ui32" font="cartoonist" size="32" style="bold" color="0xffffff" border="outline" border_color="0xC0C0C0" border_size="1px" align="center"/>
+    
+	<definition id="title64" font="cartoonist" size="82" style="bold" color="0xFC5055" border="outline" border_color="white" border_size="1px" align="center"/>
 </data>
