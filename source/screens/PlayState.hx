@@ -28,6 +28,7 @@ import plugins.*;
 import render.*;
 import screenPlugins.BlockPopEffectPlugin;
 import screenPlugins.ColorRotatePlugin;
+import screenPlugins.ComboScoreEffectPlugin;
 import screenPlugins.FrameRatePlugin;
 import screenPlugins.GamePieceControlPlugin;
 import screenPlugins.GamePieceSpawnPlugin;
@@ -203,6 +204,10 @@ class PlayState extends BaseScreen
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource, screenWorldTransform);
         add(blockPopPlugin);
         plugins.add(blockPopPlugin);
+        
+        var comboPlugin = new ComboScoreEffectPlugin(this, colorSource, screenWorldTransform);
+        add(comboPlugin);
+        plugins.add(comboPlugin);
         
         var scorePlugin:ScorePlugin = new ScorePlugin(this, colorSource);
         add(scorePlugin);
