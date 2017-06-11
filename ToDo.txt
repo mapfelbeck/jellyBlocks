@@ -23,18 +23,13 @@ task: [1.0.7]
 private function _loadBar(data:Fast):FlxUIBar
 
 ToDo:
-    Scoring!!!
     End state
     Controller support
         add ability to delete input mapping
-    Fix piece preview colors do not rotate bug
     Resolution independence
-    push up jellyPhysics updates
-        update samples
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
     Improve touch screen controls.
     Fix frozen blocks in mid air bug.
     Expand color generator to make complimentry colors as well
-    fix flash alpha ref bug
     contribute flixel-ui code for FlxUISlider xml?
     contribute flixel-ui code for sticky analog stick bug?

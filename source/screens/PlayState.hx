@@ -84,14 +84,6 @@ class PlayState extends BaseScreen
         "assets/gfx/ui/gameplay4.png"
     ];
     
-    /*public var RotateAccumulated(get, null):Float;
-    public function get_RotateAccumulated(){
-        if (rotatePlugin != null){
-            return rotatePlugin.Accumulated;
-        }
-        return 0.5;
-    }*/
-    
     private var screenWorldTransform:ScreenWorldTransform;
     
 	override public function create():Void
@@ -148,6 +140,7 @@ class PlayState extends BaseScreen
         input.AddKeyboardInput(FlxKey.F, unfreezeKey, PressType.Down);
         input.AddKeyboardInput(FlxKey.R, scrambleColorsKey, PressType.Down);
         input.AddKeyboardInput(FlxKey.P, pausePhysics, PressType.Down);
+        input.AddKeyboardInput(FlxKey.G, gameOverKey, PressType.Down);
         #end
 
         defaultMaterial = new MaterialPair();
@@ -191,6 +184,7 @@ class PlayState extends BaseScreen
         background = cast _ui.getAsset("background");
         
         registerEvent(OnColorRotated, Events.COLOR_ROTATE);
+        registerEvent(OnNewGamePiece, Events.PIECE_CREATE);
 	}
     
     private function loadPlugins():Void
@@ -277,6 +271,10 @@ class PlayState extends BaseScreen
     
     private function pauseMenu():Void{
         openSubState(new PauseMenu());
+    }
+    
+    private function gameOver():Void{
+        openSubState(new GameOverMenu());
     }
     
     /*override public function onResize(Width:Int, Height:Int):Void 
@@ -417,7 +415,7 @@ class PlayState extends BaseScreen
         return (worldY - off.y) / sc.y;
     }
     
-    private function OnColorRotated(sender:Dynamic, event:String, params:Dynamic){
+    private function OnColorRotated(sender:Dynamic, event:String, params:Array<Dynamic>):Void{
         unfreezeKey(FlxKey.F, PressType.Down);
         
         if (background != null){
@@ -427,6 +425,21 @@ class PlayState extends BaseScreen
             var scaleRatio:Float = FlxG.height / background.height;
             background.scale.set(scaleRatio, scaleRatio);
             background.updateHitbox();
+        }
+    }
+    
+    private function OnNewGamePiece(sender:Dynamic, event:String, params:Array<Dynamic>):Void{
+        if (params == null || params.length < 2){
+            return;
+        }
+        var prevPiece:GamePiece = cast params[0];
+        var currPiece:GamePiece = cast params[1];
+        
+        if (prevPiece != null){
+            var yPos:Float = prevPiece.GamePieceCenter().y;
+            if (yPos <= -10){
+                gameOver();
+            }
         }
     }
     
@@ -478,6 +491,10 @@ class PlayState extends BaseScreen
     
     private function pausePhysics(key:FlxKey, type:PressType):Void{
         physicsPaused = !physicsPaused;
+    }
+    
+    private function gameOverKey(key:FlxKey, type:PressType):Void{
+        gameOver();
     }
     
     private function scrambleColors():Void{

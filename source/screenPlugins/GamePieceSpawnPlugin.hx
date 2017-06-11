@@ -145,14 +145,18 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
             if (currGamePiece != null){
                 currGamePiece.IsControlled = false;
             }
+            
+            EventManager.Trigger(this, Events.PIECE_CREATE, [currGamePiece, nextGamePiece]);
+            
             currGamePiece = nextGamePiece;
+            
             if (controlPlugin != null){
                 controlPlugin.controlled = currGamePiece;
             }
 
             addGamePiece(currGamePiece, true, false);
             nextGamePiece = createGamePiece(builder, spawnPos);
-            EventManager.Trigger(this, Events.PIECE_CREATE, null);
+            
             makePreviewOverlay();
             spawnTimer = 0;
             spawnTimerInc = spawnTimerMax / maxLifeTime;
