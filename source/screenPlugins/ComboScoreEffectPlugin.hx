@@ -1,24 +1,21 @@
 package screenPlugins;
 
-import blocks.GameBlock;
 import events.EventAndAction;
 import events.Events;
 import flash.events.*;
 import flixel.*;
 import flixel.FlxG;
-import flixel.addons.ui.FlxUIState;
-import flixel.effects.particles.FlxEmitter;
-import flixel.effects.particles.FlxParticle;
 import flixel.math.FlxPoint;
-import flixel.math.FlxRandom;
 import flixel.system.FlxAssets.FlxGraphicAsset;
-import flixel.util.FlxColor;
-import flixel.util.FlxSpriteUtil;
 import jellyPhysics.math.Vector2;
+import particles.ComboEffect;
+import particles.TextEmitter;
+import particles.TextParticle;
 import render.IColorSource;
 import screens.BaseScreen;
 import util.Capabilities;
 import util.ScreenWorldTransform;
+import flixel.effects.particles.FlxEmitter;
 
 /**
  * ...
@@ -26,14 +23,12 @@ import util.ScreenWorldTransform;
  */
 class ComboScoreEffectPlugin extends ScreenPluginBase 
 {
-    private var emitter:FlxEmitter;
+    private var emitter:TextEmitter;
     
-    private var poolSize:Int = 200;
-    private var rand:FlxRandom = new FlxRandom();
-    private var particleSizes:Array<Int> = [6, 7, 7, 8, 9, 10, 12];
+    private var poolSize:Int = 20;
     private var emitterColor:Int = 0;
     
-    private var effectQueue:List<PopEffect> = new List<PopEffect>();
+    private var effectQueue:List<ComboEffect> = new List<ComboEffect>();
     
     private var colorSource:IColorSource;
     private var transform:ScreenWorldTransform;
@@ -43,13 +38,13 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
         super(parent, X, Y, SimpleGraphic);
         this.colorSource = colorSource;
         this.transform = screenWorldTransform;
-        emitter = new FlxEmitter(FlxG.width / 2 , FlxG.height / 2, poolSize);
+        emitter = new TextEmitter(FlxG.width / 2 , FlxG.height / 2, poolSize);
         loadParticles();
 		parent.add(emitter);
         emitter.color.set(colorSource.getColor(emitterColor));
         emitter.launchMode = FlxEmitterMode.CIRCLE;
-        emitter.speed.set(30, 80);
-        emitter.lifespan.set(0.75, 2.0);
+        emitter.speed.set(120, 160);
+        emitter.lifespan.set(1.0, 2.0);
         
         #if (windows || android)
         emitter.alpha.set(1, 1, 0, 0);
@@ -77,6 +72,7 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
         var effect = effectQueue.pop();
         if (effect != null){
             emitter.color.set(effect.color);
+            emitter.Text = effect.text;
             emitter.x = effect.position.x;
             emitter.y = effect.position.y;
             emitter.start(true, 0.01, effect.count);
@@ -91,16 +87,13 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
         
         var screenX:Int = cast transform.localToWorldX(pos.x);
         var screenY:Int = cast transform.localToWorldY(pos.y);
-        effectQueue.add(new PopEffect(new FlxPoint(screenX, screenY), colorSource.getColor(color), 4));
+        effectQueue.add(new ComboEffect(new FlxPoint(screenX, screenY), colorSource.getColor(color), count+"X"));
     }
 
     private function loadParticles():Void{
         for (i in 0...poolSize){
-        	var p = new FlxParticle();
-            var size:Int = particleSizes[rand.int(0, particleSizes.length-1)];
-            p.makeGraphic(size, size, FlxColor.TRANSPARENT, true);
-            FlxSpriteUtil.drawRect(p, 0, 0, size, size, FlxColor.WHITE);
-        	p.exists = false;
+        	var p = new TextParticle("*", 32, true);
+            p.text = "Hi!";
         	emitter.add(p);
         }
     }

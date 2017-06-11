@@ -1,6 +1,5 @@
 package screens;
 
-import screens.SettingsMenu;
 import constants.SoundAssets;
 import flixel.FlxG;
 import flixel.addons.transition.FlxTransitionSprite.GraphicTransTileDiamond;
@@ -8,10 +7,9 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 import flixel.addons.ui.FlxUIButton;
 import flixel.addons.ui.FlxUICursor;
-import flixel.addons.ui.FlxUIState;
 import flixel.graphics.FlxGraphic;
-import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
+import screens.SettingsMenu;
 import util.Capabilities;
 
 class MenuState extends BaseScreen

@@ -13,6 +13,7 @@ import flixel.math.FlxRandom;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.util.FlxColor;
 import flixel.util.FlxSpriteUtil;
+import particles.PopEffect;
 import render.IColorSource;
 import screens.BaseScreen;
 import util.Capabilities;

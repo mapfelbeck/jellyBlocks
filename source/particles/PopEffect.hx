@@ -1,4 +1,4 @@
-package screenPlugins;
+package particles;
 import flixel.math.FlxPoint;
 import flixel.util.FlxColor;
 import util.Capabilities;
