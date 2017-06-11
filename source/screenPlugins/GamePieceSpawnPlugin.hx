@@ -62,7 +62,7 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
     private var previewOverlay:FlxSprite;
     
     private var previewPos:Vector2 = new Vector2(-11, -15);
-    private var spawnPos:Vector2 = new Vector2( -1, -10);
+    private var spawnPos:Vector2 = new Vector2( -1, -12);
     
     private var colorSource:IColorSource;
     

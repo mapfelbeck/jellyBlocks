@@ -16,6 +16,8 @@ import screens.BaseScreen;
 import util.Capabilities;
 import util.ScreenWorldTransform;
 import flixel.effects.particles.FlxEmitter;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 
 /**
  * ...
@@ -45,7 +47,8 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
         emitter.launchMode = FlxEmitterMode.CIRCLE;
         emitter.speed.set(120, 160);
         emitter.lifespan.set(1.0, 2.0);
-        
+        emitter.launchAngle.set(-135, -45);
+
         #if (windows || android)
         emitter.alpha.set(1, 1, 0, 0);
         #else
@@ -93,6 +96,7 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
     private function loadParticles():Void{
         for (i in 0...poolSize){
         	var p = new TextParticle("*", 32, true);
+            p.setBorderStyle(FlxTextBorderStyle.OUTLINE, FlxColor.GRAY, 1, 0);
             p.text = "Hi!";
         	emitter.add(p);
         }

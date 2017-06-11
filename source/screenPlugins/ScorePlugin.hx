@@ -49,7 +49,7 @@ class ScorePlugin extends ScreenPluginBase
             if (lookupTable[key].time <= 0){
                 //trace("Popped " + lookupTable[key].count + " block of type " + key);
                 removeList.add(key);
-                scoreNumber += Std.int(Math.pow(lookupTable[key].count, 2));
+                scoreNumber += Std.int(Math.pow(lookupTable[key].count, 2)) * 10;
                 updateScore();
                 EventManager.Trigger(this, Events.COMBO_SCORE, [key, lookupTable[key].count, lookupTable[key].pos]);
             }
