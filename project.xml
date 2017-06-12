@@ -13,6 +13,8 @@
 
 	<!-- ____________________________ Window Settings ___________________________ -->
     
+    <haxedef name="BuildString" value="Jelly Blocks V0.50 Alpha - $buildType" />
+    
     <!-- create size vars in project file -->
     <set name="windowWidth" value="600"/>
     <set name="windowHeight" value="800" />

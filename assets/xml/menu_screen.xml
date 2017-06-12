@@ -7,6 +7,12 @@
     
     <text name="title_text" use_def="title64" center_x="true" y="60pt" text="Jelly Blocks" width="550pt" />
     
+    <text name="version_text" use_def="ui16" center_x="true" y="0pt" text="" width="400pt" border_color="0x000000">
+        <anchor x="center" x-flush="center" y="bottom" y-flush="bottom"/>
+    </text>
+    
+    <anchor x="center" x-flush="center" y="top" y-flush="center"/>
+    
 	<button id="play_btn" center_x="true" width="144pt" height="72pt" label="Play!">
 		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
 			<scale_src scale="0.5"/>

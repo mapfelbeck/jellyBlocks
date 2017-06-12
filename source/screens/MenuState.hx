@@ -7,6 +7,7 @@ import flixel.addons.transition.FlxTransitionableState;
 import flixel.addons.transition.TransitionData;
 import flixel.addons.ui.FlxUIButton;
 import flixel.addons.ui.FlxUICursor;
+import flixel.addons.ui.FlxUIText;
 import flixel.graphics.FlxGraphic;
 import flixel.util.FlxColor;
 import screens.SettingsMenu;
@@ -61,6 +62,18 @@ class MenuState extends BaseScreen
         var ui_play:FlxUIButton = cast _ui.getAsset("play_btn");
         if (ui_play != null){
             ui_play.onDown.sound = FlxG.sound.load(SoundAssets.MenuSelect1);
+        }
+        
+        var buildText:FlxUIText = cast getAsset("version_text", false);
+        var buildString:String = haxe.macro.Compiler.getDefine("BuildString");
+        
+        #if debug
+        var buildType:String = "Debug";
+        #else
+        var buildType:String = "Release";
+        #end
+        if (buildText != null && buildString != null){
+            buildText.text = StringTools.replace(buildString, "$buildType", buildType);
         }
     }
 
