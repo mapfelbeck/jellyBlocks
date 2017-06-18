@@ -1,3 +1,14 @@
+**Jelly Blocks v0.50**
+New features:
+* Game over condition added
+* Scoring added
+* New text particle effects
+* UI tweaks
+
+Bugs fixed:
+* Crash bug that happens after restarting the game
+
+
 **Jelly Blocks v0.45**
 New features:
 * Improved title screen
