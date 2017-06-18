@@ -1,12 +1,12 @@
 package;
-import flixel.system.FlxBasePreloader;
+import flixel.system.FlxPreloader;
 import util.Capabilities;
 
 /**
  * ...
  * @author Michael Apfelbeck
  */
-class JellyBlocksPreloader extends FlxBasePreloader
+class JellyBlocksPreloader extends FlxPreloader
 {
      public function new(MinDisplayTime:Float=0, ?AllowedURLs:Array<String>)
     {

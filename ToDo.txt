@@ -21,7 +21,7 @@ openfl: [3.6.1]
 task: [1.0.7]
 
 ToDo:
-    End state
+    Safari crash bug
     Controller support
         add ability to delete input mapping
     Resolution independence

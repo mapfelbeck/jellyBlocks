@@ -1,4 +1,4 @@
-package globalPlugins;
+package screenPlugins;
 
 import events.EventAndAction;
 import flixel.FlxG;

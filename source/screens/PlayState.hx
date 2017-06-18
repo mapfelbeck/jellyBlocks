@@ -18,7 +18,7 @@ import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
-import globalPlugins.SoundsEffectsPlugin;
+import screenPlugins.SoundsEffectsPlugin;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
