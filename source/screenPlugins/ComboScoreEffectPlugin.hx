@@ -5,19 +5,19 @@ import events.Events;
 import flash.events.*;
 import flixel.*;
 import flixel.FlxG;
+import flixel.effects.particles.FlxEmitter;
+import flixel.effects.particles.TextEmitter;
+import flixel.effects.particles.TextParticle;
 import flixel.math.FlxPoint;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.text.FlxText;
+import flixel.util.FlxColor;
 import jellyPhysics.math.Vector2;
 import particles.ComboEffect;
-import particles.TextEmitter;
-import particles.TextParticle;
 import render.IColorSource;
 import screens.BaseScreen;
 import util.Capabilities;
 import util.ScreenWorldTransform;
-import flixel.effects.particles.FlxEmitter;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
 
 /**
  * ...

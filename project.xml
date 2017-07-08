@@ -47,6 +47,7 @@
     <assets path="assets" unless="flash" exclude="*.mp3|*.wav" />
     <assets path="assets" if="flash" exclude="*.ogg|*.wav" />
     
+	<haxelib name="textParticles" />
 	<haxelib name="jellyPhysics" />
 	<haxelib name="flixel" />
 	<haxelib name="flixel-addons" />
