@@ -41,6 +41,7 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
         this.colorSource = colorSource;
         this.transform = screenWorldTransform;
         emitter = new TextEmitter(FlxG.width / 2 , FlxG.height / 2, poolSize);
+        //emitter.Font = "SF Cartoonist Hand Bold";
         loadParticles();
 		parent.add(emitter);
         emitter.color.set(colorSource.getColor(emitterColor));

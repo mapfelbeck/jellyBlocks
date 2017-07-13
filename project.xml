@@ -19,8 +19,9 @@
     <set name="windowWidth" value="600"/>
     <set name="windowHeight" value="800" />
     
-    <!--<set name="windowWidth" value="1280" if="windows" />
-    <set name="windowHeight" value="720" if="windows" />-->
+    <!--<set name="windowWidth" value="1280" if="desktop" />
+    <set name="windowHeight" value="720" if="desktop" />-->
+    
     <!-- make above var visible to compiler/show up as constants -->
     <haxedef name="windowWidth" value="${windowWidth}" />
     <haxedef name="windowHeight" value="${windowHeight}" />
@@ -44,8 +45,11 @@
 	<set name="BUILD_DIR" value="export" />
 	<classpath name="source" />
     
-    <assets path="assets" unless="flash" exclude="*.mp3|*.wav" />
-    <assets path="assets" if="flash" exclude="*.ogg|*.wav" />
+    <assets path="assets/widescreen_assets"  if="desktop" rename="assets" include="*" />
+    <assets path="assets/narrow_assets"  unless="desktop" rename="assets" include="*" />
+    
+    <assets path="assets/assets" rename="assets" unless="flash" exclude="*.mp3|*.wav" />
+    <assets path="assets/assets" rename="assets" if="flash" exclude="*.ogg|*.wav" />
     
 	<haxelib name="textParticles" />
 	<haxelib name="jellyPhysics" />
@@ -92,4 +96,6 @@
 	<!-- _________________________________ Custom _______________________________ -->
 
 	<!--Place custom nodes like icons here (higher priority to override the HaxeFlixel icon)-->
+    
+    <icon path="icon64.png" />
 </project>
