@@ -8,48 +8,20 @@
 		<anchor x="center" x-flush="center" y="top" y-flush="center"/>
 	</chrome>
     
-	<button id="close_btn" x="-8pt" y="5pt" width="36pt" height="36pt">
+	<button id="close" use_def="close_btn" x="-8pt" y="5pt">
         <anchor x="background.right" y="background.top" x-flush="right" />
-		<graphic id="all" image="ui/close_button" slice9="24,24,50,50">
-			<scale_src scale="0.5"/>
-		</graphic>
-		<param type="string" value="close"/>
 	</button>
     
-	<button id="restart_btn" width="120pt" height="46pt" label="Restart">
-		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
-			<scale_src scale="0.5"/>
-		</graphic>
+    <button id="restart_btn" use_def="ui_btn_md" label="Restart">
 		<param type="string" value="restart"/>
-		<text use_def="sans16c" color="0xffffff">
-			<color id="up" value="0xffffff"/>
-			<color id="over" value="0xffff00"/>
-			<color id="down" value="0xffff00"/>
-		</text>
 	</button>
     
-	<button id="main_menu_btn"width="120pt" height="46pt" label="Main Menu">
-		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
-			<scale_src scale="0.5"/>
-		</graphic>
+	<button id="main_menu_btn" use_def="ui_btn_md" label="Main Menu">
 		<param type="string" value="main_menu"/>
-		<text use_def="sans16c" color="0xffffff">
-			<color id="up" value="0xffffff"/>
-			<color id="over" value="0xffff00"/>
-			<color id="down" value="0xffff00"/>
-		</text>
 	</button>
     
-	<button id="settings_btn"width="120pt" height="46pt" label="Settings">
-		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
-			<scale_src scale="0.5"/>
-		</graphic>
+	<button id="settings_btn" use_def="ui_btn_md" label="Settings">
 		<param type="string" value="settings"/>
-		<text use_def="sans16c" color="0xffffff">
-			<color id="up" value="0xffffff"/>
-			<color id="over" value="0xffff00"/>
-			<color id="down" value="0xffff00"/>
-		</text>
 	</button>
     
     <align axis="vertical">

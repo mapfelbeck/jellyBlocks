@@ -8,12 +8,8 @@
         <scale_src scale="0.5"/>
     </chrome>
 
-    <button id="close_btn" x="-15pt" y="10pt" width="36pt" height="36pt">
+    <button id="close" use_def="close_btn" x="-15pt" y="10pt" >
         <anchor x="background.right" y="background.top" x-flush="right" />
-        <graphic id="all" image="ui/close_button" slice9="24,24,50,50">
-            <scale_src scale="0.5"/>
-        </graphic>
-        <param type="string" value="close"/>
     </button>
 
     <!--<slider object="onValueChange" varString="Foo" minValue="0.0" maxValue="1.0" x="20" y="10" label="#####" 
@@ -23,16 +19,8 @@
     <checkbox id="sfx_enabled" />
     <numeric_stepper id="sfx_volume" step="0.05" defaultValue="0.4" min="0.0" max="1.0" decimals="2" />
     
-	<button id="controls_btn" center_x="true" width="100pt" height="36pt" label="Controls">
-		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
-			<scale_src scale="0.5"/>
-		</graphic>
+	<button use_def="ui_btn_sm" id="controls_btn" center_x="true" label="Controls">
 		<param type="string" value="controls"/>
-		<text use_def="sans16c" color="0xffffff">
-			<color id="up" value="0xffffff"/>
-			<color id="over" value="0xffff00"/>
-			<color id="down" value="0xffff00"/>
-		</text>
 	</button>
     
     <align axis="vertical" spacing="2">

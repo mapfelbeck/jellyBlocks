@@ -13,28 +13,12 @@
     
     <anchor x="center" x-flush="center" y="top" y-flush="center"/>
     
-	<button id="play_btn" center_x="true" width="144pt" height="72pt" label="Play!">
-		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
-			<scale_src scale="0.5"/>
-		</graphic>
-		<param type="string" value="play"/>
-		<text use_def="sans32c" color="0xffffff">
-			<color id="up" value="0xffffff"/>
-			<color id="over" value="0xffff00"/>
-			<color id="down" value="0xffff00"/>
-		</text>
-	</button>
+    <button id="play_btn" use_def="ui_btn_lg" center_x="true" label="Play!">
+        <param type="string" value="play"/>
+    </button>
     
-	<button id="settings_btn" center_x="true" width="190pt" height="72pt" label="Settings">
-		<graphic id="all" image="ui/blank_button" slice9="20,20,48,48">
-			<scale_src scale="0.5"/>
-		</graphic>
+	<button id="settings_btn" use_def="ui_btn_lg" center_x="true" width="190pt" label="Settings">
 		<param type="string" value="settings"/>
-		<text use_def="sans32c" color="0xffffff">
-			<color id="up" value="0xffffff"/>
-			<color id="over" value="0xffff00"/>
-			<color id="down" value="0xffff00"/>
-		</text>
 	</button>
 
     <align axis="vertical" spacing="20">
