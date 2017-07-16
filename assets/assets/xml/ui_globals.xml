@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
+    
+    <inject name="point_def" />
     <!-- define points as if a 600 x 800 screen -->
-    <point_size value="screen.width*0.001667" x="screen.width*0.0016667" y="screen.width*0.0016667"/>
+    <!--<point_size value="screen.width*0.001667" x="screen.width*0.0016667" y="screen.width*0.0016667"/>-->
     
 	<definition id="sans16c" size="16" style="bold" color="0xffffff" outline="0x000000" align="center"/>
 	<definition id="sans32c" size="32" style="bold" color="0xffffff" outline="0x000000" align="center"/>

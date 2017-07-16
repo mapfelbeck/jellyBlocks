@@ -19,8 +19,8 @@
     <set name="windowWidth" value="600"/>
     <set name="windowHeight" value="800" />
     
-    <!--<set name="windowWidth" value="1280" if="desktop" />
-    <set name="windowHeight" value="720" if="desktop" />-->
+    <set name="windowWidth" value="1280" if="desktop" />
+    <set name="windowHeight" value="720" if="desktop" />
     
     <!-- make above var visible to compiler/show up as constants -->
     <haxedef name="windowWidth" value="${windowWidth}" />

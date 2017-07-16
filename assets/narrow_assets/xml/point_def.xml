@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+    <!-- define points as if a 600 x 800 screen -->
+    <point_size value="screen.width*0.001667" x="screen.width*0.0016667" y="screen.width*0.00125"/>
+</data>
