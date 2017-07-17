@@ -40,10 +40,9 @@ class ColorRotatePlugin extends ScreenPluginBase
     
     private static var fullBarSpriteAssetPath:String =  "assets/images/chargeBarFull.png";
     private static var emptyBarSpriteAssetPath:String =  "assets/images/chargeBarEmpty.png";
-    //private static var backgroundAssetPath:String =  "assets/images/squareTile.png";
     private var fullBar:FlxSprite;
     private var emptyBar:FlxSprite;
-    private var barWidthRatio:Float = 0.5;
+    private var barWidthRatio:Float = 5;
     
     private var background:FlxUISprite;
     private var backgroundSize:Int = 100;
@@ -56,8 +55,6 @@ class ColorRotatePlugin extends ScreenPluginBase
     {
         super(parent, X, Y, SimpleGraphic);
         
-        var WINDOW_WIDTH:Int = Std.parseInt(haxe.macro.Compiler.getDefine("windowWidth"));
-        
         this.colorSource = colorSource;
         
         emptyBar = new FlxSprite(0, 0, emptyBarSpriteAssetPath);
@@ -68,7 +65,7 @@ class ColorRotatePlugin extends ScreenPluginBase
         
         background = cast parent.getAsset("rotate_background");
         
-        var chargeBarWidth:Int = cast(WINDOW_WIDTH * barWidthRatio);
+        var chargeBarWidth:Int = cast(background.width * barWidthRatio);
         var heightToFinalRatio:Float = chargeBarWidth / emptyBar.width;
         var chargeBarHeight:Int = cast(emptyBar.height * heightToFinalRatio);
         chargeBar.setGraphicSize(chargeBarWidth, chargeBarHeight);

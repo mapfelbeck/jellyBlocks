@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
-    <chrome id="rotate_background" src="ui/square_tile" slice9="22,22,234,234" x="70%" y="30pt" width="60pt" height="60pt">
+    <!--<chrome id="rotate_background" src="ui/square_tile" slice9="22,22,234,234" x="70%" y="30pt" width="60pt" height="60pt">
         <scale_src scale="0.5"/>
+	</chrome>-->
+    <chrome id="rotate_background" src="ui/square_tile" slice9="22,22,234,234" x="120pt" y="30pt" width="60pt" height="60pt">
+        <scale_src scale="0.5"/>
+        <anchor x="center" x-flush="left" y="top" y-flush="top"/>
 	</chrome>
 </data>
