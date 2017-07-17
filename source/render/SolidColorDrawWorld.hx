@@ -32,6 +32,11 @@ class SolidColorDrawWorld extends BaseDrawWorld
     //higher = darker, [0...1]
     private var outlineAlpha:Float = 0.5;
         
+    private static var BORDER_NORMAL: Int = 1;
+    private static var BORDER_FROZEN: Int = BORDER_NORMAL;
+    private static var BORDER_POPPING: Int = 3;
+    private static var BORDER_CONTROLLED: Int = 4;
+    
     public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, screenWorldTransform:ScreenWorldTransform)
     {
         super(colorSource, screenWorldTransform);
@@ -86,13 +91,13 @@ class SolidColorDrawWorld extends BaseDrawWorld
     {
         var freezingBlock:FreezingGameBlock = Std.instance(block, FreezingGameBlock);
         if (freezingBlock.IsFrozen) {
-            graphics.lineStyle(0, outlineColor, outlineAlpha - 0.25);
+            graphics.lineStyle(BORDER_NORMAL, outlineColor, outlineAlpha - 0.25);
         }else if (freezingBlock.Popping) {
-            graphics.lineStyle(2, colorSource.getColor(freezingBlock.Material), 1.0);
+            graphics.lineStyle(BORDER_POPPING, colorSource.getColor(freezingBlock.Material), 1.0);
         }else if (freezingBlock.IsControlled){
-            graphics.lineStyle(3, outlineColor, outlineAlpha + 0.5);
+            graphics.lineStyle(BORDER_CONTROLLED, outlineColor, outlineAlpha + 0.5);
         }else{
-            graphics.lineStyle(0, outlineColor, outlineAlpha);
+            graphics.lineStyle(BORDER_NORMAL, outlineColor, outlineAlpha);
         }
         var shape:Array<Vector2> = new Array<Vector2>();
         for (i in 0...freezingBlock.PointMasses.length){

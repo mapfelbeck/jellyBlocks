@@ -15,11 +15,7 @@
         <param type="string" value="pause" />
     </button>
     
-    <chrome id="preview_background" src="ui/square_tile" slice9="22,22,234,234" x="5pt" y="15pt" width="80pt" height="80pt">
-        <scale_src scale="0.5"/>
-	</chrome>
+    <inject name="plugins/piece_preview" />
     
-    <chrome id="rotate_background" src="ui/square_tile" slice9="22,22,234,234" x="70%" y="30pt" width="60pt" height="60pt">
-        <scale_src scale="0.5"/>
-	</chrome>
+    <inject name="plugins/color_rotate" />
 </data>

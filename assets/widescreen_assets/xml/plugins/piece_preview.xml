@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<data>
+    <chrome id="preview_background" src="ui/square_tile" slice9="22,22,234,234" x="5pt" y="15pt" width="100pt" height="100pt">
+        <scale_src scale="0.5"/>
+	</chrome>
+</data>
