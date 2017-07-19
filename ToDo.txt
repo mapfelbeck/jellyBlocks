@@ -25,6 +25,7 @@ ToDo:
     Controller support
         add ability to delete input mapping
     Resolution independence
+    more audio tracks
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
     Improve touch screen controls.
     Fix frozen blocks in mid air bug.

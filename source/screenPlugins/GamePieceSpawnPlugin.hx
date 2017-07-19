@@ -56,6 +56,7 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
     
     private static var fullPreviewBarAssetPath:String =  "assets/images/previewBarFull.png";
     private static var emptyPreviewBarAssetPath:String =  "assets/images/previewBarEmpty.png";
+    
     private var fullPreviewBar:FlxSprite;
     private var emptyPreviewBar:FlxSprite;
     private var background:FlxUISprite;
@@ -98,7 +99,7 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
         previewBar.updateHitbox();
         previewBar.x = background.x;
         previewBar.y = background.y + previewBackgroundSize;
-        parent.add(previewBar);
+        //parent.add(previewBar);
         
         input = new Input();
         input.AddKeyboardInput(FlxKey.SPACE, spawnPieceKey, PressType.Down);

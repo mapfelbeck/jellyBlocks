@@ -1,9 +1,7 @@
 package screens;
 
 import blocks.*;
-import builders.GameBlockBuilder;
-import builders.GamePieceBuilder;
-import builders.ShapeBuilder;
+import builders.*;
 import constants.GameConstants;
 import constants.PhysicsDefaults;
 import enums.*;
@@ -18,19 +16,12 @@ import flixel.math.FlxRandom;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
 import gamepieces.GamePiece;
-import screenPlugins.SoundsEffectsPlugin;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import plugins.*;
 import render.*;
-import screenPlugins.BlockPopEffectPlugin;
-import screenPlugins.ColorRotatePlugin;
-import screenPlugins.ComboScoreEffectPlugin;
-import screenPlugins.FrameRatePlugin;
-import screenPlugins.GamePieceControlPlugin;
-import screenPlugins.GamePieceSpawnPlugin;
-import screenPlugins.ScorePlugin;
+import screenPlugins.*;
 import util.Capabilities;
 import util.ScreenWorldTransform;
 
@@ -83,6 +74,10 @@ class PlayState extends BaseScreen
         "assets/gfx/ui/gameplay3.png",
         "assets/gfx/ui/gameplay4.png"
     ];
+    
+    //private static var failLineAssetPath:String =  "assets/images/line.png";
+    
+    private var gameWorldFailHeight: Int = -10;
     
     private var screenWorldTransform:ScreenWorldTransform;
     
@@ -185,12 +180,25 @@ class PlayState extends BaseScreen
         
         registerEvent(OnColorRotated, Events.COLOR_ROTATE);
         registerEvent(OnNewGamePiece, Events.PIECE_CREATE);
+        
+        //var failLine:FlxSprite = new FlxSprite(0, 0, failLineAssetPath);
+        
+        //var failWorldLocation:Vector2 = new Vector2(0, gameWorldFailHeight);
+        //var failScreenLocation:Vector2 = new Vector2(screenWorldTransform.localToWorldX(failWorldLocation.x), screenWorldTransform.localToWorldY(failWorldLocation.y));
+        
+        //failLine.x = failScreenLocation.x;
+        //failLine.y = failScreenLocation.y;
+        
+        //add(failLine);
 	}
     
     private function loadPlugins():Void
     {
         var soundPlugin = new SoundsEffectsPlugin(this);
         FlxG.plugins.add(soundPlugin);
+        
+        var accPlugin = new AccumulationPlugin(this);
+        FlxG.plugins.add(accPlugin);
         
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource, screenWorldTransform);
         add(blockPopPlugin);
@@ -437,7 +445,7 @@ class PlayState extends BaseScreen
         
         if (prevPiece != null){
             var yPos:Float = prevPiece.GamePieceCenter().y;
-            if (yPos <= -10){
+            if (yPos <= gameWorldFailHeight){
                 gameOver();
             }
         }

@@ -11,6 +11,8 @@ class Events
     public static var BLOCK_POP = "BlockPop";
     public static var COLOR_ROTATE = "ColorRotate";
     
+    public static var ACCUMULATE_THRESHOLD = "AccumulateThreshold";
+    
     public static var COMBO_SCORE = "ComboScore";
     
     public static var SHOW_TOUCH_CONTROLS = "ShowTouchControls";
