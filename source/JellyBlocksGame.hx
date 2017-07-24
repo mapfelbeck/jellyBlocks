@@ -44,6 +44,7 @@ class JellyBlocksGame extends FlxGame
     {
         super.update();
         
+        #if !mobile
         var currMousePosition:FlxPoint = FlxG.mouse.getPosition();
         var keyPress:Int = FlxG.keys.firstPressed();
         var btnPress:Int = -1;
@@ -59,8 +60,10 @@ class JellyBlocksGame extends FlxGame
         }
         //trace("key: " + key);
         prevMousePosition = currMousePosition;
+        #end
     }
     
+    #if !mobile
     private function didKeyboardInput(): Bool {
         return FlxG.keys.firstPressed() != -1;
     }
@@ -88,4 +91,5 @@ class JellyBlocksGame extends FlxGame
         
         return false;
     }
+    #end
 }

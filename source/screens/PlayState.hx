@@ -372,7 +372,7 @@ class PlayState extends BaseScreen
             physicsWorld.Update(elapsed);
         }
         
-        #if debug
+        #if (debug && !mobile)
         if (FlxG.mouse.justPressed){
             //trace("mouse click: ("+FlxG.mouse.screenX+", "+FlxG.mouse.screenY+")");
             var localX:Float = worldToLocalX(FlxG.mouse.screenX);
