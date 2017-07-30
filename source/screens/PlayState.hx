@@ -77,9 +77,10 @@ class PlayState extends BaseScreen
     
     //private static var failLineAssetPath:String =  "assets/images/line.png";
     
-    private var gameWorldFailHeight: Int = -10;
-    
     private var screenWorldTransform:ScreenWorldTransform;
+    
+    public var pluginGroup:FlxGroup;
+    public var renderGroup:FlxGroup;
     
 	override public function create():Void
 	{
@@ -147,6 +148,14 @@ class PlayState extends BaseScreen
         
         screenWorldTransform = new ScreenWorldTransform(physicsWorld.WorldBounds, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
         
+        createPieceBuilder();
+        
+        pluginGroup = new FlxGroup();
+        add(pluginGroup);
+        renderGroup = new FlxGroup();
+        add(renderGroup);
+        
+        loadPlugins();
         //#if (html5)
         render = setupSolidColorRender();
         //#else
@@ -154,12 +163,8 @@ class PlayState extends BaseScreen
         //#end
         //render = setupDebugRender();
         
-        createPieceBuilder();
-        
         addInitialBodiesToWorld();
         render.setGameGround(ground);
-        
-        loadPlugins();
         
         setupConfigForSpawingBlocks();
 
@@ -195,40 +200,42 @@ class PlayState extends BaseScreen
     private function loadPlugins():Void
     {
         var soundPlugin = new SoundsEffectsPlugin(this);
-        FlxG.plugins.add(soundPlugin);
+        pluginGroup.add(soundPlugin);
+        plugins.add(soundPlugin);
         
         var accPlugin = new AccumulationPlugin(this);
-        FlxG.plugins.add(accPlugin);
+        pluginGroup.add(accPlugin);
+        plugins.add(accPlugin);
         
         var blockPopPlugin = new BlockPopEffectPlugin(this, colorSource, screenWorldTransform);
-        add(blockPopPlugin);
+        pluginGroup.add(blockPopPlugin);
         plugins.add(blockPopPlugin);
         
         var comboPlugin = new ComboScoreEffectPlugin(this, colorSource, screenWorldTransform);
-        add(comboPlugin);
+        pluginGroup.add(comboPlugin);
         plugins.add(comboPlugin);
         
         var scorePlugin:ScorePlugin = new ScorePlugin(this, colorSource);
-        add(scorePlugin);
+        pluginGroup.add(scorePlugin);
         plugins.add(scorePlugin);
         
         rotatePlugin = new ColorRotatePlugin(this, colorSource);
-        add(rotatePlugin);
+        pluginGroup.add(rotatePlugin);
         plugins.add(rotatePlugin);
         
         controlPlugin = new GamePieceControlPlugin(this, input);
         physicsWorld.externalAccumulator = controlPlugin.MoveAccumulator;
-        add(controlPlugin);
+        pluginGroup.add(controlPlugin);
         plugins.add(controlPlugin);
         
         spawnPlugin = new GamePieceSpawnPlugin(this, colorSource, physicsWorld, pieceBuilder);
         spawnPlugin.controlPlugin = controlPlugin;
-        add(spawnPlugin);
+        pluginGroup.add(spawnPlugin);
         plugins.add(spawnPlugin);
         
         #if debug
         var fpsPlugin = new FrameRatePlugin(this);
-        add(fpsPlugin);
+        pluginGroup.add(fpsPlugin);
         plugins.add(fpsPlugin);
         #end
     }
@@ -246,7 +253,7 @@ class PlayState extends BaseScreen
     
     function setupSolidColorRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new SolidColorDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, screenWorldTransform);
+        var render:BaseDrawWorld = new SolidColorDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, screenWorldTransform, spawnPlugin);
         return render;
     }
     
@@ -344,7 +351,7 @@ class PlayState extends BaseScreen
     private function createDrawSurface():Sprite
     {
         flxDrawSurface = new FlxSprite().makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
-        add(flxDrawSurface);
+        renderGroup.add(flxDrawSurface);
         
         debugDrawSurface = new Sprite();
         debugDrawSurface.x = 0;
@@ -367,6 +374,8 @@ class PlayState extends BaseScreen
         super.update(elapsed);
 
         input.Update(elapsed);
+        
+        render.update(elapsed);
         
         if(!physicsPaused){
             physicsWorld.Update(elapsed);
@@ -445,7 +454,7 @@ class PlayState extends BaseScreen
         
         if (prevPiece != null){
             var yPos:Float = prevPiece.GamePieceCenter().y;
-            if (yPos <= gameWorldFailHeight){
+            if (yPos <= GameConstants.GAME_WORLD_FAIL_HEIGHT){
                 gameOver();
             }
         }

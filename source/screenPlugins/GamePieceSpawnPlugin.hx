@@ -26,6 +26,11 @@ class GamePieceSpawnPlugin extends ScreenPluginBase
 {
     public var controlPlugin:GamePieceControlPlugin;
     
+    public var TimeTillSpawn(get, null):Float;
+    public function get_TimeTillSpawn(){
+        return spawnTimerMax - spawnTimer;
+    }
+    
     public var SpawnTimer(get, null):Float;
     public function get_SpawnTimer(){
         return spawnTimer;

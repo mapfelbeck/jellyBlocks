@@ -56,6 +56,8 @@ class BaseDrawWorld
     
     public function Draw(){}
     
+    public function update(elapsed: Float){}
+    
     public function setupDrawParam(){
         
     }

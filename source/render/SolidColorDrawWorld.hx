@@ -1,15 +1,18 @@
 package render;
-import blocks.GameBlock;
 import blocks.FreezingGameBlock;
+import blocks.GameBlock;
 import constants.GameConstants;
 import flixel.FlxSprite;
 import flixel.FlxState;
+import flixel.math.FlxMath;
 import flixel.util.FlxColor;
+import gamepieces.GamePiece;
 import jellyPhysics.*;
-import jellyPhysics.World;
 import jellyPhysics.math.*;
 import openfl.display.*;
 import openfl.events.*;
+import screenPlugins.GamePieceSpawnPlugin;
+import screens.PlayState;
 import util.ScreenWorldTransform;
 
 /**
@@ -20,27 +23,31 @@ class SolidColorDrawWorld extends BaseDrawWorld
 {
     private static var groundAssetPath:String =  "assets/images/gameArena.png";
     
-    private var parentState:FlxState;
+    private var parentState:PlayState;
     private var renderTarget:Sprite;
     private var graphics:Graphics;
-    private var world:World;
+    private var world:JellyBlocksWorld;
     private var worldBounds:AABB;
     
 	private var gameArenaSprite:FlxSprite;
-        
-    private var outlineColor:FlxColor = FlxColor.BLACK;
+    
+    private var spawnPlugin: GamePieceSpawnPlugin;
+    
+    private static var outlineColor:FlxColor = FlxColor.BLACK;
     //higher = darker, [0...1]
-    private var outlineAlpha:Float = 0.5;
+    private static var outlineAlpha:Float = 0.5;
         
     private static var BORDER_NORMAL: Int = 1;
-    private static var BORDER_FROZEN: Int = BORDER_NORMAL;
+    private static var BORDER_FROZEN: Int = 1;
     private static var BORDER_POPPING: Int = 3;
     private static var BORDER_CONTROLLED: Int = 4;
+    private static var BORDER_FLICKER: Int = 2;
     
-    public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, screenWorldTransform:ScreenWorldTransform)
+    public function new(sprite:Sprite, colorSource:IColorSource, parentState:PlayState, physicsWorld:JellyBlocksWorld, screenWorldTransform:ScreenWorldTransform, spawnPlugin: GamePieceSpawnPlugin)
     {
         super(colorSource, screenWorldTransform);
         
+        this.spawnPlugin = spawnPlugin;
         this.parentState = parentState;
         renderTarget = sprite;
         graphics = renderTarget.graphics;
@@ -68,7 +75,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
 		gameArenaSprite.updateHitbox();
 		gameArenaSprite.x = Std.int((transform.screenWidth - arenaWidth) / 2);
 		gameArenaSprite.y = Std.int((transform.screenHeight - arenaHeight) / 2);
-		parentState.add(gameArenaSprite);
+		parentState.renderGroup.add(gameArenaSprite);
     }
     
     public override function Draw():Void
@@ -76,26 +83,43 @@ class SolidColorDrawWorld extends BaseDrawWorld
         graphics.clear();
         graphics.lineStyle(0, outlineColor, outlineAlpha);
         
-        for (i in 0...world.NumberBodies){
-            var block:GameBlock = Std.instance(world.GetBody(i), GameBlock);
-            
-            if (block.IsStatic){
-                continue;
+        for (i in 0...world.GamePieces.length){
+            var piece:GamePiece = world.GamePieces[i];
+            var controlled:Bool = piece.IsControlled;
+            //var yPos:Float = prevPiece.GamePieceCenter().y;
+            //if (yPos <= GameConstants.GAME_WORLD_FAIL_HEIGHT){
+            var aboveFailHeight:Bool = false;
+            if (controlled){
+                var yPos:Float = piece.GamePieceCenter().y;
+                aboveFailHeight = (yPos <= GameConstants.GAME_WORLD_FAIL_HEIGHT);
             }
-            
-            drawBlock(block);
+            for (j in 0...piece.Blocks.length){
+                var block:GameBlock = piece.Blocks[j];
+                drawBlock(block, controlled, aboveFailHeight);
+            }
         }
     }
-        
-    function drawBlock(block:GameBlock) 
+    
+    function drawBlock(block:GameBlock, controlled:Bool, aboveFailHeight:Bool) 
     {
         var freezingBlock:FreezingGameBlock = Std.instance(block, FreezingGameBlock);
         if (freezingBlock.IsFrozen) {
-            graphics.lineStyle(BORDER_NORMAL, outlineColor, outlineAlpha - 0.25);
+            graphics.lineStyle(BORDER_FROZEN, outlineColor, outlineAlpha - 0.25);
         }else if (freezingBlock.Popping) {
             graphics.lineStyle(BORDER_POPPING, colorSource.getColor(freezingBlock.Material), 1.0);
-        }else if (freezingBlock.IsControlled){
-            graphics.lineStyle(BORDER_CONTROLLED, outlineColor, outlineAlpha + 0.5);
+        }else if (controlled){
+            var controlledPieceColor:FlxColor = outlineColor;
+            if (aboveFailHeight && lossOfControlWarn){
+                controlledPieceColor = FlxColor.RED;
+            }
+            
+            var controlledPieceBorder:Int = BORDER_CONTROLLED;
+            if (warningFlickerOn){
+                controlledPieceBorder = BORDER_FLICKER;
+            }
+            
+            graphics.lineStyle(controlledPieceBorder, controlledPieceColor, outlineAlpha + 0.5);
+
         }else{
             graphics.lineStyle(BORDER_NORMAL, outlineColor, outlineAlpha);
         }
@@ -115,6 +139,29 @@ class SolidColorDrawWorld extends BaseDrawWorld
         }
         
         drawBody(shape, color, alpha);
+    }
+    
+    private static var TIME_TILL_WARN:Float = 5.5; //start flashing the controlled piece at this time to warn player will lose control
+    private static var FLICKER_RATE_MAX:Float = 0.65;
+    private static var FLICKER_RATE_MIN:Float = 0.15;
+    private var warningFlickerOn:Bool = false;
+    private var warningFlickerLength:Float = 0.0;
+    private var lossOfControlWarn:Bool = false;
+    
+    override function update(elapsed: Float){
+        if (spawnPlugin.TimeTillSpawn < TIME_TILL_WARN){
+            lossOfControlWarn = true;
+            warningFlickerLength += elapsed;
+            var warningFlickerMax: Float = FlxMath.lerp(FLICKER_RATE_MIN, FLICKER_RATE_MAX, spawnPlugin.TimeTillSpawn / TIME_TILL_WARN);
+            if (warningFlickerLength >= warningFlickerMax){
+                warningFlickerOn = !warningFlickerOn;
+                warningFlickerLength = 0;
+            }
+        } else {
+            lossOfControlWarn = false;
+            warningFlickerOn = false;
+            warningFlickerLength = 0;
+        }
     }
     
     function drawBody(shape:Array<Vector2>, color:FlxColor, alpha:Float) 

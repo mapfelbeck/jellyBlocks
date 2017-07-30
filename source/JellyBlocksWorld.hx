@@ -15,7 +15,14 @@ import util.UtilClass;
 class JellyBlocksWorld extends World
 {
     private static var pieceCounter:Int = 1;
+    
     private var gamePieces:Array<GamePiece>;
+    public var GamePieces(get, null):Array<GamePiece>;
+    function get_GamePieces():Array<GamePiece>
+    {
+        return gamePieces;
+    }
+    
     private var removeList:Array<GamePiece>;
     private var random:FlxRandom;
 

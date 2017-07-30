@@ -21,6 +21,17 @@ openfl: [3.6.1]
 task: [1.0.7]
 
 ToDo:
+    improve widescreen UI
+    new game modes:
+        clear rows of blocks and fall through
+        clear specific blocks
+        2 player split screen??
+    new block types?
+        clear all of a color
+        unfreeze board
+        scramble colors
+    experiment with blocks that weld together?
+    experiment with block of different shape & size?
     Safari crash bug
     Controller support
         add ability to delete input mapping

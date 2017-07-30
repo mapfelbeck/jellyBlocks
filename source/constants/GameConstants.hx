@@ -23,6 +23,9 @@ class GameConstants
     public static inline var PushForceYCoefficient:Float = .75;
     public static inline var TorqueForceCoefficient:Float = 1.25;
 
+    //if a controlled block is above this line when a new piece spawns, game over
+    public static var GAME_WORLD_FAIL_HEIGHT: Int = -10;
+    
     //inflate pressure for game blocks
     public static inline var GasPressure:Float = 250;
 
