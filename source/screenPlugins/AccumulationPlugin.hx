@@ -1,8 +1,10 @@
 package screenPlugins;
 
 import events.*;
+import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.addons.ui.FlxUISprite;
+import flixel.addons.ui.FlxUIText;
 import flixel.math.FlxMath;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
@@ -38,7 +40,6 @@ class AccumulationPlugin extends ScreenPluginBase
     private static var emptyBarSpriteAssetPath:String =  "assets/images/chargeBarEmpty.png";
     private var fullBar:FlxSprite;
     private var emptyBar:FlxSprite;
-    private var barWidthRatio:Float = 5;
     
     private var background:FlxUISprite;
     
@@ -52,15 +53,15 @@ class AccumulationPlugin extends ScreenPluginBase
         chargeBar = new FlxBar(0, 0, null, Std.int(emptyBar.width), Std.int(emptyBar.height), this, "Accumulated", 0, accumulateThreshold, false);
         chargeBar.createImageBar(emptyBar.pixels, fullBar.pixels, FlxColor.TRANSPARENT, FlxColor.RED);
         
-        background = cast parent.getAsset("rotate_background");
+        var chargeBarY = getYHeight();
         
-        var chargeBarWidth:Int = cast(background.width * barWidthRatio);
+        var chargeBarWidth:Int = 300;
         var heightToFinalRatio:Float = chargeBarWidth / emptyBar.width;
         var chargeBarHeight:Int = cast(emptyBar.height * heightToFinalRatio);
         chargeBar.setGraphicSize(chargeBarWidth, chargeBarHeight);
         chargeBar.updateHitbox();
-        chargeBar.x = background.x - chargeBarWidth;
-        chargeBar.y = background.y + (background.height-chargeBarHeight)/2;
+        chargeBar.x = (FlxG.width - chargeBarWidth) / 2;
+        chargeBar.y = chargeBarY;
         parent.add(chargeBar);
     }
     
@@ -93,5 +94,14 @@ class AccumulationPlugin extends ScreenPluginBase
             return popSublimateMin;
         }
         return FlxMath.lerp(popSublimateMin, popSublimateMax, 1 - (timeSincePop / sublimateTimeToMin));
+    }
+    
+    private function getYHeight():Float {
+        var scoreText:FlxUIText = cast parent.getAsset("score_label");
+        if (scoreText == null){
+            return 10;
+        }
+        
+        return (scoreText.y + scoreText.height) * 1.2;
     }
 }

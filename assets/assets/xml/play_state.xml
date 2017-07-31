@@ -17,5 +17,5 @@
     
     <inject name="plugins/piece_preview" />
     
-    <inject name="plugins/color_rotate" />
+    <!--<inject name="plugins/color_rotate" />-->
 </data>

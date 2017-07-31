@@ -13,7 +13,7 @@ import screens.BaseScreen;
  */
 class ScreenPluginBase extends FlxSprite 
 {
-    private var parent:FlxUIState;
+    private var parent:BaseScreen;
     private var eventSet:Array<EventAndAction> = new Array<EventAndAction>();
     public function new(parent:BaseScreen, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {

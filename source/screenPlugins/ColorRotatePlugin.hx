@@ -17,12 +17,12 @@ class ColorRotatePlugin extends ScreenPluginBase
 {
     private var colorSource:IColorSource;
 
-    private var background:FlxUISprite;
-    private var backgroundSize:Int = 100;
-    private var colorWheelBackgroundRatio:Float = 0.8;
-    private var colorWheelSize:Int = 100;
-    private var colorWheel:FlxSprite;
-    private var colorWheelAlpha:FlxSprite;
+    //private var background:FlxUISprite;
+    //private var backgroundSize:Int = 100;
+    //private var colorWheelBackgroundRatio:Float = 0.8;
+    //private var colorWheelSize:Int = 100;
+    //private var colorWheel:FlxSprite;
+    //private var colorWheelAlpha:FlxSprite;
     
     public function new(parent:BaseScreen, colorSource:IColorSource, ?X:Float=0, ?Y:Float=0, ?SimpleGraphic:FlxGraphicAsset) 
     {
@@ -30,21 +30,21 @@ class ColorRotatePlugin extends ScreenPluginBase
         
         this.colorSource = colorSource;
         
-        background = cast parent.getAsset("rotate_background");
+        //ackground = cast parent.getAsset("rotate_background");
         
-        backgroundSize = Std.int(background.width);
-        colorWheelSize = Std.int(backgroundSize * colorWheelBackgroundRatio);
+        //backgroundSize = Std.int(background.width);
+        //colorWheelSize = Std.int(backgroundSize * colorWheelBackgroundRatio);
         
-        colorWheel = makeColorWheel(new FlxSprite());
-        colorWheel.y = background.y + (backgroundSize-colorWheelSize)/2;
-        parent.add(colorWheel);
+        //colorWheel = makeColorWheel(new FlxSprite());
+        //colorWheel.y = background.y + (backgroundSize-colorWheelSize)/2;
+        //parent.add(colorWheel);
 
-        colorWheelAlpha = makeColorWheelApha();
+        //colorWheelAlpha = makeColorWheelApha();
         
-        colorWheel.x = background.x + (backgroundSize-colorWheelSize)/2;
+        //colorWheel.x = background.x + (backgroundSize-colorWheelSize)/2;
     }
     
-    function makeColorWheel(sprite:FlxSprite):FlxSprite{
+    /*function makeColorWheel(sprite:FlxSprite):FlxSprite{
         if (colorWheelAlpha == null){
             colorWheelAlpha = makeColorWheelApha();
         }
@@ -53,9 +53,9 @@ class ColorRotatePlugin extends ScreenPluginBase
         FlxSpriteUtil.alphaMaskFlxSprite(sprite, colorWheelAlpha, sprite);
         
         return sprite;
-    }
+    }*/
     
-    function makeColorWheelApha():FlxSprite{
+    /*function makeColorWheelApha():FlxSprite{
         var sprite:FlxSprite = new FlxSprite();
         sprite.makeGraphic(colorWheelSize, colorWheelSize, FlxColor.BLACK);
         
@@ -66,9 +66,9 @@ class ColorRotatePlugin extends ScreenPluginBase
         FlxSpriteUtil.alphaMaskFlxSprite(sprite, spriteAlpha, sprite);
         
         return sprite;
-    }
+    }*/
     
-    function makeColorWheelBase(sprite:FlxSprite) :FlxSprite
+    /*function makeColorWheelBase(sprite:FlxSprite) :FlxSprite
     {
         //I had to do trig to figure this out :(
         //correct for color count = 6
@@ -117,20 +117,20 @@ class ColorRotatePlugin extends ScreenPluginBase
         FlxSpriteUtil.endDraw(sprite);
         
         return sprite;
-    }
+    }*/
     
     private var spinning:Bool = false;
     override public function update(elapsed:Float):Void 
     {
         super.update(elapsed);
                 
-        if(spinning){
+        /*if(spinning){
             colorWheel.angle+= elapsed * 1500;
             if (colorWheel.angle > 360){
                 spinning = false;
                 colorWheel.angle = 0;
             }
-        }
+        }*/
     }
     
     override function createEventSet():Void 
@@ -142,7 +142,7 @@ class ColorRotatePlugin extends ScreenPluginBase
     private function OnThreshold(sender:Dynamic, event:String, params:Dynamic){
         colorSource.ColorAdjust = (colorSource.ColorAdjust + 0.10) % 1.0;
         EventManager.Trigger(this, Events.COLOR_ROTATE);
-        makeColorWheel(colorWheel);
-        spinning = true;
+        //makeColorWheel(colorWheel);
+        //spinning = true;
     }
 }

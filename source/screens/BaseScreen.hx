@@ -3,6 +3,7 @@ package screens;
 import events.EventAndAction;
 import events.EventManager;
 import events.Events;
+import flixel.addons.ui.FlxUIGroup;
 import flixel.addons.ui.FlxUIState;
 import flixel.addons.ui.interfaces.IFlxUIWidget;
 import screenPlugins.ScreenPluginBase;
@@ -19,6 +20,11 @@ class BaseScreen extends FlxUIState
 	public function getAsset(key:String, recursive:Bool = true):IFlxUIWidget
 	{
         return _ui.getAsset(key, recursive);
+    }
+    
+	public function getGroup(key:String, recursive:Bool = true):FlxUIGroup
+	{
+        return _ui.getGroup(key, recursive);
     }
     
     private function registerEvent(action:EventManagerCallback, event:String):Void{
