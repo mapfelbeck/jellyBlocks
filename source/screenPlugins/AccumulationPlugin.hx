@@ -9,6 +9,7 @@ import flixel.math.FlxMath;
 import flixel.system.FlxAssets.FlxGraphicAsset;
 import flixel.ui.FlxBar;
 import flixel.util.FlxColor;
+import haxe.xml.Fast;
 import screens.BaseScreen;
 
 /**
@@ -97,11 +98,14 @@ class AccumulationPlugin extends ScreenPluginBase
     }
     
     private function getYHeight():Float {
-        var scoreText:FlxUIText = cast parent.getAsset("score_label");
-        if (scoreText == null){
-            return 10;
+        var yLocation:Float = 0.0;
+        var test:Fast = parent.getDefinition("chargebarloc", false);
+        if (test != null){
+            if (test.has.y){
+                yLocation = Std.parseFloat(test.att.y);
+            }
         }
         
-        return (scoreText.y + scoreText.height) * 1.2;
+        return yLocation;
     }
 }

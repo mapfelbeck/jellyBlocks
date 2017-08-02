@@ -5,8 +5,6 @@
         <scale to_height="100%" />
     </sprite>
     
-    <inject name="plugins/score" />
-    
     <button id="pause_btn" width="36pt" height="36pt">
         <anchor x="right" x-flush="right" y="top" y-flush="top"/>
         <graphic id="all" image="ui/pause_button" slice9="24,24,50,50" x-flush="center">
@@ -14,6 +12,8 @@
         </graphic>
         <param type="string" value="pause" />
     </button>
+    
+    <inject name="plugins/score" />
     
     <inject name="plugins/piece_preview" />
     

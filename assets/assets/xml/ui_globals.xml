@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <data>
+	<definition id="chargebarloc" y="50" />
     
     <inject name="point_def" />
     <!-- define points as if a 600 x 800 screen -->

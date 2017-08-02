@@ -6,6 +6,8 @@ import events.Events;
 import flixel.addons.ui.FlxUIGroup;
 import flixel.addons.ui.FlxUIState;
 import flixel.addons.ui.interfaces.IFlxUIWidget;
+import flixel.text.FlxText;
+import haxe.xml.Fast;
 import screenPlugins.ScreenPluginBase;
 
 /**
@@ -25,6 +27,21 @@ class BaseScreen extends FlxUIState
 	public function getGroup(key:String, recursive:Bool = true):FlxUIGroup
 	{
         return _ui.getGroup(key, recursive);
+    }
+    
+	public function getDefinition(key:String, recursive:Bool = true):Fast
+	{
+        return _ui.getDefinition(key, recursive);
+    }
+    
+	public function getMode(key:String, recursive:Bool = true):Fast
+	{
+        return _ui.getMode(key, recursive);
+    }
+    
+	public function getFlxText(key:String, recursive:Bool = true):FlxText
+	{
+        return _ui.getFlxText(key, recursive);
     }
     
     private function registerEvent(action:EventManagerCallback, event:String):Void{
