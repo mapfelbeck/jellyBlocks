@@ -79,8 +79,14 @@ class PlayState extends BaseScreen
     
     private var screenWorldTransform:ScreenWorldTransform;
     
+    public var mainCamera:FlxCamera;
+    public var renderCamera:FlxCamera;
+    
     public var pluginGroup:FlxGroup;
     public var renderGroup:FlxGroup;
+    
+    //public var offscreenRenderX:Int = -2000;
+    //public var offscreenRenderY:Int = -2000;
     
 	override public function create():Void
 	{
@@ -137,6 +143,12 @@ class PlayState extends BaseScreen
         input.AddKeyboardInput(FlxKey.R, scrambleColorsKey, PressType.Down);
         input.AddKeyboardInput(FlxKey.P, pausePhysics, PressType.Down);
         input.AddKeyboardInput(FlxKey.G, gameOverKey, PressType.Down);
+        
+        /*input.AddKeyboardInput(FlxKey.Z, zoomOut, PressType.Down);
+        input.AddKeyboardInput(FlxKey.X, zoomIn, PressType.Down);
+        input.AddKeyboardInput(FlxKey.C, shake, PressType.Down);
+        input.AddKeyboardInput(FlxKey.V, camUp, PressType.Down);
+        input.AddKeyboardInput(FlxKey.B, camDown, PressType.Down);*/
         #end
 
         defaultMaterial = new MaterialPair();
@@ -180,21 +192,20 @@ class PlayState extends BaseScreen
             addButtons();
         }
         
-        var derp = _ui.getAsset("background");
         background = cast _ui.getAsset("background");
+        
+        /*trace("FlxG.height: " + FlxG.height);
+        trace("FlxG.width: " + FlxG.width);
+        trace("WINDOW_HEIGHT: " + WINDOW_HEIGHT);
+        trace("WINDOW_WIDTH: " + WINDOW_WIDTH);*/
+        
+        /*renderCamera = new FlxCamera(0, 0, Std.int(WINDOW_WIDTH), Std.int(WINDOW_HEIGHT));
+        renderCamera.bgColor = FlxColor.TRANSPARENT;
+        renderCamera.follow(flxDrawSurface);
+        FlxG.cameras.add(renderCamera);*/
         
         registerEvent(OnColorRotated, Events.COLOR_ROTATE);
         registerEvent(OnNewGamePiece, Events.PIECE_CREATE);
-        
-        //var failLine:FlxSprite = new FlxSprite(0, 0, failLineAssetPath);
-        
-        //var failWorldLocation:Vector2 = new Vector2(0, gameWorldFailHeight);
-        //var failScreenLocation:Vector2 = new Vector2(screenWorldTransform.localToWorldX(failWorldLocation.x), screenWorldTransform.localToWorldY(failWorldLocation.y));
-        
-        //failLine.x = failScreenLocation.x;
-        //failLine.y = failScreenLocation.y;
-        
-        //add(failLine);
 	}
     
     private function loadPlugins():Void
@@ -215,9 +226,15 @@ class PlayState extends BaseScreen
         pluginGroup.add(comboPlugin);
         plugins.add(comboPlugin);
         
-        var scorePlugin:ScorePlugin = new ScorePlugin(this, colorSource);
+        #if (mobile || html5)
+        var scorePlugin:SimpleScorePlugin = new SimpleScorePlugin(this, colorSource);
         pluginGroup.add(scorePlugin);
         plugins.add(scorePlugin);
+        #else
+        var scorePlugin:SimpleScorePlugin = new SimpleScorePlugin(this, colorSource);
+        pluginGroup.add(scorePlugin);
+        plugins.add(scorePlugin);
+        #end
         
         rotatePlugin = new ColorRotatePlugin(this, colorSource);
         pluginGroup.add(rotatePlugin);
@@ -350,12 +367,13 @@ class PlayState extends BaseScreen
     
     private function createDrawSurface():Sprite
     {
-        flxDrawSurface = new FlxSprite().makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
+        flxDrawSurface = new FlxSprite(0,0).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
+        //flxDrawSurface = new FlxSprite(offscreenRenderX,offscreenRenderY).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
         renderGroup.add(flxDrawSurface);
         
         debugDrawSurface = new Sprite();
-        debugDrawSurface.x = 0;
-        debugDrawSurface.y = 0;
+        //debugDrawSurface.x = offscreenRenderX;
+        //debugDrawSurface.y = offscreenRenderY;
         
         debugDrawSurface.cacheAsBitmap = true;
         
@@ -505,6 +523,31 @@ class PlayState extends BaseScreen
     private function pauseKey(key:FlxKey, type:PressType):Void{
         pauseMenu();
     }
+    
+    /*private function zoomOut(key:FlxKey, type:PressType):Void{
+        trace("zoom render camera out.");
+        this.renderGroup.camera.zoom = this.renderGroup.camera.zoom * 0.95;
+    }
+    
+    private function zoomIn(key:FlxKey, type:PressType):Void{
+        trace("zoom render camera in.");
+        this.renderGroup.camera.zoom = this.renderGroup.camera.zoom * 1.05;
+    }
+    
+    private function shake(key:FlxKey, type:PressType):Void{
+        trace("shaking camera.");
+        this.renderGroup.camera.shake(0.01, 0.05);
+    }
+    
+    private function camUp(key:FlxKey, type:PressType):Void{
+        this.renderCamera.y -= 5;
+        trace("camera up, y: " + this.renderCamera.y);
+    }
+    
+    private function camDown(key:FlxKey, type:PressType):Void{
+        this.renderCamera.y += 5;
+        trace("camera down, y: " + this.renderCamera.y);
+    }*/
     
     private function pausePhysics(key:FlxKey, type:PressType):Void{
         physicsPaused = !physicsPaused;
