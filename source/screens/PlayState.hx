@@ -231,7 +231,7 @@ class PlayState extends BaseScreen
         pluginGroup.add(scorePlugin);
         plugins.add(scorePlugin);
         #else
-        var scorePlugin:SimpleScorePlugin = new SimpleScorePlugin(this, colorSource);
+        var scorePlugin:AccumulateScorePlugin = new AccumulateScorePlugin(this, colorSource);
         pluginGroup.add(scorePlugin);
         plugins.add(scorePlugin);
         #end
