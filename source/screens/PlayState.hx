@@ -8,6 +8,7 @@ import enums.*;
 import events.*;
 import flash.events.*;
 import flixel.*;
+import flixel.FlxCamera;
 import flixel.addons.ui.FlxUISprite;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepadInputID;
@@ -85,8 +86,8 @@ class PlayState extends BaseScreen
     public var pluginGroup:FlxGroup;
     public var renderGroup:FlxGroup;
     
-    //public var offscreenRenderX:Int = -2000;
-    //public var offscreenRenderY:Int = -2000;
+    public var offscreenRenderX:Int = -2000;
+    public var offscreenRenderY:Int = -2000;
     
 	override public function create():Void
 	{
@@ -144,11 +145,13 @@ class PlayState extends BaseScreen
         input.AddKeyboardInput(FlxKey.P, pausePhysics, PressType.Down);
         input.AddKeyboardInput(FlxKey.G, gameOverKey, PressType.Down);
         
-        /*input.AddKeyboardInput(FlxKey.Z, zoomOut, PressType.Down);
+        input.AddKeyboardInput(FlxKey.Z, zoomOut, PressType.Down);
         input.AddKeyboardInput(FlxKey.X, zoomIn, PressType.Down);
         input.AddKeyboardInput(FlxKey.C, shake, PressType.Down);
         input.AddKeyboardInput(FlxKey.V, camUp, PressType.Down);
-        input.AddKeyboardInput(FlxKey.B, camDown, PressType.Down);*/
+        input.AddKeyboardInput(FlxKey.B, camDown, PressType.Down);
+        input.AddKeyboardInput(FlxKey.N, camLeft, PressType.Down);
+        input.AddKeyboardInput(FlxKey.M, camRight, PressType.Down);
         #end
 
         defaultMaterial = new MaterialPair();
@@ -158,7 +161,7 @@ class PlayState extends BaseScreen
         
         createWorld();
         
-        screenWorldTransform = new ScreenWorldTransform(physicsWorld.WorldBounds, WINDOW_WIDTH, WINDOW_HEIGHT, overscan);
+        screenWorldTransform = new ScreenWorldTransform(physicsWorld.WorldBounds, WINDOW_WIDTH, WINDOW_HEIGHT);
         
         createPieceBuilder();
         
@@ -199,10 +202,15 @@ class PlayState extends BaseScreen
         trace("WINDOW_HEIGHT: " + WINDOW_HEIGHT);
         trace("WINDOW_WIDTH: " + WINDOW_WIDTH);*/
         
-        /*renderCamera = new FlxCamera(0, 0, Std.int(WINDOW_WIDTH), Std.int(WINDOW_HEIGHT));
-        renderCamera.bgColor = FlxColor.TRANSPARENT;
-        renderCamera.follow(flxDrawSurface);
-        FlxG.cameras.add(renderCamera);*/
+        var renderOffset:Int = 50;
+        //renderCamera = new FlxCamera(0,0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        renderCamera = new FlxCamera(Std.int(renderOffset/2), Std.int(renderOffset/2), Std.int(WINDOW_WIDTH-renderOffset), Std.int(WINDOW_HEIGHT-renderOffset));
+        var bgColor:FlxColor = FlxColor.TRANSPARENT;
+        //var bgColor:FlxColor = FlxColor.GRAY;
+        //bgColor.alpha = 128;
+        renderCamera.bgColor = bgColor;
+        renderCamera.follow(flxDrawSurface, FlxCameraFollowStyle.NO_DEAD_ZONE);
+        FlxG.cameras.add(renderCamera);
         
         registerEvent(OnColorRotated, Events.COLOR_ROTATE);
         registerEvent(OnNewGamePiece, Events.PIECE_CREATE);
@@ -367,13 +375,11 @@ class PlayState extends BaseScreen
     
     private function createDrawSurface():Sprite
     {
-        flxDrawSurface = new FlxSprite(0,0).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
-        //flxDrawSurface = new FlxSprite(offscreenRenderX,offscreenRenderY).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
+        //flxDrawSurface = new FlxSprite(0,0).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
+        flxDrawSurface = new FlxSprite(offscreenRenderX,offscreenRenderY).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
         renderGroup.add(flxDrawSurface);
         
         debugDrawSurface = new Sprite();
-        //debugDrawSurface.x = offscreenRenderX;
-        //debugDrawSurface.y = offscreenRenderY;
         
         debugDrawSurface.cacheAsBitmap = true;
         
@@ -524,7 +530,7 @@ class PlayState extends BaseScreen
         pauseMenu();
     }
     
-    /*private function zoomOut(key:FlxKey, type:PressType):Void{
+    private function zoomOut(key:FlxKey, type:PressType):Void{
         trace("zoom render camera out.");
         this.renderGroup.camera.zoom = this.renderGroup.camera.zoom * 0.95;
     }
@@ -536,7 +542,7 @@ class PlayState extends BaseScreen
     
     private function shake(key:FlxKey, type:PressType):Void{
         trace("shaking camera.");
-        this.renderGroup.camera.shake(0.01, 0.05);
+        this.renderCamera.shake(0.01, 0.05);
     }
     
     private function camUp(key:FlxKey, type:PressType):Void{
@@ -547,7 +553,17 @@ class PlayState extends BaseScreen
     private function camDown(key:FlxKey, type:PressType):Void{
         this.renderCamera.y += 5;
         trace("camera down, y: " + this.renderCamera.y);
-    }*/
+    }
+    
+    private function camLeft(key:FlxKey, type:PressType):Void{
+        this.renderCamera.x -= 5;
+        trace("camera up, x: " + this.renderCamera.x);
+    }
+    
+    private function camRight(key:FlxKey, type:PressType):Void{
+        this.renderCamera.x += 5;
+        trace("camera down, x: " + this.renderCamera.x);
+    }
     
     private function pausePhysics(key:FlxKey, type:PressType):Void{
         physicsPaused = !physicsPaused;

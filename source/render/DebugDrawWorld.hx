@@ -90,7 +90,7 @@ class DebugDrawWorld extends BaseDrawWorld
         
         if(DrawingBackground){
             graphics.beginFill(ColorOfBackground);
-            graphics.drawRect(transform.overscan, transform.overscan, backgroundSize.x, backgroundSize.y);
+            graphics.drawRect(0, 0, backgroundSize.x, backgroundSize.y);
             graphics.endFill();
         }
         

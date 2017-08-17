@@ -21,6 +21,10 @@ openfl: [3.6.1]
 task: [1.0.7]
 
 ToDo:
+    offscreen render for game board:
+        move render texture offscreen - done
+        move arena offscreen
+        make camera follow controlled piece
     improve widescreen UI
     new game modes:
         clear rows of blocks and fall through

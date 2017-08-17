@@ -12,14 +12,12 @@ class ScreenWorldTransform
     public var offset:Vector2 = new Vector2(0, 0);
     
     public var bounds:AABB;
-    public var overscan:Int;
     public var screenWidth:Int;
     public var screenHeight:Int;
     
-    public function new(worldBounds:AABB, screenWidth:Int, screenHeight:Int, overscan:Int) 
+    public function new(worldBounds:AABB, screenWidth:Int, screenHeight:Int) 
     {
         bounds = worldBounds;
-        this.overscan = overscan;
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         setRenderAndOffset();
@@ -49,9 +47,10 @@ class ScreenWorldTransform
     private function setRenderAndOffset():Void{
         worldWidth = bounds.LR.x - bounds.UL.x;
         worldHeight = bounds.LR.y - bounds.UL.y;
-        backgroundSize = new Vector2(screenWidth - (2 * overscan), screenHeight - (2 * overscan));
+        backgroundSize = new Vector2(screenWidth, screenHeight);
         offset.x = screenWidth / 2;
         offset.y = screenHeight / 2;
+        //offset.y += 180;
         
         var hScale:Float = backgroundSize.x / worldWidth;
         var wScale:Float = backgroundSize.y / worldHeight;
