@@ -76,8 +76,6 @@ class PlayState extends BaseScreen
         "assets/gfx/ui/gameplay4.png"
     ];
     
-    //private static var failLineAssetPath:String =  "assets/images/line.png";
-    
     private var screenWorldTransform:ScreenWorldTransform;
     
     public var mainCamera:FlxCamera;
@@ -86,8 +84,7 @@ class PlayState extends BaseScreen
     public var pluginGroup:FlxGroup;
     public var renderGroup:FlxGroup;
     
-    public var offscreenRenderX:Int = -2000;
-    public var offscreenRenderY:Int = -2000;
+    private var controlledPieceFollower:FlxSprite;
     
 	override public function create():Void
 	{
@@ -201,6 +198,8 @@ class PlayState extends BaseScreen
         trace("FlxG.width: " + FlxG.width);
         trace("WINDOW_HEIGHT: " + WINDOW_HEIGHT);
         trace("WINDOW_WIDTH: " + WINDOW_WIDTH);*/
+        
+        controlledPieceFollower = new FlxSprite(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
         
         var renderOffset:Int = 50;
         //renderCamera = new FlxCamera(0,0, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -376,7 +375,7 @@ class PlayState extends BaseScreen
     private function createDrawSurface():Sprite
     {
         //flxDrawSurface = new FlxSprite(0,0).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
-        flxDrawSurface = new FlxSprite(offscreenRenderX,offscreenRenderY).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
+        flxDrawSurface = new FlxSprite(GameConstants.offscreenRenderX,GameConstants.offscreenRenderY).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
         renderGroup.add(flxDrawSurface);
         
         debugDrawSurface = new Sprite();
@@ -436,6 +435,15 @@ class PlayState extends BaseScreen
         #end
         
         clearColliding();
+        
+        if (controlPlugin.controlled != null) {
+            var center:Vector2 = controlPlugin.controlled.GamePieceCenter();
+            var newX = screenWorldTransform.localToWorldX(center.x);
+            var newY = screenWorldTransform.localToWorldY(center.y);
+            controlledPieceFollower.x = newX+GameConstants.offscreenRenderX;
+            controlledPieceFollower.y = newY + GameConstants.offscreenRenderY;
+        }
+        //trace("("+controlledPieceFollower.x+", "+controlledPieceFollower.y+")");
     }
     public var off:Vector2 = new Vector2(225, 300);
     public var sc:Vector2 = new Vector2(17.916666666666668, 17.916666666666668);       
