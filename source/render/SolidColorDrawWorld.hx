@@ -14,6 +14,8 @@ import openfl.events.*;
 import screenPlugins.GamePieceSpawnPlugin;
 import screens.PlayState;
 import util.ScreenWorldTransform;
+import flixel.util.FlxSpriteUtil;
+import flixel.math.FlxPoint;
 
 /**
  * ...
@@ -24,7 +26,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
     private static var groundAssetPath:String =  "assets/images/gameArena.png";
     
     private var parentState:PlayState;
-    private var renderTarget:Sprite;
+    private var renderTarget:FlxSprite;
     private var graphics:Graphics;
     private var world:JellyBlocksWorld;
     private var worldBounds:AABB;
@@ -43,14 +45,13 @@ class SolidColorDrawWorld extends BaseDrawWorld
     private static var BORDER_CONTROLLED: Int = 4;
     private static var BORDER_FLICKER: Int = 2;
     
-    public function new(sprite:Sprite, colorSource:IColorSource, parentState:PlayState, physicsWorld:JellyBlocksWorld, screenWorldTransform:ScreenWorldTransform, spawnPlugin: GamePieceSpawnPlugin)
+    public function new(sprite:FlxSprite, colorSource:IColorSource, parentState:PlayState, physicsWorld:JellyBlocksWorld, screenWorldTransform:ScreenWorldTransform, spawnPlugin: GamePieceSpawnPlugin)
     {
         super(colorSource, screenWorldTransform);
         
         this.spawnPlugin = spawnPlugin;
         this.parentState = parentState;
         renderTarget = sprite;
-        graphics = renderTarget.graphics;
         world = physicsWorld;
     }
 
@@ -80,14 +81,16 @@ class SolidColorDrawWorld extends BaseDrawWorld
     
     public override function Draw():Void
     {
-        graphics.clear();
-        graphics.lineStyle(0, outlineColor, outlineAlpha);
+        FlxSpriteUtil.fill(renderTarget, FlxColor.TRANSPARENT);
+        
+        var outlineWithAlpha:FlxColor = outlineColor;
+        outlineWithAlpha.alpha = Std.int(256 * outlineAlpha);
+        FlxSpriteUtil.setLineStyle( { color: outlineColor, thickness: 0 });
         
         for (i in 0...world.GamePieces.length){
             var piece:GamePiece = world.GamePieces[i];
             var controlled:Bool = piece.IsControlled;
-            //var yPos:Float = prevPiece.GamePieceCenter().y;
-            //if (yPos <= GameConstants.GAME_WORLD_FAIL_HEIGHT){
+
             var aboveFailHeight:Bool = false;
             if (controlled){
                 var yPos:Float = piece.GamePieceCenter().y;
@@ -102,26 +105,34 @@ class SolidColorDrawWorld extends BaseDrawWorld
     
     function drawBlock(block:GameBlock, controlled:Bool, aboveFailHeight:Bool) 
     {
+        var normalColor = outlineColor;
+        normalColor.alpha = Std.int(256 * outlineAlpha);
+        var style:LineStyle = { color: normalColor, thickness: BORDER_NORMAL };
+            
         var freezingBlock:FreezingGameBlock = Std.instance(block, FreezingGameBlock);
         if (freezingBlock.IsFrozen) {
-            graphics.lineStyle(BORDER_FROZEN, outlineColor, outlineAlpha - 0.25);
+            var frozenWithAlpha:FlxColor = outlineColor;
+            frozenWithAlpha.alpha = Std.int(256 * Math.max(outlineAlpha - 0.25, 0));
+            style.color = frozenWithAlpha;
+            style.thickness = BORDER_FROZEN;
         }else if (freezingBlock.Popping) {
-            graphics.lineStyle(BORDER_POPPING, colorSource.getColor(freezingBlock.Material), 1.0);
+            var poppingWithAlpha:FlxColor = colorSource.getColor(freezingBlock.Material);
+            style.color = colorSource.getColor(freezingBlock.Material);
+            style.thickness = BORDER_POPPING;
         }else if (controlled){
             var controlledPieceColor:FlxColor = outlineColor;
             if (aboveFailHeight && lossOfControlWarn){
                 controlledPieceColor = FlxColor.RED;
             }
+            controlledPieceColor.alpha = Std.int(256 * Math.min(outlineAlpha + 0.5, 1));
             
             var controlledPieceBorder:Int = BORDER_CONTROLLED;
             if (warningFlickerOn){
                 controlledPieceBorder = BORDER_FLICKER;
             }
             
-            graphics.lineStyle(controlledPieceBorder, controlledPieceColor, outlineAlpha + 0.5);
-
-        }else{
-            graphics.lineStyle(BORDER_NORMAL, outlineColor, outlineAlpha);
+            style.color = controlledPieceColor;
+            style.thickness = controlledPieceBorder;
         }
         var shape:Array<Vector2> = new Array<Vector2>();
         for (i in 0...freezingBlock.PointMasses.length){
@@ -138,7 +149,8 @@ class SolidColorDrawWorld extends BaseDrawWorld
             alpha = 0.5;
         }
         
-        drawBody(shape, color, alpha);
+        color.alpha = Std.int(256 * alpha);
+        drawBody(shape, color, style);
     }
     
     private static var TIME_TILL_WARN:Float = 5.5; //start flashing the controlled piece at this time to warn player will lose control
@@ -164,19 +176,12 @@ class SolidColorDrawWorld extends BaseDrawWorld
         }
     }
     
-    function drawBody(shape:Array<Vector2>, color:FlxColor, alpha:Float) 
+    function drawBody(shape:Array<Vector2>, color:FlxColor, style:LineStyle) 
     {
-        //graphics.lineStyle(0, opts.Color);
-        //graphics.lineStyle(0, outlineColor);
-        var start:Vector2 = shape[0];
-        graphics.beginFill(color, alpha);
-        //graphics.moveTo((start.x * scale.x) + offset.x , (start.y * scale.y) + offset.y );
-        graphics.moveTo(transform.localToWorldX(start.x) , transform.localToWorldY(start.y) );
-        for (i in 1...shape.length){
-            var next:Vector2 = shape[i];
-            //graphics.lineTo((next.x * scale.x) + offset.x, (next.y * scale.y) + offset.y);
-            graphics.lineTo(transform.localToWorldX(next.x) , transform.localToWorldY(next.y));
-        }
-        graphics.endFill();
+        var transformedShape:Array<FlxPoint> = shape.map(function(v){
+            return new FlxPoint(transform.localToWorldX(v.x) , transform.localToWorldY(v.y));
+        });
+
+        FlxSpriteUtil.drawPolygon(renderTarget, transformedShape, color, style);
     }
 }

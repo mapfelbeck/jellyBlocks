@@ -29,8 +29,7 @@ import util.ScreenWorldTransform;
 class PlayState extends BaseScreen
 {
     var render:BaseDrawWorld;
-    var debugDrawSurface:Sprite;
-    var flxDrawSurface:FlxSprite;
+    var renderSurface:FlxSprite;
     var overscan:Int = 10;
     var WINDOW_WIDTH:Int;
     var WINDOW_HEIGHT:Int;
@@ -201,15 +200,13 @@ class PlayState extends BaseScreen
         
         controlledPieceFollower = new FlxSprite(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
         
-        var renderOffset:Int = 50;
-        //renderCamera = new FlxCamera(0,0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        /*var renderOffset:Int = 50;
+        renderCamera = new FlxCamera(0,0, WINDOW_WIDTH, WINDOW_HEIGHT);
         renderCamera = new FlxCamera(Std.int(renderOffset/2), Std.int(renderOffset/2), Std.int(WINDOW_WIDTH-renderOffset), Std.int(WINDOW_HEIGHT-renderOffset));
-        var bgColor:FlxColor = FlxColor.TRANSPARENT;
-        //var bgColor:FlxColor = FlxColor.GRAY;
-        //bgColor.alpha = 128;
-        renderCamera.bgColor = bgColor;
+        var bgColor:FlxColor = FlxColor.TRANSPARENT; 
+        /*renderCamera.bgColor = bgColor;
         renderCamera.follow(flxDrawSurface, FlxCameraFollowStyle.NO_DEAD_ZONE);
-        FlxG.cameras.add(renderCamera);
+        FlxG.cameras.add(renderCamera);*/
         
         registerEvent(OnColorRotated, Events.COLOR_ROTATE);
         registerEvent(OnNewGamePiece, Events.PIECE_CREATE);
@@ -269,11 +266,11 @@ class PlayState extends BaseScreen
         render.destroy();
     }
     
-    function setupTexturedRender() : BaseDrawWorld
+    /*function setupTexturedRender() : BaseDrawWorld
     {
         var render:BaseDrawWorld = new TexturedDrawWorld(createDrawSurface(), colorSource, this, physicsWorld, screenWorldTransform);
         return render;
-    }
+    }*/
     
     function setupSolidColorRender() : BaseDrawWorld
     {
@@ -283,7 +280,7 @@ class PlayState extends BaseScreen
     
     function setupDebugRender() : BaseDrawWorld
     {
-        var render:BaseDrawWorld = new DebugDrawWorld(createDrawSurface(), colorSource, physicsWorld, screenWorldTransform);
+        var render:BaseDrawWorld = new DebugDrawWorld(this, createDrawSurface(), colorSource, physicsWorld, screenWorldTransform);
         return render;
     }
 
@@ -372,17 +369,13 @@ class PlayState extends BaseScreen
         add(cwButton);
     }
     
-    private function createDrawSurface():Sprite
+    private function createDrawSurface():FlxSprite
     {
         //flxDrawSurface = new FlxSprite(0,0).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
-        flxDrawSurface = new FlxSprite(GameConstants.offscreenRenderX,GameConstants.offscreenRenderY).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
-        renderGroup.add(flxDrawSurface);
+        renderSurface = new FlxSprite(GameConstants.offscreenRenderX,GameConstants.offscreenRenderY).makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT);
+        renderGroup.add(renderSurface);
         
-        debugDrawSurface = new Sprite();
-        
-        debugDrawSurface.cacheAsBitmap = true;
-        
-        return debugDrawSurface;
+        return renderSurface;
     }
     
     public function getMaterialMatrix():MaterialMatrix 
@@ -440,7 +433,7 @@ class PlayState extends BaseScreen
             var center:Vector2 = controlPlugin.controlled.GamePieceCenter();
             var newX = screenWorldTransform.localToWorldX(center.x);
             var newY = screenWorldTransform.localToWorldY(center.y);
-            controlledPieceFollower.x = newX+GameConstants.offscreenRenderX;
+            controlledPieceFollower.x = newX + GameConstants.offscreenRenderX;
             controlledPieceFollower.y = newY + GameConstants.offscreenRenderY;
         }
         //trace("("+controlledPieceFollower.x+", "+controlledPieceFollower.y+")");
@@ -598,10 +591,10 @@ class PlayState extends BaseScreen
         
         render.Draw();
         
-        var pixels:BitmapData = flxDrawSurface.pixels;
+        /*var pixels:BitmapData = renderSurface.pixels;
         pixels.fillRect(pixels.rect, FlxColor.TRANSPARENT);
         pixels.draw(debugDrawSurface);
-        flxDrawSurface.pixels = pixels;
+        renderSurface.pixels = pixels;*/
     }
     
     function setupConfigForSpawingBlocks() 

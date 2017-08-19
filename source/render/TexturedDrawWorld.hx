@@ -27,7 +27,7 @@ class TexturedDrawWorld extends BaseDrawWorld
     private var parentState:FlxState;
     public var backgroundSize:Vector2;
     
-    private var renderTarget:Sprite;
+    private var renderTarget:FlxSprite;
     private var graphics:Graphics;
     private var world:World;
     private var worldBounds:AABB;
@@ -47,7 +47,7 @@ class TexturedDrawWorld extends BaseDrawWorld
 	var indices:Array<Int> = null;
 	var uvtData:Array<Float> = null;
 
-    public function new(sprite:Sprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, screenWorldTransform:ScreenWorldTransform) 
+    public function new(sprite:FlxSprite, colorSource:IColorSource, parentState:FlxState, physicsWorld:World, screenWorldTransform:ScreenWorldTransform) 
     {
         super(colorSource, screenWorldTransform);
     
