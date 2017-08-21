@@ -49,7 +49,7 @@ class BlockPopEffectPlugin extends ScreenPluginBase
         emitter.color.set(colorSource.getColor(emitterColor));
         emitter.launchMode = FlxEmitterMode.CIRCLE;
         emitter.speed.set(50, 100);
-        emitter.lifespan.set(1.0, 3.0);
+        emitter.lifespan.set(1.5, 3.5);
         
         #if (windows || android)
         emitter.alpha.set(1, 1, 0, 0);

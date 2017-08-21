@@ -21,6 +21,7 @@ openfl: [3.6.1]
 task: [1.0.7]
 
 ToDo:
+    sort out block pressures for: new block, deflated/frozen block, popping block
     improve widescreen UI
     new game modes:
         clear rows of blocks and fall through
@@ -33,6 +34,7 @@ ToDo:
     experiment with blocks that weld together?
     experiment with block of different shape & size?
     Safari crash bug
+    Improve color generator, complimentry colors as well?
     Controller support
         add ability to delete input mapping
     Resolution independence
@@ -40,6 +42,5 @@ ToDo:
     Figure out how to keep the physics sim from blowing up when intersections are too deep.
     Improve touch screen controls.
     Fix frozen blocks in mid air bug.
-    Expand color generator to make complimentry colors as well
     contribute flixel-ui code for FlxUISlider xml?
     contribute flixel-ui code for sticky analog stick bug?

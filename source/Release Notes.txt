@@ -1,3 +1,14 @@
+**Jelly Blocks v0.55**
+New features:
+* Game camera now tracks the controlled game piece
+* Minor implovements to desktop UI
+* Mouse cursor goes away when it's not being used
+
+Bugs fixed:
+* Safari audio crash fixed
+* Render code streamlined, HTML5 builds are a little more consistant
+
+
 **Jelly Blocks v0.50**
 New features:
 * Game over condition added

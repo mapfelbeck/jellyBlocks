@@ -28,7 +28,7 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
 {
     private var emitter:TextEmitter;
     
-    private var poolSize:Int = 20;
+    private var poolSize:Int = 25;
     private var emitterColor:Int = 0;
     
     private var effectQueue:List<ComboEffect> = new List<ComboEffect>();
@@ -47,9 +47,9 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
 		parent.add(emitter);
         emitter.color.set(colorSource.getColor(emitterColor));
         emitter.launchMode = FlxEmitterMode.CIRCLE;
-        emitter.speed.set(120, 160);
-        emitter.lifespan.set(1.0, 2.0);
-        emitter.launchAngle.set(-135, -45);
+        emitter.speed.set(140, 180);
+        emitter.lifespan.set(1.5, 2.5);
+        emitter.launchAngle.set(-145, -35);
 
         #if (windows || android)
         emitter.alpha.set(1, 1, 0, 0);
@@ -74,7 +74,7 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
     {
         super.update(elapsed);
         
-        var effect = effectQueue.pop();
+        var effect:ComboEffect = effectQueue.pop();
         if (effect != null){
             emitter.color.set(effect.color);
             emitter.Text = effect.text;

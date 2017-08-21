@@ -9,7 +9,7 @@ import util.Capabilities;
  */
 class ComboEffect 
 {
-    public static var DEFAULT_PARTICLE_COUNT:Int = 3;
+    public static var DEFAULT_PARTICLE_COUNT:Int = 4;
     public static var MOBILE_PARTICLE_COUNT:Int = 2;
     public var position:FlxPoint;
     public var color:FlxColor;
