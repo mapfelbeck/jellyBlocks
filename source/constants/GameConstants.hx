@@ -14,7 +14,7 @@ class GameConstants
     public static inline var settingsFile:String = "Balloon Blocks Settings";
     public static inline var highScoreFile:String = "Balloon Blocks High Scores";
 
-    public static inline var offscreenRenderX:Int = 0;
+    public static inline var offscreenRenderX:Int = -2000;
     public static inline var offscreenRenderY:Int = 0;
     
     public static inline var MassPerPoint:Float = 1;

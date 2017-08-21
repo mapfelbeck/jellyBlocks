@@ -74,8 +74,8 @@ class SolidColorDrawWorld extends BaseDrawWorld
 
 		gameArenaSprite.setGraphicSize(arenaWidth, arenaHeight);
 		gameArenaSprite.updateHitbox();
-		gameArenaSprite.x = Std.int((transform.screenWidth - arenaWidth) / 2);
-		gameArenaSprite.y = Std.int((transform.screenHeight - arenaHeight) / 2);
+		gameArenaSprite.x = GameConstants.offscreenRenderX + Std.int((transform.screenWidth - arenaWidth) / 2);
+		gameArenaSprite.y = GameConstants.offscreenRenderY + Std.int((transform.screenHeight - arenaHeight) / 2);
 		parentState.renderGroup.add(gameArenaSprite);
     }
     

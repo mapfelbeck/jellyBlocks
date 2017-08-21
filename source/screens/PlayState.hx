@@ -13,9 +13,10 @@ import flixel.addons.ui.FlxUISprite;
 import flixel.group.FlxGroup;
 import flixel.input.gamepad.FlxGamepadInputID;
 import flixel.input.keyboard.FlxKey;
-import flixel.math.FlxRandom;
+import flixel.math.*;
 import flixel.ui.FlxButton;
 import flixel.util.FlxColor;
+import flixel.util.FlxSpriteUtil.LineStyle;
 import gamepieces.GamePiece;
 import jellyPhysics.*;
 import jellyPhysics.math.*;
@@ -25,6 +26,7 @@ import render.*;
 import screenPlugins.*;
 import util.Capabilities;
 import util.ScreenWorldTransform;
+import flixel.util.FlxSpriteUtil;
 
 class PlayState extends BaseScreen
 {
@@ -84,6 +86,9 @@ class PlayState extends BaseScreen
     public var renderGroup:FlxGroup;
     
     private var controlledPieceFollower:FlxSprite;
+    
+	private var overlayCamera:FlxCamera;
+	private var deadzoneOverlay:FlxSprite;
     
 	override public function create():Void
 	{
@@ -198,15 +203,43 @@ class PlayState extends BaseScreen
         trace("WINDOW_HEIGHT: " + WINDOW_HEIGHT);
         trace("WINDOW_WIDTH: " + WINDOW_WIDTH);*/
         
-        controlledPieceFollower = new FlxSprite(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+        var deadzoneSize:Float = Math.max(WINDOW_WIDTH, WINDOW_HEIGHT) / 4;
+        var deadzone:FlxRect = FlxRect.get((WINDOW_WIDTH - deadzoneSize) / 2, (WINDOW_HEIGHT - deadzoneSize) / 2, deadzoneSize, deadzoneSize);
         
-        /*var renderOffset:Int = 50;
+        controlledPieceFollower = new FlxSprite(
+            GameConstants.offscreenRenderX + (WINDOW_WIDTH / 2) - (deadzone.width / 2), 
+            GameConstants.offscreenRenderY + (WINDOW_HEIGHT / 2) - (deadzone.height / 2));
+        
+        var renderOffset:Int = 50;
         renderCamera = new FlxCamera(0,0, WINDOW_WIDTH, WINDOW_HEIGHT);
-        renderCamera = new FlxCamera(Std.int(renderOffset/2), Std.int(renderOffset/2), Std.int(WINDOW_WIDTH-renderOffset), Std.int(WINDOW_HEIGHT-renderOffset));
+        //renderCamera = new FlxCamera(Std.int(renderOffset/2), Std.int(renderOffset/2), Std.int(WINDOW_WIDTH-renderOffset), Std.int(WINDOW_HEIGHT-renderOffset));
         var bgColor:FlxColor = FlxColor.TRANSPARENT; 
-        /*renderCamera.bgColor = bgColor;
-        renderCamera.follow(flxDrawSurface, FlxCameraFollowStyle.NO_DEAD_ZONE);
-        FlxG.cameras.add(renderCamera);*/
+        renderCamera.bgColor = bgColor;
+        //renderCamera.focusOn(new FlxPoint(GameConstants.offscreenRenderX + (WINDOW_WIDTH / 2), GameConstants.offscreenRenderY + (WINDOW_HEIGHT / 2)));
+        //renderCamera.follow(renderSurface, FlxCameraFollowStyle.NO_DEAD_ZONE);
+        //renderCamera.follow(controlledPieceFollower, FlxCameraFollowStyle.PLATFORMER, 1.0);
+        renderCamera.follow(controlledPieceFollower, FlxCameraFollowStyle.TOPDOWN, 1.0);
+        renderCamera.deadzone.set(deadzone.left, deadzone.top, deadzone.width, deadzone.height);
+
+        //looks odd, but canera.focusOn essentially sets where the upper left of the camera's deadzone is
+        /*var renderfocus:FlxPoint = new FlxPoint(
+            GameConstants.offscreenRenderX + (WINDOW_WIDTH / 2) - (deadzone.width / 2),
+            GameConstants.offscreenRenderY + (WINDOW_HEIGHT / 2) - (deadzone.height / 2));*/
+        //trace("deadzone width: " + deadzone.width);
+        //trace("deadzone height: " + deadzone.height);
+        //renderCamera.focusOn(renderfocus);
+        FlxG.cameras.add(renderCamera);
+
+        // Camera Overlay
+		deadzoneOverlay = new FlxSprite(-10000, -10000);
+		deadzoneOverlay.makeGraphic(WINDOW_WIDTH, WINDOW_HEIGHT, FlxColor.TRANSPARENT, true);
+		deadzoneOverlay.antialiasing = true;
+
+		overlayCamera = new FlxCamera(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+		overlayCamera.bgColor = FlxColor.TRANSPARENT;
+		overlayCamera.follow(deadzoneOverlay, FlxCameraFollowStyle.NO_DEAD_ZONE);
+		FlxG.cameras.add(overlayCamera);
+		add(deadzoneOverlay);
         
         registerEvent(OnColorRotated, Events.COLOR_ROTATE);
         registerEvent(OnNewGamePiece, Events.PIECE_CREATE);
@@ -591,11 +624,41 @@ class PlayState extends BaseScreen
         
         render.Draw();
         
-        /*var pixels:BitmapData = renderSurface.pixels;
-        pixels.fillRect(pixels.rect, FlxColor.TRANSPARENT);
-        pixels.draw(debugDrawSurface);
-        renderSurface.pixels = pixels;*/
+        if(deadzoneOverlay != null){
+            drawDeadzone();
+        }
     }
+    
+    function drawDeadzone() 
+	{
+        FlxSpriteUtil.fill(deadzoneOverlay, FlxColor.TRANSPARENT);
+		var dz:FlxRect = renderCamera.deadzone;
+        
+		if (dz == null){
+			return;
+        }
+
+		var lineLength:Int = 20;
+		var lineStyle:LineStyle = { color: FlxColor.WHITE, thickness: 3 };
+		
+        /*trace("******************");
+        trace("dz.left: " + dz.left);
+        trace("dz.top: " + dz.top);
+        trace("dz.bottom: " + dz.bottom);
+        trace("dz.right: " + dz.right);*/
+		// Left Up Corner
+        FlxSpriteUtil.drawLine(deadzoneOverlay, dz.left, dz.top, dz.left + lineLength, dz.top, lineStyle);
+		FlxSpriteUtil.drawLine(deadzoneOverlay, dz.left, dz.top, dz.left, dz.top + lineLength, lineStyle);
+		// Right Up Corner
+		FlxSpriteUtil.drawLine(deadzoneOverlay, dz.right, dz.top, dz.right - lineLength, dz.top, lineStyle);
+		FlxSpriteUtil.drawLine(deadzoneOverlay, dz.right, dz.top, dz.right, dz.top + lineLength, lineStyle);
+		// Bottom Left Corner
+		FlxSpriteUtil.drawLine(deadzoneOverlay, dz.left, dz.bottom, dz.left + lineLength, dz.bottom, lineStyle);
+		FlxSpriteUtil.drawLine(deadzoneOverlay, dz.left, dz.bottom, dz.left, dz.bottom - lineLength, lineStyle);
+		// Bottom Right Corner
+		FlxSpriteUtil.drawLine(deadzoneOverlay, dz.right, dz.bottom, dz.right - lineLength, dz.bottom, lineStyle);
+		FlxSpriteUtil.drawLine(deadzoneOverlay, dz.right, dz.bottom, dz.right, dz.bottom - lineLength, lineStyle);
+	}
     
     function setupConfigForSpawingBlocks() 
     {
