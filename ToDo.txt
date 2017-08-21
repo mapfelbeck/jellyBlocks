@@ -21,14 +21,6 @@ openfl: [3.6.1]
 task: [1.0.7]
 
 ToDo:
-    camera todo:
-        flag to toggle camera follow
-        add toggle for camera deadzone
-    offscreen render for game board:
-        move render texture offscreen - done
-        bring particle fx up to top layer
-        move arena offscreen and parralax
-        make camera follow controlled piece - done
     improve widescreen UI
     new game modes:
         clear rows of blocks and fall through

@@ -1,6 +1,7 @@
 package screenPlugins;
 
 import blocks.GameBlock;
+import constants.GameConstants;
 import events.EventAndAction;
 import events.Events;
 import flash.events.*;
@@ -18,6 +19,7 @@ import render.IColorSource;
 import screens.BaseScreen;
 import util.Capabilities;
 import util.ScreenWorldTransform;
+
 /**
  * ...
  * @author Michael Apfelbeck
@@ -99,7 +101,7 @@ class BlockPopEffectPlugin extends ScreenPluginBase
         if (block != null){
             var screenX:Int = cast transform.localToWorldX(block.DerivedPos.x);
             var screenY:Int = cast transform.localToWorldY(block.DerivedPos.y);
-            effectQueue.add(new PopEffect(new FlxPoint(screenX, screenY), colorSource.getColor(block.Material)));
+            effectQueue.add(new PopEffect(new FlxPoint(screenX+GameConstants.offscreenRenderX, screenY+GameConstants.offscreenRenderY), colorSource.getColor(block.Material)));
         }
     }
 }

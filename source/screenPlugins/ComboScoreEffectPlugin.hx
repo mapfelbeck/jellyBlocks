@@ -18,6 +18,7 @@ import render.IColorSource;
 import screens.BaseScreen;
 import util.Capabilities;
 import util.ScreenWorldTransform;
+import constants.GameConstants;
 
 /**
  * ...
@@ -91,7 +92,7 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
         
         var screenX:Int = cast transform.localToWorldX(pos.x);
         var screenY:Int = cast transform.localToWorldY(pos.y);
-        effectQueue.add(new ComboEffect(new FlxPoint(screenX, screenY), colorSource.getColor(color), count+"X"));
+        effectQueue.add(new ComboEffect(new FlxPoint(screenX+GameConstants.offscreenRenderX, screenY+GameConstants.offscreenRenderY), colorSource.getColor(color), count+"X"));
     }
 
     private function loadParticles():Void{
