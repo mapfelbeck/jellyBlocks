@@ -1,7 +1,7 @@
 package blocks;
 
 import events.*;
-import constants.GameConstants;
+import constants.PhysicsDefaults;
 import flixel.util.FlxColor;
 import jellyPhysics.Body;
 import jellyPhysics.ClosedShape;
@@ -17,7 +17,7 @@ typedef SameMaterialCollisionCallback = GameBlock->GameBlock->Void;
 
 class GameBlock extends PressureBody
 {
-    public var sameMarerialCollisionCallback:SameMaterialCollisionCallback;
+    public var sameMaterialCollisionCallback:SameMaterialCollisionCallback;
     
     private var freezeable:Bool;
     public var Freezeable(get, set):Bool;
@@ -111,8 +111,8 @@ class GameBlock extends PressureBody
         if (Material == otherBody.Material)
         {
             var other:GameBlock = Std.instance(otherBody, GameBlock);
-            if (sameMarerialCollisionCallback != null){
-                sameMarerialCollisionCallback(this, other);
+            if (sameMaterialCollisionCallback != null){
+                sameMaterialCollisionCallback(this, other);
             }
             /*if (CollisionList.indexOf(other) == -1)
             {
@@ -163,7 +163,7 @@ class GameBlock extends PressureBody
         if (popping)
         {
             collideTime += elapsed;
-            GasAmount += elapsed * constants.GameConstants.GasPressure;
+            GasAmount += elapsed * PhysicsDefaults.PoppingBlockPressure;
             if (collideTime > constants.GameConstants.BlockCollideTime)
             {
                 DeleteThis = true;

@@ -1,6 +1,6 @@
 package blocks;
 
-import constants.GameConstants;
+import constants.PhysicsDefaults;
 import jellyPhysics.ClosedShape;
 import jellyPhysics.math.Vector2;
 
@@ -15,6 +15,8 @@ class DeflatingGameBlock extends GameBlock
 
     private var deflates:Bool;
     private var deflateRate:Float;
+    
+    private var minPressure:Float = PhysicsDefaults.DeflatedBlockPressure;
     public function new(bodyShape:ClosedShape, massPerPoint:Float, position:Vector2, angleInRadians:Float, bodyScale:Vector2, isKinematic:Bool, bodyShapeSpringK:Float, bodyShapeSpringDamp:Float, edgeSpringK:Float, edgeSpringDamp:Float, gasPressure:Float, blockConfig:BlockConfig) 
     {
         super(bodyShape, massPerPoint, position, angleInRadians, bodyScale, isKinematic, bodyShapeSpringK, bodyShapeSpringDamp, edgeSpringK, edgeSpringDamp, gasPressure, blockConfig);
@@ -27,7 +29,7 @@ class DeflatingGameBlock extends GameBlock
         if (deflates && !popping && lifeTime > 0.5 && !IsAsleep)
         {
             GasAmount = Math.max(
-                GasAmount - elapsed * constants.GameConstants.GasPressure * deflateRate, 0);
+                GasAmount - elapsed * PhysicsDefaults.PoppingBlockPressure * deflateRate, minPressure);
         }
     }
 }

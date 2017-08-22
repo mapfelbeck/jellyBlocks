@@ -16,7 +16,7 @@ class GameBlockBuilder
     var shapeBuilder:ShapeBuilder;
     var material:Int = 0;
     var type:BlockType = BlockType.Normal;
-    var mass:Float = PhysicsDefaults.Mass;
+    var mass:Float = PhysicsDefaults.MassPerPoint;
     var angle:Float = PhysicsDefaults.Angle;
     var position:Vector2 = new Vector2( 0, 0);
     var scale:Vector2 = new Vector2( 1, 1);
@@ -55,7 +55,7 @@ class GameBlockBuilder
             default:
         }
         finalBlock.Material = material;
-        finalBlock.sameMarerialCollisionCallback = sameMaterialCallback;
+        finalBlock.sameMaterialCollisionCallback = sameMaterialCallback;
         
         //finalBlock.CollisionCallback = collisionCallback;
         if (label != null){

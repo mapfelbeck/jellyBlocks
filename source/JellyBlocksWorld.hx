@@ -1,7 +1,7 @@
 package;
 
 import collider.QuadTreeCollider;
-import constants.GameConstants;
+import constants.*;
 import flixel.math.FlxRandom;
 import gamepieces.GamePiece;
 import jellyPhysics.*;
@@ -41,7 +41,7 @@ class JellyBlocksWorld extends World
     }
         
     private function GravityAccumulator(elapsed:Float){
-        var gravity:Vector2 = new Vector2(0, 0.5 * constants.GameConstants.GravityConstant);
+        var gravity:Vector2 = new Vector2(0, 0.5 * PhysicsDefaults.GravityConstant);
 
         for(i in 0...NumberBodies)
         {

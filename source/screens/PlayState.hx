@@ -687,7 +687,7 @@ class PlayState extends BaseScreen
         spawnConfig.freezeDistortionThreshhold = 0.8;
         spawnConfig.freezeVelocityThreshhold = 0.08;
         
-        blockBuilder = blockBuilder.setBlockConfig(spawnConfig).setPressure(PhysicsDefaults.SpawnedBlockPressure);
+        blockBuilder = blockBuilder.setBlockConfig(spawnConfig).setPressure(PhysicsDefaults.InitialBlockPressure);
         pieceBuilder.setTriominoBuildShape(TriominoShape.Random);
     }
         
@@ -732,7 +732,7 @@ class PlayState extends BaseScreen
         
         shapeBuilder = shapeBuilder.type(ShapeType.Square).size(1.0);
         blockBuilder = blockBuilder.setScale(new Vector2(initialConfig.scale, initialConfig.scale));
-        blockBuilder = blockBuilder.setMass(PhysicsDefaults.Mass);
+        blockBuilder = blockBuilder.setMass(PhysicsDefaults.MassPerPoint);
         blockBuilder = blockBuilder.setBlockConfig(initialConfig);
         blockBuilder = blockBuilder.setKinematic(false);
         blockBuilder = blockBuilder.setType(BlockType.Freeze);
@@ -742,10 +742,10 @@ class PlayState extends BaseScreen
         var rowCount:Int = 2;
         var colCount:Int = 3;
         
-        var rowStart:Float = 4;
-        var rowInc:Float = 2;
+        var rowStart:Float = 5;
+        var rowInc:Float = 1.1;
         
-        var bottomRowOffset:Float = -1.5;
+        var bottomRowOffset:Float = -1.75;
         
         var colStart:Float = -5.2;
         var colInc:Float = 3.4;
