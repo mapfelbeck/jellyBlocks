@@ -219,6 +219,7 @@ class PlayState extends BaseScreen
         if (followingControlledPiece){
             renderCamera.follow(controlledPieceFollower, FlxCameraFollowStyle.TOPDOWN, 0.1);
             renderCamera.deadzone.set(deadzone.left, deadzone.top, deadzone.width, deadzone.height);
+            renderCamera.targetOffset.set(0, deadzoneSize / 4);
         }else{
             renderCamera.follow(renderSurface, FlxCameraFollowStyle.NO_DEAD_ZONE);
         }

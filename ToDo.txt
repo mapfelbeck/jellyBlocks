@@ -21,7 +21,6 @@ openfl: [3.6.1]
 task: [1.0.7]
 
 ToDo:
-    sort out block pressures for: new block, deflated/frozen block, popping block
     improve widescreen UI
     new game modes:
         clear rows of blocks and fall through

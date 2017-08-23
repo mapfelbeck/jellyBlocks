@@ -43,7 +43,7 @@ class SolidColorDrawWorld extends BaseDrawWorld
     private static var BORDER_FROZEN: Int = 1;
     private static var BORDER_POPPING: Int = 3;
     private static var BORDER_CONTROLLED: Int = 4;
-    private static var BORDER_FLICKER: Int = 2;
+    private static var BORDER_FLICKER: Int = 1;
     
     public function new(sprite:FlxSprite, colorSource:IColorSource, parentState:PlayState, physicsWorld:JellyBlocksWorld, screenWorldTransform:ScreenWorldTransform, spawnPlugin: GamePieceSpawnPlugin)
     {
@@ -154,8 +154,8 @@ class SolidColorDrawWorld extends BaseDrawWorld
     }
     
     private static var TIME_TILL_WARN:Float = 5.5; //start flashing the controlled piece at this time to warn player will lose control
-    private static var FLICKER_RATE_MAX:Float = 0.65;
-    private static var FLICKER_RATE_MIN:Float = 0.15;
+    private static var FLICKER_RATE_MAX:Float = 0.6;
+    private static var FLICKER_RATE_MIN:Float = 0.1;
     private var warningFlickerOn:Bool = false;
     private var warningFlickerLength:Float = 0.0;
     private var lossOfControlWarn:Bool = false;
