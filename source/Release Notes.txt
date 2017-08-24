@@ -3,11 +3,12 @@ New features:
 * Game camera now tracks the controlled game piece
 * Minor implovements to desktop UI
 * Mouse cursor goes away when it's not being used
+* New icon and logo
+* Eliminated funky timer bar on the left, now your current piece flashes to show your about to lose control
 
 Bugs fixed:
 * Safari audio crash fixed
-* Render code streamlined, HTML5 builds are a little more consistant
-
+* Render code streamlined, HTML5 FPS is a little more consistant
 
 **Jelly Blocks v0.50**
 New features:

@@ -22,13 +22,15 @@ private class CountAndTime
     public var time:Float;
     public var pos:Vector2;
     public var material:Int;
+    public var color:FlxColor;
     public var timeIndex:Float;
-    public function new(count:Int, time:Float, pos:Vector2, material:Int, timeIndex:Float)
+    public function new(count:Int, time:Float, pos:Vector2, material:Int, color:FlxColor, timeIndex:Float)
     {
         this.count = count;
         this.time = time;
         this.pos = pos;
         this.material = material;
+        this.color = color;
         this.timeIndex = timeIndex;
     }
 }
@@ -116,8 +118,8 @@ class AccumulateScorePlugin extends ScreenPluginBase
             {
                 //trace("Popped " + lookupTable[key].count + " block of type " + key);
                 removeList.add(key);
-                this.scoreItems.push(new ScoreAndColor(countToScore(lookupTable[key].count), colors.getColor(lookupTable[key].material) ));
-                EventManager.Trigger(this, Events.COMBO_SCORE, [key, lookupTable[key].count, lookupTable[key].pos]);
+                this.scoreItems.push(new ScoreAndColor(countToScore(lookupTable[key].count), lookupTable[key].color ));
+                EventManager.Trigger(this, Events.COMBO_SCORE, [lookupTable[key].color, lookupTable[key].count, lookupTable[key].pos]);
             }
         }
         for (materialToRemove in removeList)
@@ -197,7 +199,7 @@ class AccumulateScorePlugin extends ScreenPluginBase
             }
             else
             {
-                lookupTable.set(block.Material, new CountAndTime(1, popWaitTime, block.DerivedPos, block.Material, this.gameTime));
+                lookupTable.set(block.Material, new CountAndTime(1, popWaitTime, block.DerivedPos, block.Material, colors.getColor(block.Material), this.gameTime));
                 rebuildAccumulateItems();
             }
         }

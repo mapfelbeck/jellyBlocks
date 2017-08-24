@@ -6,6 +6,7 @@ import events.EventManager;
 import events.Events;
 import flixel.addons.ui.FlxUIText;
 import flixel.system.FlxAssets.FlxGraphicAsset;
+import flixel.util.FlxColor;
 import jellyPhysics.math.Vector2;
 import render.IColorSource;
 import screens.BaseScreen;
@@ -18,13 +19,13 @@ private class CountAndTime{
     public var count:Int;
     public var time:Float;
     public var pos:Vector2;
-    public var material:Int;
+    public var color:FlxColor;
     public var timeIndex:Float;
-    public function new(count:Int, time:Float, pos:Vector2, material:Int, timeIndex:Float){
+    public function new(count:Int, time:Float, pos:Vector2, color:FlxColor, timeIndex:Float){
         this.count = count;
         this.time = time;
         this.pos = pos;
-        this.material = material;
+        this.color = color;
         this.timeIndex = timeIndex;
     }
 }
@@ -59,7 +60,7 @@ class SimpleScorePlugin extends ScreenPluginBase
                 removeList.add(key);
                 scoreNumber += Std.int(Math.pow(lookupTable[key].count, 2)) * 10;
                 updateScoreText();
-                EventManager.Trigger(this, Events.COMBO_SCORE, [key, lookupTable[key].count, lookupTable[key].pos]);
+                EventManager.Trigger(this, Events.COMBO_SCORE, [lookupTable[key].color, lookupTable[key].count, lookupTable[key].pos]);
             }
         }
         for (materialToRemove in removeList){
@@ -115,7 +116,7 @@ class SimpleScorePlugin extends ScreenPluginBase
                 lookupTable[block.Material].pos.x += block.DerivedPos.x / (lookupTable[block.Material].count + 1);
                 lookupTable[block.Material].pos.y += block.DerivedPos.y / (lookupTable[block.Material].count + 1);
             }else{
-                lookupTable.set(block.Material, new CountAndTime(1, popWaitTime, block.DerivedPos, block.Material, this.gameTime));
+                lookupTable.set(block.Material, new CountAndTime(1, popWaitTime, block.DerivedPos, colors.getColor(block.Material), this.gameTime));
             }
         }
     }

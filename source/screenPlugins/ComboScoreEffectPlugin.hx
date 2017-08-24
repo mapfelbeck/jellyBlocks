@@ -86,13 +86,13 @@ class ComboScoreEffectPlugin extends ScreenPluginBase
     
     private function OnScore(sender:Dynamic, event:String, params:Array<Dynamic>){
         //trace("Block pop effect: Block popped.");
-        var color:Int = cast params[0];
+        var color:FlxColor = cast params[0];
         var count:Int = cast params[1];
         var pos:Vector2 = cast params[2];
         
         var screenX:Int = cast transform.localToWorldX(pos.x);
         var screenY:Int = cast transform.localToWorldY(pos.y);
-        effectQueue.add(new ComboEffect(new FlxPoint(screenX+GameConstants.offscreenRenderX, screenY+GameConstants.offscreenRenderY), colorSource.getColor(color), count+"X"));
+        effectQueue.add(new ComboEffect(new FlxPoint(screenX+GameConstants.offscreenRenderX, screenY+GameConstants.offscreenRenderY), color, count+"X"));
     }
 
     private function loadParticles():Void{
